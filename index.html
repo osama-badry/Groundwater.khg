@@ -838,6 +838,13 @@ body.pon{overflow:hidden}
 .camman{position:absolute;top:calc(100px + env(safe-area-inset-top));inset-inline:12px;max-width:440px;background:rgb(10 22 26/.94);border:1px solid rgb(229 189 99/.4);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;z-index:2}
 .camman input{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid rgb(255 255 255/.25);background:rgb(255 255 255/.08);color:#fff}
 .camman small{color:#B9C8C6;font-size:12px;line-height:1.6}.camman div{display:flex;gap:8px}.camman div button{flex:1;border:0;border-radius:10px;padding:10px;font:inherit;font-weight:700;cursor:pointer}.camman [data-cmok]{background:#E5BD63;color:#1B1305}.camman [data-cmx]{background:rgb(255 255 255/.12);color:#fff}
+
+.psteps{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px}.psteps span{display:flex;align-items:center;gap:6px;color:var(--muted)}.psteps i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:11px;background:var(--surface2);border:1.5px solid var(--line)}
+.psteps .done{color:var(--ink)}.psteps .done i{background:var(--ok);border-color:var(--ok);color:#fff}.psteps .rej i{background:var(--bad);border-color:var(--bad);color:#fff}
+.cmk{text-align:start;cursor:pointer;border:1.5px solid var(--line);font:inherit;color:inherit}.cmk.on{border-color:var(--c);box-shadow:inset 0 -3px 0 var(--c)}.cmk b{color:var(--c)}
+.cmm{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px;background:var(--surface)}.cmm summary{cursor:pointer;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13.5px}.cmd{color:var(--warn);font-weight:700}
+.cmt td,.cmt th{font-size:12.5px}.cmt tr.key td:first-child{font-weight:700;color:var(--ink)}.cmt tr.key{background:color-mix(in srgb,var(--warn-soft) 55%,transparent)}
+.cmm .tw table,.cmt{min-width:0!important;width:100%;table-layout:fixed}.cmt td,.cmt th{white-space:normal!important;word-break:break-word}.cmt th:last-child,.cmt td:last-child{width:84px;text-align:center}
 </style>
 
 <div class="login" id="login" hidden>
@@ -989,7 +996,8 @@ const TPL_DEFAULT={
  match_fix:{t:'استكمال بعد المطابقة',b:'السيد/ {الاسم}\nبرجاء استكمال ما يلي لطلبكم رقم {رقم_الملف}:\n{السبب}\nوالحضور يوم {التاريخ}.'},
  inspect:{t:'الإرسال للمعاينة',b:'السيد/ {الاسم}\nتم إرسال طلبكم رقم {رقم_الملف} للمعاينة الميدانية بتاريخ {التاريخ}، وسيتواصل معكم فريق المعاينة لتحديد موعد الزيارة.'},
  report:{t:'انتهاء المعاينة',b:'السيد/ {الاسم}\nانتهت المعاينة الميدانية لطلبكم رقم {رقم_الملف}، وجارٍ إنهاء الطلب على المنظومة وتسليمه لقسم التراخيص.'},
- close:{t:'إنهاء الطلب والتسليم',b:'السيد/ {الاسم}\nتم إنهاء طلبكم رقم {رقم_الملف} على المنظومة وتسليم المستندات لقسم التراخيص بتاريخ {التاريخ}.\nيمكنكم المتابعة مع قسم التراخيص لاستلام الترخيص.'}};
+ close:{t:'إنهاء الطلب والتسليم',b:'السيد/ {الاسم}\nتم إنهاء طلبكم رقم {رقم_الملف} على المنظومة وتسليم المستندات لقسم التراخيص بتاريخ {التاريخ}.\nيمكنكم المتابعة مع قسم التراخيص لاستلام الترخيص.'},
+ committee:{t:'قرار اللجنة العليا',b:'السيد/ {الاسم}\nنفيدكم بأن اللجنة العليا للمياه الجوفية نظرت طلبكم رقم {رقم_الملف} بجلستها بتاريخ {التاريخ}، وكان القرار: {السبب}.\nسيتم إخطاركم بباقي الإجراءات.'}};
 const FED=4200.83,QIR=FED/24,SAHM=QIR/24;
 function areaFrom(m2){const t=Math.round(m2/SAHM*10)/10;let f=Math.floor(t/576+1e-9),rem=Math.round((t-f*576)*10)/10,q=Math.floor(rem/24+1e-9),sh=Math.round((rem-q*24)*10)/10;return{m2:Math.round(m2*100)/100,f,q,sh}}
 const areaTxt=a=>a?`${a.f.toLocaleString('en-US')} فدان ${a.q} قيراط ${a.sh} سهم = ${a.m2.toLocaleString('en-US',{maximumFractionDigits:2})} م²`:'';
@@ -1010,7 +1018,7 @@ const KEY='wells-proto-v1';
 let S={mods:{},added:[],tpl:null,users:null,outbox:[],perm:null};
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S=Object.assign(S,s)}catch(e){}
 function save(){save._n=(save._n||0)+1;if(typeof enqueue==='function'&&BOOTED&&!save._q)enqueue('p:'+cur,PLBL[cur]||'إعدادات المنظومة','إعدادات');save._q=0;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}clearTimeout(save._t);if(typeof autoBackup==='function')save._t=setTimeout(()=>autoBackup(false),4000)}
-const TPL=()=>S.tpl||(S.tpl=JSON.parse(JSON.stringify(TPL_DEFAULT)));
+const TPL=()=>{const t=S.tpl||(S.tpl=JSON.parse(JSON.stringify(TPL_DEFAULT)));for(const k in TPL_DEFAULT)if(!t[k])t[k]=JSON.parse(JSON.stringify(TPL_DEFAULT[k]));return t};
 const ROLES=['المطوّر','الأدمن','مهندس منظومة','قسم الدراسات','قسم التراخيص','مهندس التفتيش','الإدارة'];
 const PERMS=['إضافة طلب','قبول/رفض المستندات','تسجيل نتيجة المطابقة','الإرسال للمعاينة','تسجيل تقرير المعاينة','إنهاء الطلب والتسليم','إرسال واتساب','التقارير','إدارة المستخدمين والأجهزة','تعديل بيانات الطلبات','عرض البيانات الشخصية (الرقم القومي والهاتف)'];
 function migrate(){if(S.v!==4){S.v=4;S.perm=[[1,1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1,1],[1,1,0,0,0,0,1,0,0,1,1],[0,0,1,1,0,0,1,0,0,0,1],[0,0,0,0,1,0,1,0,0,1,0],[0,0,0,0,0,1,0,1,0,0,0]];S.users=JSON.parse(JSON.stringify(PUSERS));S.kw={};S.ch={};S.cur='dev';save()}}
@@ -1027,8 +1035,8 @@ function lvOk(l,i){if(l==='full'||i===7||i===10)return true;if(l==='view')return
 const RA_DEF=[{lic:'edit',db:'edit',rep:1,set:1,pd:1},{lic:'edit',db:'edit',rep:1,set:1,pd:1},{lic:'edit',db:'view',rep:1,set:0,pd:1},{lic:'none',db:'edit',rep:1,set:0,pd:1},{lic:'view',db:'view',rep:1,set:0,pd:1},{lic:'view',db:'view',rep:1,set:0,pd:1},{lic:'view',db:'view',rep:1,set:0,pd:0}];
 const SECN={lic:'منظومة التراخيص',db:'قاعدة البيانات'};const ACCN={edit:'إضافة وتعديل',view:'مشاهدة فقط',none:'بدون وصول'};
 function ra(u){u=u||me();if(u.r===0)return RA_DEF[0];return (S.ra&&S.ra[u.r])||RA_DEF[u.r]||RA_DEF[6]}
-const PSEC={cal:'lic',audit:'set',dash:'lic',requests:'lic',new:'lic',map:'lic',whatsapp:'lic',portal:'lic',inspq:'lic',registry:'db',wellform:'db',wmap:'db',monitor:'db',reports:'rep',users:'set',backup:'set'};
-function pageOK(p){const u=me();if(p==='inspq')return [0,1,5].includes(u.r);if(u.r===0)return true;if(u.r===5&&PSEC[p]==='lic'&&!['requests','map'].includes(p))return false;const sc_=PSEC[p];if(!sc_)return true;const a=ra(u);if(sc_==='lic'||sc_==='db')return a[sc_]!=='none'&&(p!=='new'||can(0))&&(p!=='wellform'||canAddWell());if(sc_==='rep')return !!a.rep;if(sc_==='set')return !!a.set;return true}
+const PSEC={cal:'lic',audit:'set',dash:'lic',requests:'lic',new:'lic',map:'lic',whatsapp:'lic',portal:'lic',inspq:'lic',registry:'db',cmte:'db',wellform:'db',wmap:'db',monitor:'db',reports:'rep',users:'set',backup:'set'};
+function pageOK(p){const u=me();if(p==='inspq')return [0,1,5].includes(u.r);if(u.r===0)return true;if(u.r===5&&PSEC[p]==='lic'&&!['requests','map'].includes(p))return false;if(u.r===5&&p==='cmte')return false;const sc_=PSEC[p];if(!sc_)return true;const a=ra(u);if(sc_==='lic'||sc_==='db')return a[sc_]!=='none'&&(p!=='new'||can(0))&&(p!=='wellform'||canAddWell());if(sc_==='rep')return !!a.rep;if(sc_==='set')return !!a.set;return true}
 function firstPage(){return (me().r===5?['inspq']:[]).concat(['dash','registry','reports','mobile']).find(pageOK)||'mobile'}
 const can=i=>{const u=me();if(u.r===0)return true;const a=ra(u);let ok=i<=6?a.lic==='edit':i===7?!!a.rep:i===8?!!a.set:i===9?a.db==='edit':i===10?!!a.pd:false;return ok&&lvOk(lvOf(u),i)};
 const can_old=i=>{const u=me();if(u.r===0)return true;if(!(S.perm[u.r]&&S.perm[u.r][i]))return false;return lvOk(lvOf(u),i)};
@@ -1062,7 +1070,7 @@ const KL=k=>k==='تجديد ترخيص'?'تجديد ترخيص':'بئر '+k;
 function lic(r){return `<span class="tag ${r.kind==='جديد'?'k-new':r.kind==='قائم'?'k-old':''}" ${r.kind==='تجديد ترخيص'?'style="background:var(--teal);color:#fff;border-color:transparent"':''}>${KL(r.kind)}</span>${r.use?`<span class="tag">${r.use}</span>`:''}${r.land?`<span class="tag">${r.land}</span>`:''}`}
 function stat(r){
   if(r.status==='rejected')return{t:'مرفوض',c:'var(--bad)',bg:'var(--bad-soft)'};
-  if(r.status==='closed')return{t:'تم التسليم',c:'var(--ok)',bg:'var(--ok-soft)'};
+  if(r.status==='closed'){const P=POST[postSt(r)];return{t:P.t,c:P.c,bg:P.bg}}
   const s=r.stage;let t;
   if(s===1)t=r.status==='accepted'?'مفحوص · بانتظار موعد':(days(r.date)>30?'متأخر في الفحص':'قيد الفحص');
   else if(s===2)t=r.appt?'موعد مطابقة '+fD(r.appt):(r.sub||'بانتظار المطابقة');
@@ -1082,6 +1090,7 @@ const I={
  requests:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
  new:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
  map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/>',
+ cmte:'<path d="M4 12h11M11 6l6 6-6 6"/><path d="M20 4v16"/>',
  inspq:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
  portal:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/><path d="M17 4.5l1.5 1.5 3-3"/>',
  whatsapp:'<path d="M20 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20l1.2-4.3A8.5 8.5 0 1 1 20 11.5Z"/><path d="M8.5 9.5c.5 2.5 2.5 4.5 5 5l1.2-1.2 2 1"/>',
@@ -1097,7 +1106,7 @@ const I={
  audit:'<path d="M9 5h10M9 12h10M9 19h10M4.5 5l.5.5 1-1M4.5 12l.5.5 1-1M4.5 19l.5.5 1-1"/>',
  mobile:'<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/>'};
 const ico=k=>`<svg class="ico" viewBox="0 0 24 24">${I[k]}</svg>`;
-const PAGES=[['sep','منظومة التراخيص','lic'],['inspq','مهام المعاينة'],['dash','لوحة المتابعة'],['requests','الطلبات'],['new','طلب جديد'],['map','خريطة الطلبات'],['cal','التقويم والمواعيد'],['whatsapp','إشعارات واتساب'],['portal','بوابة المواطن'],['sep','قاعدة البيانات','db'],['registry','سجل الآبار والتراخيص'],['wellform','إضافة بئر'],['wmap','خريطة قاعدة الآبار'],['monitor','آبار المراقبة'],['sep','التقارير','rep'],['reports','التقارير'],['sep','الإعدادات','set'],['users','المستخدمون والصلاحيات'],['backup','النسخ الاحتياطي'],['audit','سجل العمليات'],['system','البنية والمزامنة'],['mobile','تطبيق الموبايل']];
+const PAGES=[['sep','منظومة التراخيص','lic'],['inspq','مهام المعاينة'],['dash','لوحة المتابعة'],['requests','الطلبات'],['new','طلب جديد'],['map','خريطة الطلبات'],['cal','التقويم والمواعيد'],['whatsapp','إشعارات واتساب'],['portal','بوابة المواطن'],['sep','قاعدة البيانات','db'],['registry','سجل الآبار والتراخيص'],['cmte','المحوّل من التراخيص'],['wellform','إضافة بئر'],['wmap','خريطة قاعدة الآبار'],['monitor','آبار المراقبة'],['sep','التقارير','rep'],['reports','التقارير'],['sep','الإعدادات','set'],['users','المستخدمون والصلاحيات'],['backup','النسخ الاحتياطي'],['audit','سجل العمليات'],['system','البنية والمزامنة'],['mobile','تطبيق الموبايل']];
 
 /* ---------- routing ---------- */
 let cur='dash';
@@ -1266,7 +1275,7 @@ function renderDrawer(){const r=R.find(x=>x.id==openId);if(!r)return;
    ${msgs.length?`<div class="card"><h3>رسائل واتساب المرسلة</h3><div class="wa">${msgs.map(m=>`<div class="bubble">${esc(m.text)}<span class="tm">${m.time} ${m.st==='delivered'?'✓✓':'✓'}</span></div>`).join('')}</div></div>`:''}
    <div class="card"><h3>سجل الإجراءات</h3><div class="log">${[...r.log].reverse().map(l=>`<div><time>${l.d?fD(l.d):'—'}${l.u?'<br>'+esc(l.u):''}</time><span>${esc(l.t)}</span></div>`).join('')}</div></div>
   </div>`;
-  wireAP($('#drawer'),r);const dw=$('#drawer');wireArea(dw,'d');
+  wireAP($('#drawer'),r);const dw=$('#drawer');wireArea(dw,'d');phHydrate(dw);
   dw.querySelector('[data-areaedit]').onclick=()=>{const w=dw.querySelector('#d-wrap');w.hidden=!w.hidden;w.style.display=w.hidden?'':'grid'};
   dw.querySelector('[data-areasave]').onclick=()=>{const a=readArea(dw,'d');if(!a)return toast('أدخل المساحة');if(a.err)return toast(a.err);r.area=a;r.log.push({d:todayISO(),t:'تسجيل المساحة: '+areaTxt(a),u:me().n,ts:Date.now()});persist(r);syncPulse();toast('تم حفظ المساحة');renderDrawer()};
 }
@@ -1274,7 +1283,7 @@ function renderDrawer(){const r=R.find(x=>x.id==openId);if(!r)return;
 function suggestFile(){const y=new Date().getFullYear();const m=Math.max(0,...R.map(r=>{const x=(r.file||'').replace(/\s/g,'').match(new RegExp(y+'-+(\\d+)$'));return x?+x[1]:0}));return 'KHG-'+y+'-'+(m+1)}
 function waBox(key,r,x){return `<div class="wa"><div class="to">${ico('whatsapp')} رسالة واتساب تلقائية إلى ${pv(r.phone)}</div><div class="bubble" data-prev="${key}">${esc(fill(key,r,x))}<span class="tm">${nowT()}</span></div></div>`}
 function actionPanel(r){
-  if(r.status==='closed')return `<div class="note ok">تم إنهاء الطلب على المنظومة${r.sysno?' برقم '+esc(r.sysno):''} وتسليم المستندات لقسم التراخيص.</div>`;
+  if(r.status==='closed')return `<div class="note ok">تم إنهاء الطلب على المنظومة${r.sysno?' برقم '+esc(r.sysno):''} وتسليم المستندات لقسم التراخيص.</div>`+postPanel(r);
   if(r.status==='rejected')return `<div class="ap" style="--c:var(--bad)"><div class="aph">الطلب مرفوض في مرحلة «${(STAGES[r.stage-1]||STAGES[0]).t}»</div><div class="apb"><div class="note bad">السبب: ${esc(r.reason||'—')}</div>${canRejectAny()?'<button class="btn" data-act="reopen">إعادة فتح الطلب بعد الاستكمال (يعود لنفس المرحلة)</button>':''}</div></div>`;
   const s=r.stage,c=sc(s),T=todayISO();
   if(s===4){if(!canInspect())return `<div class="ap" style="--c:${c}"><div class="aph">الإجراء المطلوب · ${STAGES[3].t}</div><div class="apb"><div class="note warn">رفع المعاينة الميدانية وصورها مسؤولية <b>مهندس التفتيش</b>. ${canPhotoEdit()?'بعد الرفع يمكنك استبدال الصور أو تنزيلها بالدقة الكاملة من ملف الطلب.':''}</div>${rejBox(r)}</div></div>`}
@@ -1335,7 +1344,7 @@ function act(a,r,ap){
   else if(a==='close'){const d=v('ap-date')||T;r.status='closed';r.sysno=v('ap-sys');log('إنهاء الطلب على المنظومة'+(r.sysno?' برقم '+r.sysno:'')+' وتسليم المستندات لقسم التراخيص'+(v('ap-to')?' (المستلم: '+v('ap-to')+')':''));send('close',r,{date:d});msg='تم إنهاء الطلب وتسليمه لقسم التراخيص'}
   else if(a==='reopen'){r.status='pending';r.stage=r.stage||1;if(r.rep&&r.rep.res==='غير مطابق'){r.stage=3}log('إعادة فتح الطلب');msg='أُعيد فتح الطلب'}
   persist(r);syncPulse();toast((a==='s5'||a==='reopen'?'':'<span style="color:var(--wa)">●</span> ')+msg);
-  if(me().r===5&&a==='report'){R=R.filter(x=>x!==r);closeDetail();toast('✓ تم رفع المعاينة وانتقل الطلب للإنهاء · أُزيل من قائمة مهامك');if(cur!=='inspq')go('inspq');else rerender();return}
+  if(me().r===5&&a==='report'){RHOLD[r.id]=r;R=R.filter(x=>x!==r);closeDetail();toast('✓ تم رفع المعاينة وانتقل الطلب للإنهاء · أُزيل من قائمة مهامك');if(cur!=='inspq')go('inspq');else rerender();return}
   if(openId===r.id)renderDrawer();if(cur==='mobile'&&MS.id===r.id)renderPhone();rerender();
 }
 
@@ -1689,20 +1698,20 @@ function drawQR(){const c=$('#qr');if(!c)return;const x=c.getContext('2d'),n=29,
  const im=new Image();im.onload=()=>{x.fillStyle='#fff';x.fillRect(148/2-20,148/2-20,40,40);x.drawImage(im,148/2-18,148/2-18,36,36)};im.src=LOGO_S}
 AFTER.users=()=>{if(!can(8))return;drawQR();
  document.querySelectorAll('[data-rp]').forEach(c=>c.onchange=()=>{const [u,id]=c.dataset.rp.split('|');S.rep=S.rep||{};const a=new Set(S.rep[u]||[]);c.checked?a.add(id):a.delete(id);S.rep[u]=[...a];save();syncPulse()});
- document.querySelectorAll('[data-acc]').forEach(c=>c.onchange=()=>{const u=S.users[+c.dataset.acc];u.acc=c.value;save();syncPulse();toast(u.n+': '+LV[u.acc]);rerender()});
+ document.querySelectorAll('[data-acc]').forEach(c=>c.onchange=()=>{const u=S.users[+c.dataset.acc];u.acc=c.value;clUserSave(u,null,false,false);save();syncPulse();toast(u.n+': '+LV[u.acc]);rerender()});
  document.querySelectorAll('[data-ra]').forEach(c=>c.onchange=()=>{const [j,k]=c.dataset.ra.split(',');S.ra=S.ra||JSON.parse(JSON.stringify(RA_DEF));S.ra[+j][k]=c.value;save();syncPulse();toast(ROLES[+j]+' · '+SECN[k]+': '+ACCN[c.value]);rerender()});document.querySelectorAll('[data-rack]').forEach(c=>c.onchange=()=>{const [j,k]=c.dataset.rack.split(',');S.ra=S.ra||JSON.parse(JSON.stringify(RA_DEF));S.ra[+j][k]=c.checked?1:0;save();syncPulse()});
- document.querySelectorAll('[data-toggle]').forEach(c=>c.onchange=()=>{const u=S.users[+c.dataset.toggle];u.on=c.checked?1:0;save();syncPulse();toast(u.on?'تم تشغيل حساب '+u.n:'تم إيقاف حساب '+u.n+' · لن يستطيع الدخول من أي جهاز');rerender()});
+ document.querySelectorAll('[data-toggle]').forEach(c=>c.onchange=()=>{const u=S.users[+c.dataset.toggle];u.on=c.checked?1:0;clUserSave(u,null,false,false);save();syncPulse();toast(u.on?'تم تشغيل حساب '+u.n:'تم إيقاف حساب '+u.n+' · لن يستطيع الدخول من أي جهاز');rerender()});
  const f=$('#uform');if(!f)return;
  const d=$('#ue-d');if(d)d.onchange=()=>{$('#ue-dw').hidden=d.value!=='custom'};
  f.onsubmit=ev=>{ev.preventDefault();const dev=isDev();const oldU=UE==='new'?null:S.users[UE].u;const n=$('#ue-n').value.trim(),un=$('#ue-u').value.trim();if(!n||!un)return toast('اكتب الاسم واسم الدخول');
   if(S.users.some((u,i)=>u.u.toLowerCase()===un.toLowerCase()&&i!==UE))return toast('اسم الدخول مستخدم بالفعل');
-  const u=UE==='new'?{ex:0,last:'',code:genCode(),on:1,exp:'',p:'123'}:S.users[UE];u.n=n;u.u=un;if(!(u.r===0&&UE!=='new'))u.r=+$('#ue-r').value;
+  const _isNew=UE==='new',_oldP=_isNew?null:S.users[UE].p;const u=UE==='new'?{ex:0,last:'',code:genCode(),on:1,exp:'',p:'123'}:S.users[UE];u.n=n;u.u=un;if(!(u.r===0&&UE!=='new'))u.r=+$('#ue-r').value;
   if(dev){const p=$('#ue-p').value.trim();if(p.length<3)return toast('كلمة المرور 3 أحرف على الأقل');u.p=p;if(u.r!==0){const dv=$('#ue-d').value;u.exp=dv==='0'?'':dv==='custom'?$('#ue-exp').value:addDays(todayISO(),+dv);u.on=$('#ue-on').checked?1:0;u.acc=$('#ue-acc').value}}
-  if(UE==='new')S.users.push(u);enqueue('u'+u.u.toLowerCase(),'مستخدم: '+u.n,'مستخدم');if(oldU&&oldU.toLowerCase()!==u.u.toLowerCase()){(S.kwx=S.kwx||{})[oldU.toLowerCase()]=1;if(S.kw)delete S.kw[oldU.toLowerCase()]}const _u=u;wrapFor(_u.u,_u.p);sha(_u.code).then(h=>{(S.ch=S.ch||{})[h]=_u.u.toLowerCase();save()});UE=null;save();syncPulse();toast('تم حفظ حساب '+n+(dev?' · كود التفعيل '+u.code:''));rerender()};
+  if(UE==='new')S.users.push(u);enqueue('u'+u.u.toLowerCase(),'مستخدم: '+u.n,'مستخدم');if(oldU&&oldU.toLowerCase()!==u.u.toLowerCase()){(S.kwx=S.kwx||{})[oldU.toLowerCase()]=1;if(S.kw)delete S.kw[oldU.toLowerCase()]}const _u=u;wrapFor(_u.u,_u.p);clUserSave(_u,oldU,_isNew,_u.p!==_oldP);sha(_u.code).then(h=>{(S.ch=S.ch||{})[h]=_u.u.toLowerCase();save()});UE=null;save();syncPulse();toast('تم حفظ حساب '+n+(dev?' · كود التفعيل '+u.code:''));rerender()};
  f.querySelector('[data-ucancel]').onclick=()=>{UE=null;rerender()};
  const gp=f.querySelector('[data-genpw]');if(gp)gp.onclick=()=>{$('#ue-p').value=genPw()};
- const nc=f.querySelector('[data-newcode]');if(nc)nc.onclick=()=>{const u=S.users[UE];const old=u.code;sha(old).then(h=>{(S.ch=S.ch||{})[h]=null;save()});u.code=genCode();sha(u.code).then(h=>{S.ch[h]=u.u.toLowerCase();save()});save();syncPulse();toast('كود جديد '+u.code+' · الكود القديم لم يعد يعمل');rerender()};
- const dl=f.querySelector('[data-udel]');if(dl)dl.onclick=()=>{if(!dl.dataset.sure){dl.dataset.sure=1;dl.textContent='اضغط مرة أخرى لتأكيد الحذف';return}const n=S.users[UE].n,du=S.users[UE];(S.kwx=S.kwx||{})[du.u.toLowerCase()]=1;if(S.kw)delete S.kw[du.u.toLowerCase()];sha(du.code).then(h=>{(S.ch=S.ch||{})[h]=null;save()});S.users.splice(UE,1);UE=null;showPw={};save();syncPulse();toast('تم حذف حساب '+n);rerender()};
+ const nc=f.querySelector('[data-newcode]');if(nc)nc.onclick=()=>{const u=S.users[UE];const old=u.code;sha(old).then(h=>{(S.ch=S.ch||{})[h]=null;save()});u.code=genCode();sha(u.code).then(h=>{S.ch[h]=u.u.toLowerCase();save()});clUserSave(u,null,false,false);save();syncPulse();toast('كود جديد '+u.code+' · الكود القديم لم يعد يعمل');rerender()};
+ const dl=f.querySelector('[data-udel]');if(dl)dl.onclick=()=>{if(!dl.dataset.sure){dl.dataset.sure=1;dl.textContent='اضغط مرة أخرى لتأكيد الحذف';return}const n=S.users[UE].n,du=S.users[UE];(S.kwx=S.kwx||{})[du.u.toLowerCase()]=1;if(S.kw)delete S.kw[du.u.toLowerCase()];sha(du.code).then(h=>{(S.ch=S.ch||{})[h]=null;save()});clUserDelete(du.u);S.users.splice(UE,1);UE=null;showPw={};save();syncPulse();toast('تم حذف حساب '+n);rerender()};
 };
 
 /* ---------- reports center ---------- */
@@ -1867,7 +1876,7 @@ VIEWS.registry=()=>{
   <div class="alert a-warn"><div class="ai">⏳</div><div class="ab"><span>تنتهي خلال ${ALERT_DAYS} يوماً</span><b>${c.soon||0}</b><em>${soon.length?'أقربها بعد '+soon[0]._d+' يوم':'لا توجد رخص قريبة الانتهاء'}</em></div>
    <div class="soonlist">${soon.slice(0,4).map(o=>`<button data-well="${o._i}"><span>${esc(o.n)}</span><b>${o._d} يوم</b></button>`).join('')}${soon.length>4?`<button data-wtab="soon" class="more">+ ${soon.length-4} رخصة أخرى</button>`:''}</div></div>
  </div>
- <div class="tabs" role="tablist">${tabs.map(t=>`<button role="tab" class="${W.tab===t[0]?'on':''}" data-wtab="${t[0]}" style="--c:${t[2]}"><i></i>${t[1]}${t[0]!=='mon'?` <small>${(c[t[0]]||0).toLocaleString('en-US')}</small>`:` <small>${MON.length}</small>`}</button>`).join('')}</div>`;
+ <div class="tabs" role="tablist">${tabs.map(t=>`<button role="tab" class="${W.tab===t[0]?'on':''}" data-wtab="${t[0]}" style="--c:${t[2]}"><i></i>${t[1]}${t[0]!=='mon'?` <small>${(c[t[0]]||0).toLocaleString('en-US')}</small>`:` <small>${MON.length}</small>`}</button>`).join('')}${pageOK('cmte')?`<button role="tab" data-cmtab="cmok" data-go="cmte" style="--c:var(--gold)"><i></i>تمت موافقة اللجنة العليا <small>${R.filter(r=>postSt(r)==='cmok').length}</small></button>`:''}</div>`;
  if(W.tab==='mon')return head+monView();
  const L=wFiltered(),per=30,pages=Math.max(1,Math.ceil(L.length/per));if(W.page>pages)W.page=pages;const rows=L.slice((W.page-1)*per,W.page*per);
  const opt=(arr,v,lbl)=>`<option value="">${lbl}</option>`+arr.map(x=>`<option ${v===x?'selected':''}>${esc(x)}</option>`).join('');
@@ -1972,9 +1981,9 @@ function wfField(f,o){const [k,l,t,sp=1,req=0,unit]=f;const st=`grid-column:span
   return `<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px">${g('lo','خط الطول (شرقاً) Lon',ld,lm,ls_)}${g('la','خط العرض (شمالاً) Lat',ad,am,as)}<div class="dmsg"><b>بالدرجات العشرية</b><div class="note num" id="wf-dec" style="margin-top:6px">—</div><a class="btn sm" id="wf-maplink" target="_blank" rel="noopener" style="margin-top:8px" hidden>فتح الموقع على الخريطة</a></div></div>`}
  return ''}
 VIEWS.wellform=()=>{
- if(!((WF&&WF.mode==='edit')?can(9):canAddWell()))return `<div class="ph"><div><h2>إضافة بئر للسجل</h2></div></div><div class="note warn">تحتاج صلاحية «تعديل بيانات الطلبات».</div>`;
- if(!WF)WF={mode:'new'};const o=WF.mode==='edit'?WB[WF.idx]:{i:Math.max(...WB.map(x=>x.i||0))+1,src:'جوفي',gov:'الوادي الجديد'};
- return `<div class="ph"><div><h2>${WF.mode==='edit'?'تعديل بيانات بئر':'إضافة بئر لسجل الآبار'}</h2><p>${WF.mode==='edit'?esc(o.n)+' · ترقيم '+o.i:'نفس أعمدة قاعدة بيانات الإدارة العامة. الحقول المعلَّمة * مطلوبة.'}</p></div><div class="filters"><button class="btn" data-go="registry">إلغاء</button><button class="btn pri" id="wfSave2">${ico('new')} حفظ البئر</button></div></div>
+ if(!(WF&&WF.mode==='draft'?canComplete():(WF&&WF.mode==='edit')?can(9):canAddWell()))return `<div class="ph"><div><h2>إضافة بئر للسجل</h2></div></div><div class="note warn">تحتاج صلاحية «تعديل بيانات الطلبات».</div>`;
+ if(!WF)WF={mode:'new'};const _dr=WF.mode==='draft'?R.find(x=>x.id==WF.rid):null;const o=WF.mode==='edit'?WB[WF.idx]:_dr?Object.assign({i:Math.max(...WB.map(x=>x.i||0))+1,gov:'الوادي الجديد'},_dr.wd):{i:Math.max(...WB.map(x=>x.i||0))+1,src:'جوفي',gov:'الوادي الجديد'};
+ return `<div class="ph"><div><h2>${_dr?'استكمال بيانات بئر · موافقة اللجنة العليا':WF.mode==='edit'?'تعديل بيانات بئر':'إضافة بئر لسجل الآبار'}</h2><p>${_dr?'طلب م '+_dr.id+' · '+esc(_dr.name)+(_dr.cm?' · لجنة '+fD(_dr.cm.date)+' ('+esc(_dr.cm.dec)+')':'')+' · البيانات المتاحة من الطلب مُدخلة تلقائياً. بعد الحفظ تُطابق الإحداثيات مع قاعدة البيانات.':WF.mode==='edit'?esc(o.n)+' · ترقيم '+o.i:'نفس أعمدة قاعدة بيانات الإدارة العامة. الحقول المعلَّمة * مطلوبة.'}</p></div><div class="filters"><button class="btn" data-go="${_dr?'cmte':'registry'}">إلغاء</button><button class="btn pri" id="wfSave2">${ico('new')} حفظ البئر</button></div></div>
  <div class="wfwrap">
   <nav class="wfnav" aria-label="أقسام النموذج">${WSEC.map((s_,i)=>`<a href="#wsec-${s_.id}" data-wsec="${s_.id}"><span>${i+1}</span>${s_.t}</a>`).join('')}</nav>
   <form id="wform" novalidate class="wfsecs">
@@ -2002,6 +2011,7 @@ function wfSave(){const o=wfCollect(),e=wfCheck(o);if(e.length){toast('أكمل:
  const nid=o._nid;delete o._nid;if(nid)o.nid=nid.slice(0,4)+'•••••••'+nid.slice(-3);
  if(o.la!=null){o.la=+o.la.toFixed(6);o.lo=+o.lo.toFixed(6)}else{delete o.la;delete o.lo}
  Object.keys(o).forEach(k=>{if(o[k]==null||o[k]==='')delete o[k]});
+ if(WF.mode==='draft'){const dr=(R.find(x=>x.id==WF.rid)||{}).wd||{};if(!o.nid&&dr.nid)o.nid=dr.nid;o.i=+($('#wf-i')||{}).value||dr.i;return cmFinish(o)}
  let rec;if(WF.mode==='edit'){rec=WB[WF.idx];const keep={i:rec.i,_i:rec._i,nid:rec.nid};Object.keys(rec).forEach(k=>{if(!k.startsWith('_'))delete rec[k]});Object.assign(rec,o,{i:keep.i});if(!o.nid&&keep.nid)rec.nid=keep.nid;(S.wmod=S.wmod||{})[rec.i]=strip(rec)}
  else{rec=Object.assign({i:+$('#wf-i').value},o);rec._i=WB.length;WB.push(rec);(S.wadd=S.wadd||[]).push(strip(rec))}
  rec._n=null;rec._c=wcat(rec);enqueue('w'+rec.i,'بئر: '+rec.n,'بئر');save._q=1;save();syncPulse();const msg=(WF.mode==='edit'?'تم تحديث بيانات البئر ':'تمت إضافة البئر للسجل · ترقيم ')+rec.i;WF=null;W.tab=rec._c==='soon'||rec._c==='expired'?rec._c:'all';W.q='';go('registry');renderWell(rec);toast(msg)}
@@ -2022,15 +2032,17 @@ function devs(){if(!S.devs){S.devs=[{id:'PC-LIC',n:'كمبيوتر مكتب ال
 function enqueue(key,label,kind){if(!BOOTED)return;S.q=S.q||[];const i=S.q.findIndex(o=>o.key===key);const prev=i>=0?S.q.splice(i,1)[0]:null;S.q.push({id:DEVID+'-'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),key,label,kind,ts:Date.now(),n:prev?prev.n+1:1,by:me().n})}
 const PLBL={dash:'لوحة المتابعة',whatsapp:'قوالب واتساب',users:'المستخدمون والصلاحيات',backup:'إعدادات النسخ الاحتياطي',reports:'تخصيص التقارير',registry:'سجل الآبار',new:'الطلبات'};
 function pill(k,tot){const e=$('#sync');const ob=$('#offbar');if(!e)return;const q=(S.q||[]).length;const n=devs().length;
- e.classList.remove('busy','off');if(!isOnline()){e.classList.add('off');e.lastElementChild.textContent='بدون إنترنت · '+q+' في الانتظار'}else if(k!=null){e.classList.add('busy');e.lastElementChild.textContent='جارٍ المزامنة '+k+'/'+tot}else e.lastElementChild.textContent=q?q+' في الانتظار':'متزامن · '+n+' أجهزة';
+ e.classList.remove('busy','off');if(!isOnline()){e.classList.add('off');e.lastElementChild.textContent='بدون إنترنت · '+q+' في الانتظار'}else if(k!=null){e.classList.add('busy');e.lastElementChild.textContent='جارٍ المزامنة '+k+'/'+tot}else e.lastElementChild.textContent=!clActive()?(q?q+' محفوظ على الجهاز':'محلي · غير متصل بالسحابة'):CL.err?'خطأ في المزامنة · '+q:q?q+' في الانتظار':'☁ متزامن مع السحابة';
  if(ob){ob.hidden=isOnline();ob.innerHTML=`<svg class="ico" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 4.2-2.5M10.7 5.1A15 15 0 0 1 22 8.8M5 12.9a10 10 0 0 1 3.5-2.1M16.8 11a10 10 0 0 1 2.2 1.9M8.5 16.4a5 5 0 0 1 7 0M12 20h.01M3 3l18 18"/></svg><span><b>تعمل بدون إنترنت</b> · كل التغييرات محفوظة على الجهاز (${q} في الانتظار) وستُزامن تلقائياً فور عودة الاتصال</span><button class="btn sm" data-sync>التفاصيل</button>`}
  const sb=$('#sSync');if(sb)sb.querySelector('span').textContent=isOnline()?(q?'مركز المزامنة · '+q+' في الانتظار':'مركز المزامنة · متزامن'):'مركز المزامنة · بدون إنترنت';
  if(SCO)renderSync()}
-async function flush(){if(flush._run||!BOOTED||!isOnline()||!(S.q||[]).length){pill();return}flush._run=1;const tot=S.q.length;let k=0;pill(0,tot);
- try{while(S.q.length&&isOnline()){const op=S.q[0];await new Promise(r=>setTimeout(r,70+Math.random()*60));if(!isOnline())break;
+async function flush(){if(flush._run||!BOOTED||!isOnline()||!(S.q||[]).length){pill();return}if(!clActive()){if(CL.ref&&await clRefresh())CL.on=true;else{pill();return}}flush._run=1;const tot=S.q.length;let k=0;pill(0,tot);
+ try{while(S.q.length&&isOnline()){const op=S.q[0];
+   try{await clPushOp(op)}catch(e){if(!e.status||e.status>=500||e.status===401||e.status===408){CL.err=e.message||'تعذر الاتصال بالسحابة';break}op.err=e.message;toast('☁ تعذر حفظ «'+esc(op.label)+'» على السحابة: '+esc(e.message))}
+   if(!isOnline())break;
    S.acked=S.acked||[];if(!S.acked.includes(op.id)){S.acked.push(op.id);(S.hist=S.hist||[]).unshift(Object.assign({},op,{at:Date.now()}));S.hist=S.hist.slice(0,40);if(S.acked.length>400)S.acked=S.acked.slice(-300)}
    S.q.shift();k++;pill(k,tot);saveRaw()}
-  if(!S.q.length){S.lastSync=Date.now();const d=devs().find(x=>x.self);if(d)d.last=S.lastSync;saveRaw()}}finally{flush._run=0;pill()}}
+  if(!S.q.length){S.lastSync=Date.now();CL.err='';const d=devs().find(x=>x.self);if(d)d.last=S.lastSync;saveRaw()}}finally{flush._run=0;pill()}}
 function syncPulse(){pill();clearTimeout(syncPulse._t);syncPulse._t=setTimeout(flush,350)}
 window.addEventListener('online',()=>{if(!BOOTED)return;const q=(S.q||[]).length;toast(q?'عاد الاتصال · جارٍ مزامنة '+q+' تغيير':'عاد الاتصال بالإنترنت');pill();flush()});
 window.addEventListener('offline',()=>{if(!BOOTED)return;toast('انقطع الإنترنت · تعمل الآن بدون اتصال وتُحفظ التغييرات على الجهاز');pill()});
@@ -2043,8 +2055,9 @@ function devicesCard(){const ds=devs(),dev=isDev()||can(8);const pcs=ds.filter(d
   ${PAIR?`<div class="pairbox"><div class="pair"><canvas id="qr" width="148" height="148" aria-label="رمز ربط توضيحي"></canvas><div><div class="muted" style="font-size:12px">ربط ${PAIR.t==='pc'?'كمبيوتر':'موبايل'} جديد · الكود صالح 10 دقائق</div><div class="code num">${PAIR.code}</div><ol class="clean"><li>ثبّت ${PAIR.t==='pc'?'برنامج الكمبيوتر (Windows)':'تطبيق الموبايل (Android / iOS)'}، أو افتح نسخة مثبتة سابقاً</li><li>اختر «ربط بجهاز الإدارة» ثم امسح الرمز أو اكتب الكود</li><li>سجّل الدخول بحساب الموظف، فتنزل كل البيانات ويبدأ التزامن تلقائياً</li></ol><div class="fld" style="margin-top:8px"><label for="pair-n">اسم الجهاز</label><input class="inp" id="pair-n" value="${PAIR.t==='pc'?'كمبيوتر ':'هاتف '}"></div><div class="filters" style="margin-top:8px"><button class="btn pri sm" data-pairok>تأكيد الربط (محاكاة)</button><button class="btn sm ghost" data-paircancel>إلغاء</button></div></div></div></div>`:''}</div>`}
 function renderSync(){const m=$('#modal');if(!SCO)return;m.hidden=false;const q=S.q||[],h=S.hist||[];
  m.innerHTML=`<div class="mbox" role="dialog" aria-label="مركز المزامنة"><div class="mhd"><h3>مركز المزامنة</h3><button class="ibtn" data-mclose aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="mbd">
+  ${clActive()?`<div class="note ${CL.err?'bad':'ok'}">☁ متصل بالسحابة (Supabase)${CL.pullAt?' · آخر استلام '+ago(CL.pullAt):''}${CL.err?' · '+esc(CL.err):''}</div>`:`<div class="note warn">☁ غير متصل بالسحابة: ${CL.ready===false?'قاعدة البيانات السحابية لم تُجهّز بعد (شغّل ملف الإعداد في Supabase).':'تعمل المنظومة محلياً على هذا الجهاز، وستُرفع التغييرات عند تسجيل الدخول والإنترنت متاح.'}</div>`}
   <div class="impk"><div><b style="color:${isOnline()?'var(--ok)':'var(--warn)'}">${isOnline()?'متصل':'غير متصل'}</b>حالة الإنترنت</div><div><b>${q.length}</b>في الانتظار</div><div><b>${h.length}</b>تمت مزامنته</div><div><b style="font-size:16px">${ago(S.lastSync)}</b>آخر مزامنة</div></div>
-  <div class="filters"><button class="btn pri" data-syncnow ${isOnline()&&q.length?'':'disabled'}>مزامنة الآن</button><label class="ack" style="margin:0;background:var(--surface2)"><input type="checkbox" id="simoff" ${SIMOFF?'checked':''}> محاكاة انقطاع الإنترنت للتجربة</label></div>
+  <div class="filters"><button class="btn pri" data-syncnow ${isOnline()?'':'disabled'}>مزامنة الآن</button><label class="ack" style="margin:0;background:var(--surface2)"><input type="checkbox" id="simoff" ${SIMOFF?'checked':''}> محاكاة انقطاع الإنترنت للتجربة</label></div>
   <div class="card" style="padding:12px"><h3 style="font-size:15px">في الانتظار <small>تُرسل تلقائياً فور توفر الإنترنت</small></h3>${q.length?`<div class="list">${q.slice().reverse().map(o=>`<div class="li" style="cursor:default"><span class="gsec gs-${o.kind==='بئر'?'D':o.kind==='طلب'?'L':'S'}">${esc(o.kind)}</span><span class="nm" style="font-weight:500">${esc(o.label)}${o.n>1?` <span class="tag" title="تعديلات متكررة على نفس السجل دُمجت في عملية واحدة">${o.n} تعديلات ← عملية واحدة</span>`:''}</span><span class="muted num" style="font-size:12px">${ago(o.ts)}</span></div>`).join('')}</div>`:'<div class="empty">لا توجد تغييرات في الانتظار. كل البيانات متزامنة.</div>'}</div>
   ${devicesCard()}
   <div class="card" style="padding:12px"><h3 style="font-size:15px">آخر ما تمت مزامنته</h3>${h.length?`<div class="list">${h.slice(0,10).map(o=>`<div class="li" style="cursor:default"><span style="color:var(--ok);font-weight:700">✓</span><span class="nm" style="font-weight:500">${esc(o.label)}<span class="muted" style="display:block;font-size:11.5px">${esc(o.by)} · ${o.id}</span></span><span class="muted" style="font-size:12px">${ago(o.at)}</span></div>`).join('')}</div>`:'<div class="empty">لم تتم مزامنة أي تغيير بعد.</div>'}</div>
@@ -2058,6 +2071,7 @@ function notifs(){const T=todayISO(),T1=addDays(T,1),out=[];
  if(pageOK('registry')){const s7=WB.filter(o=>o._c==='soon'&&o._d<=7).sort((a,b)=>a._d-b._d),s60=WB.filter(o=>o._c==='soon');
   if(s7.length)out.push({lv:'bad',ic:'⏳',t:`${s7.length} رخصة تنتهي خلال 7 أيام`,s:s7.slice(0,3).map(o=>o.n+' ('+o._d+' يوم)').join('، '),a:'data-wtab="soon"'});
   else if(s60.length)out.push({lv:'warn',ic:'⏳',t:`${s60.length} رخصة تنتهي خلال 60 يوماً`,s:'أقربها بعد '+Math.min(...s60.map(o=>o._d))+' يوم',a:'data-wtab="soon"'});}
+ {const cl=R.filter(r=>r.status==='closed');const ncm=cl.filter(r=>postSt(r)==='cm').length,nok=cl.filter(r=>postSt(r)==='cmok');if(canComplete()&&nok.length){const nm=nok.filter(r=>cmMatches(r.wd).length).length;out.push({lv:'warn',ic:'🗂',t:`${nok.length} طلب وافقت عليه اللجنة العليا بانتظار استكمال البيانات`,s:nm?`⚠ منها ${nm} تتطابق إحداثياتها مع آبار قائمة`:'قسم الدراسات · قاعدة البيانات',a:'data-cmtab="cmok" data-go="cmte"'})}if(canCommittee()&&ncm)out.push({lv:'info',ic:'🏛',t:`${ncm} ملف مُسلّم بانتظار قرار اللجنة العليا`,s:'سجّل تاريخ وقرار اللجنة',a:'data-cmtab="cm" data-go="cmte"'})}
  if(canInspect()){const ni=R.filter(r=>r.stage===4&&r.status==='pending'&&!(r.insp&&r.insp.length)).length;if(ni)out.push({lv:'info',ic:'📷',t:`${ni} طلب بانتظار رفع المعاينة`,s:'مرحلة تقرير المعاينة',a:'data-dq="insp"'})}
  if(pageOK('requests')){const ap=R.filter(r=>r.appt&&(r.appt===T||r.appt===T1)&&r.status!=='closed'&&r.status!=='rejected');
   if(ap.length)out.push({lv:'info',ic:'📅',t:`${ap.length} موعد اليوم وغداً`,s:ap.slice(0,3).map(r=>r.name).join('، '),a:'data-go="cal"'});
@@ -2108,6 +2122,8 @@ function trackCard(r){const steps=STAGES.map(s=>({t:s.t,st:r.status==='closed'||
 /* ---------- field inspection photos (GPS-stamped, per-slot, full-resolution) ---------- */
 const ISLOTS=r=>r.kind==='جديد'?[['pt','نقطة البئر','الموقع المقترح لحفر البئر على الطبيعة']]:[['well','البئر','صورة واضحة لرأس البئر وموقعه'],['irr','الري الحديث','شبكة الري الحديث بالأرض (تنقيط / رش / محوري)'],['meter','العداد','عداد قياس التصرف مركباً على البئر'],['serial','الرقم المسلسل للعداد','صورة مقربة يُقرأ فيها الرقم المسلسل بوضوح']];
 const slotName=(r,k)=>(ISLOTS(r).find(s=>s[0]===k)||[,k&&k!=='extra'?k:'صورة إضافية'])[1];
+const PHURL={},PH_BLANK='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 3"><rect width="4" height="3" fill="#8a9a9a" opacity=".25"/></svg>');
+async function phHydrate(root){const L=[...(root||document).querySelectorAll('img[data-ph]')];for(const im of L){const hk=im.dataset.ph;if(PHURL[hk]){im.src=PHURL[hk];continue}let b=null;try{b=await pGet(hk+':t')}catch(_){}if(!b&&typeof clActive==='function'&&clActive())b=await clPhoto(hk,'t');if(b){PHURL[hk]=URL.createObjectURL(b);document.querySelectorAll(`img[data-ph="${hk}"]`).forEach(x=>x.src=PHURL[hk])}}}
 const canInspect=()=>{const u=me();return (u.r===0||u.r===1||u.r===5)&&lvOk(lvOf(u),4)};
 const canPhotoDL=()=>[0,1,2,5].includes(me().r);
 const canPhotoEdit=()=>{const u=me();return [0,1,2].includes(u.r)&&lvOf(u)!=='view'};
@@ -2154,10 +2170,10 @@ const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(
 async function readPhoto(f){const buf=await f.arrayBuffer();const ex=readExif(buf)||{};const url=URL.createObjectURL(f);const img=await loadImg(url);return {f,img,url,ex,ts:ex.dt?new Date(ex.dt).toISOString():new Date(f.lastModified||Date.now()).toISOString()}}
 /* stored record: stamped preview inside the request + encrypted full-res stamped & original copies */
 async function buildPhoto(r,slot,p,m){const meta=Object.assign({},m,{ts:p.ts,slot:slotName(r,slot),owner:r.name,rg:r.city});
- const thumb=stampCanvas(p.img,meta,1000).toDataURL('image/jpeg',0.74);
+ const thumb=await cBlob(stampCanvas(p.img,meta,520),0.7);const med=await cBlob(stampCanvas(p.img,meta,1600),0.85);
  const full=await cBlob(stampCanvas(p.img,meta,0),0.95);const hk=r.id+':'+slot+':'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
- await pPut(hk+':s',full);await pPut(hk+':o',p.f);
- return {slot,img:thumb,hk,w:p.img.naturalWidth,h:p.img.naturalHeight,sz:full.size,la:m.la,lo:m.lo,alt:m.alt,ts:p.ts,note:m.note,reg:m.reg,place:m.place,src:m.pre?'كاميرا GPS':'ختم المنظومة',by:me().n,at:Date.now()}}
+ await pPut(hk+':s',full);await pPut(hk+':o',p.f);await pPut(hk+':m',med);await pPut(hk+':t',thumb);PHURL[hk]=URL.createObjectURL(thumb);enqueue('ph:'+hk,'صور المعاينة: '+slotName(r,slot),'صور');
+ return {slot,img:'',hk,w:p.img.naturalWidth,h:p.img.naturalHeight,sz:full.size,la:m.la,lo:m.lo,alt:m.alt,ts:p.ts,note:m.note,reg:m.reg,place:m.place,src:m.pre?'كاميرا GPS':'ختم المنظومة',by:me().n,at:Date.now()}}
 function inspFields(r){const c=r.coords.find(q=>q[2]),S_=ISLOTS(r),ex=r.kind!=='جديد';
  return `<div class="span2 islots-h"><b>صور المعاينة الإلزامية · ${r.kind==='جديد'?'بئر جديد':'بئر قائم / تجديد ترخيص'}</b><span>${S_.length} ${S_.length>1?'صور':'صورة'} · تُختم كل صورة أعلاها بتوقيع «منظومة التراخيص - ${ORG}» واسم ${esc(r.name)} ومنطقة ${esc(r.city)}، وأسفلها بالموقع والإحداثيات والوقت بتنسيق كاميرا GPS، وتُحفظ بالدقة الكاملة</span></div>
  ${liveOK()?'':`<div class="span2 note warn" style="grid-column:1/-1"><b>الكاميرا المباشرة وGPS غير متاحين في هذه الطريقة للفتح.</b> المنظومة مفتوحة كملف من الجهاز (${esc(location.protocol.replace(':',''))})، والمتصفح لا يسمح بالكاميرا المباشرة أو الموقع إلا من رابط آمن https. افتحها من رابط المنظومة المستضاف ليظهر الختم لايف بالإحداثيات أثناء التصوير. حالياً ستُفتح كاميرا الجهاز العادية ويُضاف الختم بعد الالتقاط.</div>`}
@@ -2186,15 +2202,16 @@ async function inspCommit(ap,r){const m=inspMeta(ap);const miss=ISLOTS(r).filter
  if(isNaN(m.la)||isNaN(m.lo)){ap.querySelector('#ip-la').focus();toast('إحداثيات موقع المعاينة مطلوبة للختم · فعّل الموقع على الجهاز أو أدخلها يدوياً');return null}
  const out=[];for(const [k] of ISLOTS(r))out.push(await buildPhoto(r,k,ap._ip[k],m));return out}
 function inspGallery(r){if(!r.insp||!r.insp.length)return '';const dl=canPhotoDL(),ed=canPhotoEdit(),need=ISLOTS(r).filter(s=>!r.insp.some(o=>o.slot===s[0]));
- return `<div class="card"><h3>صور المعاينة الميدانية <small>${r.insp.length} صورة · ${esc(r.insp[0].by||'')}</small></h3><div class="ipgal">${r.insp.map((o,i)=>`<figure><button class="ipth" data-lb="${r.id}|${i}" aria-label="عرض ${esc(slotName(r,o.slot))}"><img src="${o.img}" alt="${esc(slotName(r,o.slot))}" loading="lazy"></button><figcaption><b>${esc(o.slot?slotName(r,o.slot):'صورة المعاينة')}</b><span>${o.ts?fT(Date.parse(o.ts)):''}${o.w?' · <bdi dir="ltr">'+o.w+'×'+o.h+'</bdi>':''}</span>
+ return `<div class="card"><h3>صور المعاينة الميدانية <small>${r.insp.length} صورة · ${esc(r.insp[0].by||'')}</small></h3><div class="ipgal">${r.insp.map((o,i)=>`<figure><button class="ipth" data-lb="${r.id}|${i}" aria-label="عرض ${esc(slotName(r,o.slot))}"><img src="${o.img||PHURL[o.hk]||PH_BLANK}" ${o.img?'':`data-ph="${o.hk}"`} alt="${esc(slotName(r,o.slot))}" loading="lazy"></button><figcaption><b>${esc(o.slot?slotName(r,o.slot):'صورة المعاينة')}</b><span>${o.ts?fT(Date.parse(o.ts)):''}${o.w?' · <bdi dir="ltr">'+o.w+'×'+o.h+'</bdi>':''}</span>
   <span class="ipact">${dl?`<button class="btn sm" data-lbsave="${r.id}|${i}|s" title="تنزيل بالختم بالدقة الكاملة"><svg class="ico" viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg> تنزيل</button>`:''}${ed?`<label class="btn sm ghost" title="استبدال الصورة">استبدال<input type="file" accept="image/*" capture="environment" data-iprep="${r.id}|${i}" hidden></label>`:''}</span></figcaption></figure>`).join('')}</div>
   ${ed?`<div class="filters" style="margin-top:8px"><label class="btn sm">${ico('new')} رفع صورة ${need.length?'«'+need[0][1]+'»':'إضافية'}<input type="file" accept="image/*" capture="environment" data-ipadd="${r.id}" hidden></label>${need.length?`<span class="tag" style="background:var(--warn-soft);color:var(--warn)">ناقص: ${need.map(s=>s[1]).join('، ')}</span>`:''}</div>`:''}
   ${r.insp[0].la?`<div class="muted" style="font-size:12.5px;margin-top:6px">موقع المعاينة: <a href="https://www.google.com/maps?q=${r.insp[0].la},${r.insp[0].lo}" target="_blank" rel="noopener" dir="ltr">${toDMSs(r.insp[0].la,'N','S')} · ${toDMSs(r.insp[0].lo,'E','W')}</a>${r.insp[0].alt?' · الارتفاع '+esc(r.insp[0].alt)+' م':''}</div>`:''}
   ${dl?'':'<div class="muted" style="font-size:12px;margin-top:6px">تنزيل الصور بالدقة الكاملة متاح لمهندس المنظومة والأدمن ومهندس التفتيش.</div>'}</div>`}
 function openLB(id,i){const r=R.find(x=>x.id==id),o=r.insp[i];const m=$('#modal');m.hidden=false;const dl=canPhotoDL();
- m.innerHTML=`<div class="mbox lbx" role="dialog" aria-label="صورة المعاينة"><div class="mhd"><h3>${esc(o.slot?slotName(r,o.slot):'صورة المعاينة')} · ${i+1} من ${r.insp.length}</h3><button class="ibtn" data-mclose aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="mbd"><img src="${o.img}" alt="صورة المعاينة" style="width:100%;border-radius:10px"><div class="muted" style="font-size:12.5px">${esc(r.name)} · ${o.w?'الدقة الأصلية '+o.w+'×'+o.h+' بكسل · ':''}رُفعت بواسطة ${esc(o.by||'—')}</div><div class="filters">${i>0?`<button class="btn" data-lb="${id}|${i-1}">السابقة</button>`:''}${i<r.insp.length-1?`<button class="btn" data-lb="${id}|${i+1}">التالية</button>`:''}${dl?`<span style="margin-inline-start:auto;display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-lbsave="${id}|${i}|o">الأصل بدون ختم</button><button class="btn pri" data-lbsave="${id}|${i}|s">تنزيل بالختم · دقة كاملة</button></span>`:''}</div></div></div>`}
+ m.innerHTML=`<div class="mbox lbx" role="dialog" aria-label="صورة المعاينة"><div class="mhd"><h3>${esc(o.slot?slotName(r,o.slot):'صورة المعاينة')} · ${i+1} من ${r.insp.length}</h3><button class="ibtn" data-mclose aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="mbd"><img id="lb-img" src="${o.img||PHURL[o.hk]||PH_BLANK}" alt="صورة المعاينة" style="width:100%;border-radius:10px"><div class="muted" style="font-size:12.5px">${esc(r.name)} · ${o.w?'الدقة الأصلية '+o.w+'×'+o.h+' بكسل · ':''}رُفعت بواسطة ${esc(o.by||'—')}</div><div class="filters">${i>0?`<button class="btn" data-lb="${id}|${i-1}">السابقة</button>`:''}${i<r.insp.length-1?`<button class="btn" data-lb="${id}|${i+1}">التالية</button>`:''}${dl?`<span style="margin-inline-start:auto;display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-lbsave="${id}|${i}|o">الأصل بدون ختم</button><button class="btn pri" data-lbsave="${id}|${i}|s">تنزيل بالختم · دقة كاملة</button></span>`:''}</div></div></div>`;
+ if(o.hk)(async()=>{let b=null;try{b=await pGet(o.hk+':m')}catch(_){}if(!b&&clActive()){const im=$('#lb-img');if(im)im.style.opacity='.6';b=await clPhoto(o.hk,'s')}const im=$('#lb-img');if(im){im.style.opacity='';if(b)im.src=URL.createObjectURL(b)}})()}
 async function saveLB(id,i,v){if(!canPhotoDL())return toast('التنزيل متاح لمهندس المنظومة والأدمن ومهندس التفتيش');const r=R.find(x=>x.id==id),o=r.insp[i];let bl=null;
- if(o.hk){try{bl=await pGet(o.hk+':'+v)}catch(_){}}if(!bl){bl=await (await fetch(o.img)).blob();if(o.hk)toast('النسخة عالية الدقة محفوظة على جهاز الرفع · تم تنزيل نسخة العرض')}
+ if(o.hk){try{bl=await pGet(o.hk+':'+v)}catch(_){}if(!bl&&clActive()){toast('☁ جارٍ تنزيل الصورة بالدقة الكاملة من السحابة…');bl=await clPhoto(o.hk,v)}}if(!bl){bl=await (await fetch(o.img)).blob();if(o.hk)toast('النسخة عالية الدقة لم تُرفع للسحابة بعد من جهاز المعاينة · تم تنزيل نسخة العرض')}
  saveFile('معاينة '+(r.file||r.id)+' - '+(o.slot?slotName(r,o.slot):i+1)+(v==='o'?' (أصل)':'')+'.jpg',bl)}
 async function inspReplace(id,i,f,add){if(!canPhotoEdit())return toast('الاستبدال والرفع متاح للأدمن ومهندس المنظومة');const r=R.find(x=>x.id==id);r.insp=r.insp||[];const base=r.insp[add?0:i]||{};toast('جارٍ تجهيز الصورة بالدقة الكاملة…');
  try{const p=await readPhoto(f);try{await document.fonts.ready}catch(_){}logoImg();const c=r.coords.find(q=>q[2])||[];const m={la:p.ex.la||base.la||c[0],lo:p.ex.lo||base.lo||c[1],alt:p.ex.alt!=null?p.ex.alt:base.alt,place:base.place||r.city,note:base.note||r.name,reg:base.reg||r.city,pre:false};
@@ -2324,13 +2341,177 @@ VIEWS.inspq=()=>{const L=R.filter(r=>r.stage===4&&r.status==='pending').sort((a,
   <div class="filters" style="margin-top:auto"><button class="btn pri" data-open="${r.id}"><svg class="ico" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg> بدء المعاينة</button>${c?`<a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${c[0]},${c[1]}" target="_blank" rel="noopener">${ico('map')} الاتجاهات</a>`:''}</div></div>`}).join('')}</div>`:`<div class="empty">✓ لا توجد مهام معاينة معلّقة. تظهر هنا الطلبات فور إرسالها للمعاينة من مهندس المنظومة.</div>`}
  <div class="note">بعد حفظ تقرير المعاينة ينتقل الطلب لمرحلة الإنهاء ويختفي من قائمتك تلقائياً. قاعدة البيانات متاحة لك للمشاهدة فقط.</div>`};
 
+/* ---------- cloud sync (Supabase: auth + REST + storage, offline-first) ---------- */
+const CLOUD={url:'https://gihwfrbirnqduonbnjfb.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpaHdmcmJpcm5xZHVvbmJuamZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NDEzNTIsImV4cCI6MjEwODUxNzM1Mn0.5On-Px96kG_87zOF_q5Tb728MnEuEACk7v4WE_xpYQ8'};
+const CL={tok:null,ref:null,exp:0,uid:null,ready:null,on:false,err:'',pullAt:0,busy:false};
+const clEmail=u=>String(u).toLowerCase()+'@wells-khg.app';
+function clSave(){try{localStorage.setItem('wl-c',JSON.stringify({tok:CL.tok,ref:CL.ref,exp:CL.exp,uid:CL.uid,u:CL.u}))}catch(_){}}
+function clLoad(un){try{const o=JSON.parse(localStorage.getItem('wl-c')||'null');if(o&&o.ref&&(!un||o.u===un)){Object.assign(CL,o);CL.on=true;return true}}catch(_){}return false}
+function clClear(){try{localStorage.removeItem('wl-c')}catch(_){}CL.tok=CL.ref=CL.uid=null;CL.on=false}
+async function clRaw(path,opt={},auth=true){const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),opt.timeout||20000);
+ const h=Object.assign({apikey:CLOUD.key,Authorization:'Bearer '+(auth&&CL.tok?CL.tok:CLOUD.key)},opt.headers||{});
+ try{return await fetch(CLOUD.url+path,{method:opt.method||'GET',headers:h,body:opt.body,signal:ac.signal})}finally{clearTimeout(tm)}}
+async function clRefresh(){if(!CL.ref)return false;try{const r=await clRaw('/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refresh_token:CL.ref})},false);if(!r.ok)return false;const j=await r.json();CL.tok=j.access_token;CL.ref=j.refresh_token;CL.exp=Date.now()+(j.expires_in||3600)*1000;clSave();return true}catch(_){return false}}
+async function clFetch(path,opt={}){if(CL.tok&&CL.exp&&Date.now()>CL.exp-60000)await clRefresh();let r=await clRaw(path,opt);if(r.status===401&&await clRefresh())r=await clRaw(path,opt);return r}
+async function clJson(path,opt){const r=await clFetch(path,opt);const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch(_){}if(!r.ok){const e=new Error((j&&(j.message||j.error_description||j.msg))||('http_'+r.status));e.status=r.status;e.body=j;throw e}return j}
+const clRpc=(fn,args)=>clJson('/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(args||{})});
+/* is the cloud reachable and set up? true / false(not set up) / null(offline / blocked) */
+async function clProbe(){if(CL.ready!==null&&CL.ready!==undefined)return CL.ready;if(!navigator.onLine)return null;
+ try{const r=await clRaw('/rest/v1/rpc/code_user',{method:'POST',headers:{'Content-Type':'application/json'},body:'{"p_hash":"-"}',timeout:8000},false);CL.ready=r.ok?true:(r.status===404||r.status===400?false:null)}catch(_){CL.ready=null}return CL.ready}
+/* sign in: 'ok' | 'bad' (wrong credentials) | 'off' (no cloud / offline) */
+async function clSignIn(u,pw){const ready=await clProbe();if(ready!==true)return 'off';
+ try{const r=await clRaw('/auth/v1/token?grant_type=password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:clEmail(u),password:pw})},false);
+  if(r.status===400||r.status===401||r.status===422)return 'bad';if(!r.ok)return 'off';const j=await r.json();CL.tok=j.access_token;CL.ref=j.refresh_token;CL.exp=Date.now()+(j.expires_in||3600)*1000;CL.uid=j.user&&j.user.id;CL.u=String(u).toLowerCase();CL.on=true;clSave();return 'ok'}catch(_){return 'off'}}
+async function clMyStaff(){const a=await clJson('/rest/v1/staff?select=*&id=eq.'+CL.uid);return a&&a[0]}
+const clActive=()=>CL.on&&!!CL.tok;
+/* ---------- merge remote → local ---------- */
+let BASE_IDS=null;const baseIds=()=>BASE_IDS||(BASE_IDS=new Set(RAW.map(r=>r.id)));
+const pendingKey=k=>(S.q||[]).some(o=>o.key===k);
+function mergeReq(row,force){const d=row.data||{};const id=row.id;if(!force&&pendingKey('r'+id))return;let r=R.find(x=>x.id==id);
+ if(!force&&r&&(r._cu||'')>=row.updated_at)return;
+ const inspOnly=me().r===5,keep=!inspOnly||(d.stage===4&&d.status==='pending');
+ if(r){Object.keys(r).forEach(k=>{if(!k.startsWith('_'))delete r[k]});Object.assign(r,d);r._cu=row.updated_at;if(!keep)R.splice(R.indexOf(r),1)}
+ else if(keep){r=Object.assign({},d,{_cu:row.updated_at});if(!baseIds().has(id))r._new=1;R.push(r)}
+ const sd=strip(d);if(baseIds().has(id)){S.mods[id]=sd}else{const i=S.added.findIndex(a=>a.id==id);const a=Object.assign({_new:1},sd);if(i>=0)S.added[i]=a;else S.added.push(a)}}
+function mergeWell(row,force){const d=row.data||{};if(!force&&pendingKey('w'+row.i))return;let o=WB.find(x=>x.i==row.i);if(!force&&o&&(o._cu||'')>=row.updated_at)return;
+ if(o){const _i=o._i;Object.keys(o).forEach(k=>delete o[k]);Object.assign(o,d,{_i,_cu:row.updated_at})}else{o=Object.assign({},d,{_i:WB.length,_cu:row.updated_at});WB.push(o)}
+ o._n=null;o._c=wcat(o);(S.wmod=S.wmod||{})[row.i]=strip(o);S.wadd=S.wadd||[];const ai=S.wadd.findIndex(a=>a.i==row.i);if(ai>=0)S.wadd[ai]=strip(o);else if(!baseW().has(row.i))S.wadd.push(strip(o))}
+let BASE_W=null;const baseW=()=>BASE_W||(BASE_W=new Set(WB.filter(o=>!(S.wadd||[]).some(a=>a.i==o.i)).map(o=>o.i)));
+function mergeStaff(rows,pws){const pw={};(pws||[]).forEach(x=>pw[x.id]=x.p);const all=me().r<=1&&rows.length>1;
+ rows.forEach(s=>{let u=S.users.find(x=>x.u.toLowerCase()===s.username);if(!u){u={ex:1,last:'',p:''};S.users.push(u)}Object.assign(u,{u:s.username,n:s.name,r:s.role,on:s.active?1:0,exp:s.exp||'',acc:s.acc||'full',code:s.code||u.code,_id:s.id,_seen:s.last_seen});if(pw[s.id]!=null)u.p=pw[s.id];if(s.code_hash)(S.ch=S.ch||{})[s.code_hash]=s.username;if(s.kw)(S.kw=S.kw||{})[s.username]=s.kw});
+ if(all){const names=new Set(rows.map(s=>s.username));S.users=S.users.filter(u=>names.has(u.u.toLowerCase())||u.u===S.cur)}}
+async function clPage(table,cur,sel){const out=[];let from=cur?new Date(Date.parse(cur)-120000).toISOString():'';for(let p=0;p<50;p++){
+  const q='/rest/v1/'+table+'?select='+sel+'&order=updated_at.asc&limit=1000'+(from?'&updated_at=gt.'+encodeURIComponent(from):'');const a=(await clJson(q))||[];out.push(...a);if(a.length<1000)break;from=a[a.length-1].updated_at}return out}
+async function clPull(quiet){if(!clActive()||!navigator.onLine||CL.busy)return;CL.busy=true;let n=0;
+ try{const c=S.cur_=S.cur_||{};
+  const rq=await clPage('requests',c.r,'id,data,updated_at');rq.forEach(mergeReq);if(rq.length){c.r=rq[rq.length-1].updated_at;n+=rq.length}
+  const wl=await clPage('wells',c.w,'i,data,updated_at');wl.forEach(mergeWell);if(wl.length){c.w=wl[wl.length-1].updated_at;n+=wl.length;if(typeof WC==='function'&&WC._c)WC._c=null}
+  const st=await clJson('/rest/v1/app_state?select=key,data,updated_at');S.stSnap=S.stSnap||{};(st||[]).forEach(s=>{S.stSnap[s.key]=JSON.stringify(s.data);if(s.key==='tpl')S.tpl=s.data;else if(s.key==='cities')S.cities=s.data;else if(s.key==='rep')S.rep=s.data;else if(s.key==='ra')S.ra=s.data});
+  const sf=await clJson('/rest/v1/staff?select=*');let pws=[];if(me().r===0){try{pws=await clJson('/rest/v1/staff_pw?select=id,p')}catch(_){}}mergeStaff(sf||[],pws);
+  if(me().r===5){try{const stt=await clRpc('req_states');const mp={};(stt||[]).forEach(x=>mp[x.id]=x);const before=R.length;R=R.filter(r=>{const x=mp[r.id];return !x||(x.stage===4&&x.status==='pending')||pendingKey('r'+r.id)});if(R.length!==before)n+=before-R.length}catch(_){}}
+  const mine=(sf||[]).find(s=>s.id===CL.uid);if(mine&&(!mine.active||(mine.role!==0&&mine.exp&&mine.exp<todayISO()))){toast('تم إيقاف حسابك أو انتهت صلاحيته من المطوّر');setTimeout(()=>$('#logoutBtn').click(),1800)}
+  CL.err='';CL.pullAt=Date.now();S.lastSync=Date.now();saveRaw();if(n&&!quiet){toast('☁ تم استلام '+n+' تحديث من السحابة')}if(n||!quiet){if(drawerOpen()&&openId)renderDrawer();rerender()}}
+ catch(e){CL.err=e.message||'تعذر الاتصال بالسحابة';if(e.status===401){CL.on=false}}finally{CL.busy=false;pill()}}
+/* ---------- push local → remote (called from flush) ---------- */
+const RHOLD={};
+function rowsForReq(ids){return ids.map(id=>R.find(x=>x.id==id)||RHOLD[id]||S.added.find(x=>x.id==id)).filter(Boolean).map(r=>({id:r.id,base:r._cu||null,data:strip(r)}))}
+const findReq=id=>R.find(x=>x.id==id)||RHOLD[id]||S.added.find(x=>x.id==id);
+async function clReqResult(res){if(!res)return;(res.saved||[]).forEach(s=>{const r=findReq(s.id);if(r)r._cu=s.u;if(S.mods[s.id])S.mods[s.id]._cu=undefined});const cf=res.conflicts||[];if(cf.length){try{const rows=await clJson('/rest/v1/requests?select=id,data,updated_at&id=in.('+cf.join(',')+')');(rows||[]).forEach(row=>mergeReq(row,true))}catch(_){}toast('☁ '+(cf.length===1?'الطلب م '+cf[0]+' عُدّل':cf.length+' طلبات عُدّلت')+' من جهاز آخر قبل مزامنة تعديلك · تم تحميل أحدث نسخة، راجعه وأعد الإجراء إن لزم');if(drawerOpen())renderDrawer();rerender()}}
+async function clWellResult(res){if(!res)return;(res.saved||[]).forEach(s=>{const o=WB.find(x=>x.i==s.i);if(o)o._cu=s.u});const cf=res.conflicts||[];if(cf.length){try{const rows=await clJson('/rest/v1/wells?select=i,data,updated_at&i=in.('+cf.join(',')+')');(rows||[]).forEach(row=>mergeWell(row,true))}catch(_){}toast('☁ '+cf.length+' بئر عُدّل من جهاز آخر · تم تحميل أحدث نسخة')}}
+async function clPushOp(op){const k=op.key;
+ if(k[0]==='r'&&/^r\d+$/.test(k)){const id=+k.slice(1);const rows=rowsForReq([id]);if(rows.length)await clReqResult(await clRpc('save_requests',{rows}));return}
+ if(k.startsWith('imp')){const ids=[...new Set([...Object.keys(S.mods||{}).map(Number),...(S.added||[]).map(a=>a.id)])];for(let i=0;i<ids.length;i+=200){const rows=rowsForReq(ids.slice(i,i+200));if(rows.length&&[0,1,2].includes(me().r))await clReqResult(await clRpc('save_requests',{rows}))}
+  const ws=[...Object.values(S.wmod||{}),...(S.wadd||[])];if([0,1,3].includes(me().r))for(let i=0;i<ws.length;i+=300)await clWellResult(await clRpc('save_wells',{rows:ws.slice(i,i+300).map(w=>{const o=WB.find(x=>x.i==w.i)||w;return {i:w.i,base:o._cu||null,data:strip(o)}})}));return}
+ if(/^w\d+$/.test(k)){const i=+k.slice(1);const o=WB.find(x=>x.i==i);if(o)await clWellResult(await clRpc('save_wells',{rows:[{i,base:o._cu||null,data:strip(o)}]}));return}
+ if(k.startsWith('p:')){const r=me().r;const keys=r===0?['tpl','cities','rep','ra']:r===1?['tpl','cities','rep']:r===2?['cities']:[];S.stSnap=S.stSnap||{};for(const kk of keys){const d=kk==='tpl'?S.tpl:kk==='cities'?S.cities:kk==='rep'?S.rep:S.ra;if(d==null)continue;const js=JSON.stringify(d);if(S.stSnap[kk]===js)continue;await clRpc('save_state',{k:kk,d});S.stSnap[kk]=js}return}
+ if(k.startsWith('ph:')){const hk=k.slice(3);for(const v of ['t','m','s','o']){const b=await pGet(hk+':'+v);if(!b)continue;const r=await clFetch('/storage/v1/object/inspection/'+phPath(hk,v),{method:'POST',headers:{'Content-Type':b.type||'image/jpeg','x-upsert':'true'},body:b,timeout:120000});if(!r.ok&&r.status!==409){const e=new Error('upload_'+r.status);e.status=r.status;throw e}}return}
+ /* users/devices ops are applied directly by the users screen */}
+const phPath=(hk,v)=>hk.split(':')[0]+'/'+hk.replace(/:/g,'_')+'-'+v+'.jpg';
+async function clPhoto(hk,v){if(!clActive())return null;try{const r=await clFetch('/storage/v1/object/authenticated/inspection/'+phPath(hk,v),{timeout:120000});if(!r.ok)return null;return await r.blob()}catch(_){return null}}
+/* ---------- users (developer) ---------- */
+async function wrapObj(pw){const s_=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));const k=await kek(pw,s_);const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,KRAW));return {s:ub64(s_),iv:ub64(iv),ct:ub64(ct)}}
+async function clUserSave(u,oldU,isNew,pwChanged){if(!clActive())return toast('☁ السحابة غير متصلة · التعديل محفوظ على هذا الجهاز فقط');
+ try{const h=await sha(u.code||'');const exp=u.exp||null;
+  if(isNew){await clRpc('create_staff',{p_username:u.u,p_password:u.p,p_name:u.n,p_role:u.r,p_exp:exp,p_acc:u.acc||'full',p_code:u.code,p_hash:h,p_active:!!u.on,p_kw:await wrapObj(u.p)})}
+  else{await clRpc('update_staff',{p_username:oldU||u.u,p_new_username:u.u,p_name:u.n,p_role:u.r,p_exp:exp,p_acc:u.acc||'full',p_code:u.code,p_hash:h,p_active:!!u.on});if(pwChanged&&u.p)await clRpc('set_staff_password',{p_username:u.u,p_password:u.p,p_kw:await wrapObj(u.p)})}
+  toast('☁ تم تطبيق الحساب على كل الأجهزة');clPull(true)}
+ catch(e){toast('☁ تعذر الحفظ على السحابة: '+(e.message==='username_taken'?'اسم الدخول مستخدم':e.message==='weak_password'?'كلمة المرور 6 أحرف على الأقل':e.message))}}
+async function clUserDelete(un){if(!clActive())return;try{await clRpc('delete_staff',{p_username:un});clPull(true)}catch(e){toast('☁ تعذر الحذف من السحابة: '+e.message)}}
+/* ---------- periodic pull ---------- */
+setInterval(()=>{if(BOOTED&&clActive()&&document.visibilityState==='visible')clPull(true)},30000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&BOOTED&&clActive())clPull(true)});
+window.addEventListener('online',()=>{if(BOOTED&&clActive())setTimeout(()=>clPull(true),1500)});
+
+/* ---------- after delivery: higher committee → wells database ---------- */
+const CM_DEC=['موافقة','موافقة مشروطة','تأجيل','رفض'];const MATCH_M=50;
+const canCommittee=()=>{const u=me();return [0,1,3,4].includes(u.r)&&lvOf(u)!=='view'};
+const canComplete=()=>{const u=me();return [0,1,3].includes(u.r)&&lvOf(u)!=='view'};
+function postSt(r){if(r.status!=='closed')return null;if(r.post==='done')return 'done';const c=r.cm;if(!c||c.dec==='تأجيل')return 'cm';if(c.dec==='رفض')return 'cmno';return 'cmok'}
+const POST={cm:{t:'بانتظار اللجنة العليا',c:'var(--s5)',bg:'var(--gold-soft)'},cmok:{t:'وافقت اللجنة العليا · استكمال البيانات',c:'var(--teal)',bg:'var(--teal-soft)'},done:{t:'مسجل بقاعدة البيانات',c:'var(--ok)',bg:'var(--ok-soft)'},cmno:{t:'رفضته اللجنة العليا',c:'var(--bad)',bg:'var(--bad-soft)'}};
+const mapPur=u=>/زراع/.test(u||'')?'الزراعة':/صناع/.test(u||'')?'الصناعة':/شرب/.test(u||'')?'مياه شرب (جمعيات)':'أخرى (خدمة طريق، حمام سباحة، ...)';
+function cmDraft(r,cm){const c=r.coords.find(q=>q[2])||[];const ip=(r.insp||[]).find(o=>o.la!=null)||{};const rp=r.rep||{};
+ const d={n:r.name,nid:r.nid,reg:r.city,la:c[0]!=null?c[0]:ip.la,lo:c[1]!=null?c[1]:ip.lo,ar:cm.ar!=null&&cm.ar!==''?+cm.ar:(r.area?+(r.area.m2/FED).toFixed(4):null),q:cm.q!=null&&cm.q!==''?+cm.q:null,
+  pur:mapPur(r.use),fileNo:r.file,com:cm.date,ls:r.kind==='جديد'?'جاري ترخيصه مقترح':'جاري ترخيصه قائم',own:/شرك|مؤسس|جمعي/.test(r.name)?'شركات':'أهالي',src:'جوفي',
+  op:/شمس/.test(rp.pw||'')?'طاقة شمسية':/ديزل/.test(rp.pw||'')?'ديزل':/كهرب/.test(rp.pw||'')?'كهرباء':null,dep:+rp.depth||null,
+  nt:'محوّل من منظومة التراخيص · طلب م '+r.id+(r.tc?' ('+r.tc+')':'')+(rp.msn?' · مسلسل العداد '+rp.msn:'')+(cm.cond?' · شروط اللجنة العليا: '+cm.cond:'')};
+ Object.keys(d).forEach(k=>{if(d[k]==null||d[k]===''||Number.isNaN(d[k]))delete d[k]});return d}
+function cmMatches(o){if(!o)return [];const nn=norm(o.n||''),nr=norm(o.reg||'');return WB.map((w,idx)=>{let d=null;if(o.la!=null&&o.lo!=null&&w.la!=null&&w.lo!=null)d=Math.round(distM({la:o.la,lo:o.lo},{la:w.la,lo:w.lo}));const nm=!!nn&&norm(w.n||'')===nn&&(!nr||norm(w.reg||'')===nr);return {w,idx,d,nm}}).filter(x=>(x.d!=null&&x.d<=MATCH_M)||x.nm).sort((a,b)=>(a.d??1e9)-(b.d??1e9)).slice(0,5)}
+/* committee decision form (modal) */
+function openCm(rid){const r=R.find(x=>x.id==rid);if(!r)return;const c=r.cm||{};const m=$('#modal');m.hidden=false;const ar=r.area?+(r.area.m2/FED).toFixed(2):'';
+ m.innerHTML=`<div class="mbox" role="dialog" aria-label="قرار اللجنة العليا"><div class="mhd"><h3>قرار اللجنة العليا · ${esc(r.name)}</h3><button class="ibtn" data-mclose aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="mbd">
+  <div class="note">طلب م ${r.id}${r.file?' · ملف <bdi dir="ltr">'+esc(r.file)+'</bdi>':''} · ${esc(KL(r.kind))} · ${esc(r.city)}${r.sysno?' · رقم المنظومة '+esc(r.sysno):''}</div>
+  <div class="form" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+   <div class="fld"><label for="cm-date">تاريخ انعقاد اللجنة العليا <span style="color:var(--bad)">*</span></label><input class="inp" type="date" id="cm-date" value="${esc(c.date||'')}" max="${addDays(todayISO(),60)}"></div>
+   <div class="fld"><label for="cm-mno">رقم الجلسة</label><input class="inp num" id="cm-mno" value="${esc(c.mno||'')}"></div>
+   <div class="fld"><label for="cm-dec">القرار <span style="color:var(--bad)">*</span></label><select class="inp" id="cm-dec" style="width:100%"><option value="">— اختر —</option>${CM_DEC.map(d=>`<option ${c.dec===d?'selected':''}>${d}</option>`).join('')}</select></div>
+   <div class="fld"><label for="cm-dno">رقم القرار</label><input class="inp num" id="cm-dno" value="${esc(c.dno||'')}"></div>
+   <div class="fld"><label for="cm-q">التصرف المعتمد (م³/يوم)</label><input class="inp num" id="cm-q" inputmode="decimal" value="${esc(c.q??'')}"></div>
+   <div class="fld"><label for="cm-ar">المساحة المعتمدة (فدان)</label><input class="inp num" id="cm-ar" inputmode="decimal" value="${esc(c.ar??ar)}"></div>
+   <div class="fld span2"><label for="cm-cond">الشروط / الملاحظات / سبب الرفض أو التأجيل</label><textarea class="inp" id="cm-cond">${esc(c.cond||'')}</textarea></div>
+   <label class="ack span2" style="background:var(--surface2)"><input type="checkbox" id="cm-wa" checked> إخطار العميل بالقرار برسالة واتساب</label>
+  </div>
+  <div class="note" id="cm-hint">عند الموافقة يُحوّل الطلب تلقائياً إلى قاعدة البيانات في خانة «موافقة اللجنة العليا»، ويصل تنبيه لقسم الدراسات لاستكمال بيانات البئر.</div>
+  <div class="filters"><button class="btn" data-mclose>إلغاء</button><button class="btn pri" data-cmsave="${r.id}" style="margin-inline-start:auto">حفظ قرار اللجنة</button></div></div></div>`}
+function saveCm(rid){if(!canCommittee())return toast('تسجيل قرار اللجنة متاح لقسم التراخيص وقسم الدراسات والأدمن');const r=R.find(x=>x.id==rid);const g=id=>($('#'+id)||{}).value||'';
+ const cm={date:g('cm-date'),mno:g('cm-mno').trim(),dec:g('cm-dec'),dno:g('cm-dno').trim(),q:g('cm-q').trim(),ar:g('cm-ar').trim(),cond:g('cm-cond').trim(),by:me().n,at:Date.now()};
+ if(!cm.date){$('#cm-date').focus();return toast('تاريخ اللجنة العليا إلزامي')}if(!cm.dec){$('#cm-dec').focus();return toast('اختر قرار اللجنة')}if((cm.dec==='رفض'||cm.dec==='تأجيل'||cm.dec==='موافقة مشروطة')&&!cm.cond){$('#cm-cond').focus();return toast('اكتب '+(cm.dec==='موافقة مشروطة'?'الشروط':'السبب'))}
+ const wa=$('#cm-wa').checked;r.cm=cm;const ok=cm.dec==='موافقة'||cm.dec==='موافقة مشروطة';
+ if(ok){r.wd=Object.assign(cmDraft(r,cm),r.wd&&r.post!=='done'?{}:{});r.post='cmok'}else{r.post=null}
+ r.log.push({d:todayISO(),t:'قرار اللجنة العليا ('+fD(cm.date)+(cm.mno?' · جلسة '+cm.mno:'')+'): '+cm.dec+(cm.dno?' · قرار رقم '+cm.dno:'')+(cm.cond?' · '+cm.cond:'')+(ok?' · تم التحويل لقاعدة البيانات (بانتظار استكمال قسم الدراسات)':''),u:me().n,ts:Date.now()});
+ if(wa){const txt=cm.dec+(cm.dec==='موافقة مشروطة'||cm.dec==='رفض'||cm.dec==='تأجيل'?': '+cm.cond:'');send('committee',r,{date:cm.date,reason:txt})}
+ persist(r);syncPulse();$('#modal').hidden=true;$('#modal').innerHTML='';
+ const mt=ok?cmMatches(r.wd):[];toast(ok?'✓ تم تسجيل الموافقة وتحويل الطلب لقاعدة البيانات'+(mt.length?' · ⚠ يوجد تطابق مع '+mt.length+' بئر بالقاعدة':''):'✓ تم تسجيل قرار اللجنة: '+cm.dec);
+ if(drawerOpen()&&openId==r.id)renderDrawer();rerender()}
+/* drawer panel for delivered requests */
+function postPanel(r){const ps=postSt(r);const P=POST[ps];const c=r.cm;const mt=ps==='cmok'?cmMatches(r.wd):[];const w=r.wi!=null?WB.findIndex(x=>x.i==r.wi):-1;
+ return `<div class="ap" style="--c:${P.c}"><div class="aph">ما بعد التسليم · ${P.t}</div><div class="apb">
+  <div class="psteps">${[['تسليم قسم التراخيص',1],['قرار اللجنة العليا',ps!=='cm'],['استكمال بيانات البئر (الدراسات)',ps==='done'],['التسجيل بقاعدة البيانات',ps==='done']].map(([t,d],i)=>`<span class="${d?'done':ps==='cmno'&&i===1?'rej':''}"><i>${d?'✓':ps==='cmno'&&i===1?'✕':i+5}</i>${t}</span>`).join('')}</div>
+  ${c?`<div class="kv" style="margin:4px 0"><div><span>تاريخ اللجنة</span><b>${fD(c.date,true)}</b></div><div><span>القرار</span><b>${esc(c.dec)}${c.dno?' · رقم '+esc(c.dno):''}${c.mno?' · جلسة '+esc(c.mno):''}</b></div>${c.q?`<div><span>التصرف المعتمد</span><b class="num">${esc(c.q)} م³/يوم</b></div>`:''}${c.ar?`<div><span>المساحة المعتمدة</span><b class="num">${esc(c.ar)} فدان</b></div>`:''}${c.cond?`<div style="grid-column:1/-1"><span>الشروط / الملاحظات</span><b>${esc(c.cond)}</b></div>`:''}</div>`:''}
+  ${mt.length?`<div class="note warn">⚠ إحداثيات البئر تتطابق مع ${mt.length} بئر قائم بقاعدة البيانات (أقربها ${mt[0].d!=null?mt[0].d+' م':'بالاسم'}). سيُعرض الاختلاف لقسم الدراسات عند الاستكمال.</div>`:''}
+  <div class="filters">${ps==='cm'&&canCommittee()?`<button class="btn pri" data-cmopen="${r.id}">تسجيل قرار اللجنة العليا</button>`:''}${ps==='cmok'&&canComplete()?`<button class="btn pri" data-cmfill="${r.id}">استكمال بيانات البئر بقاعدة البيانات</button>`:''}${(ps==='cmok'||ps==='cmno')&&canCommittee()?`<button class="btn ghost" data-cmopen="${r.id}">تعديل قرار اللجنة</button>`:''}${ps==='done'&&w>=0?`<button class="btn" data-well="${w}">عرض البئر بقاعدة البيانات · ترقيم ${r.wi}</button>`:''}</div>
+  ${ps==='cm'&&!canCommittee()?'<div class="muted" style="font-size:12.5px">يسجل قرار اللجنة العليا قسمُ التراخيص أو قسمُ الدراسات.</div>':''}</div></div>`}
+/* completing data: draft well form → match → merge or create */
+function cmFill(rid){if(!canComplete())return toast('استكمال البيانات متاح لقسم الدراسات والأدمن');WF={mode:'draft',rid:+rid};closeDetail();go('wellform')}
+function cmFinish(o){const r=R.find(x=>x.id==WF.rid);if(!r)return toast('الطلب غير موجود');o.i=o.i||Math.max(...WB.map(x=>x.i||0))+1;r.wd=Object.assign({},o);persist(r);
+ const mt=cmMatches(o);if(!mt.length)return cmCreate(r,o);cmMatchModal(r,o,mt)}
+const CM_LIC=['ls','lic','fileNo','f0','st0','end','com','ren','q','qa','ar','pay','fee','feep'];const CM_KEY=['ls','lic','fileNo','f0','st0','end','com','ren','q','qa','ar','la','lo','n','reg','pur','op','dep'];
+function cmMatchModal(r,o,mt){const m=$('#modal');m.hidden=false;const cols=WELL_COLS.filter(c=>c[0]!=='i');
+ const fmt=(k,v)=>v==null||v===''?'<span class="muted">—</span>':(k==='la'||k==='lo')?(+v).toFixed(6):esc(String(v));
+ m.innerHTML=`<div class="mbox lbx" role="dialog" aria-label="تطابق مع بئر قائم"><div class="mhd"><h3>⚠ تطابق مع ${mt.length>1?mt.length+' آبار قائمة':'بئر قائم'} بقاعدة البيانات</h3><button class="ibtn" data-mclose aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="mbd">
+  <div class="note warn">بيانات الطلب (${esc(r.name)} · م ${r.id}) تتطابق ${mt[0].d!=null?'في الإحداثيات':'في الاسم والمنطقة'} مع آبار مسجلة. راجع الاختلافات، واختر القيم المعتمدة، ثم حدّث البئر القائم أو سجّله كبئر جديد مستقل.</div>
+  ${mt.map((x,j)=>{const w=x.w;const diff=cols.filter(([k])=>String(w[k]??'')!==String(o[k]??'')&&o[k]!=null&&o[k]!=='');
+   return `<details class="cmm" ${j===0?'open':''}><summary><b>${esc(w.n||'—')}</b> · ترقيم ${w.i} · ${esc(w.reg||'')} · ${x.d!=null?'<span class="cmd">على بُعد '+x.d+' م</span>':'<span class="cmd">نفس الاسم والمنطقة</span>'} · ${wPill(w)} · <span class="muted">${diff.length} اختلاف · باقي بيانات البئر القائم تبقى كما هي</span></summary>
+    ${diff.length?`<div class="tw"><table class="cmt"><thead><tr><th>الحقل</th><th>القيمة بقاعدة البيانات</th><th>القيمة من الطلب / الاستكمال</th><th>اعتماد الجديدة</th></tr></thead><tbody>${diff.map(([k,l])=>`<tr class="${CM_KEY.includes(k)?'key':''}"><td>${esc(l)}</td><td class="num">${fmt(k,w[k])}</td><td class="num">${fmt(k,o[k])}</td><td>${o[k]!=null&&o[k]!==''?`<input type="checkbox" data-cmk="${j}|${k}" ${w[k]==null||w[k]===''||CM_LIC.includes(k)?'checked':''} aria-label="اعتماد ${esc(l)}">`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="note ok">لا توجد اختلافات في البيانات.</div>'}
+    <div class="filters" style="margin-top:8px"><button class="btn pri" data-cmmerge="${j}">تحديث هذا البئر بالقيم المحددة وربطه بالطلب</button></div></details>`}).join('')}
+  <div class="filters"><button class="btn" data-mclose>رجوع للتعديل</button><button class="btn ghost" data-cmnew style="margin-inline-start:auto">تجاهل التطابق وتسجيله كبئر جديد مستقل</button></div></div></div>`;
+ CMM={r,o,mt}}
+let CMM=null;
+function cmMerge(j){const {r,o,mt}=CMM;const x=mt[j];const rec=WB[x.idx];const ks=[...document.querySelectorAll(`[data-cmk^="${j}|"]`)].filter(c=>c.checked).map(c=>c.dataset.cmk.split('|')[1]);
+ const ch=[];ks.forEach(k=>{if(String(rec[k]??'')!==String(o[k]??'')){ch.push((WELL_COLS.find(c=>c[0]===k)||[,k])[1]);rec[k]=o[k]}});
+ rec._n=null;rec._c=wcat(rec);(S.wmod=S.wmod||{})[rec.i]=strip(rec);enqueue('w'+rec.i,'بئر: '+rec.n,'بئر');
+ r.post='done';r.wi=rec.i;r.log.push({d:todayISO(),t:'استكمال قسم الدراسات: تحديث البئر القائم ترقيم '+rec.i+(ch.length?' ('+ch.join('، ')+')':' بدون تغيير'),u:me().n,ts:Date.now()});persist(r);
+ CMM=null;$('#modal').hidden=true;$('#modal').innerHTML='';WF=null;save._q=1;save();syncPulse();toast('✓ تم تحديث البئر ترقيم '+rec.i+' وربطه بالطلب');W.tab='all';go('registry');renderWell(rec)}
+function cmCreate(r,o){const rec=Object.assign({},o);if(WB.some(x=>x.i==rec.i))rec.i=Math.max(...WB.map(x=>x.i||0))+1;rec._i=WB.length;rec._c=wcat(rec);WB.push(rec);(S.wadd=S.wadd||[]).push(strip(rec));enqueue('w'+rec.i,'بئر: '+rec.n,'بئر');
+ r.post='done';r.wi=rec.i;r.log.push({d:todayISO(),t:'استكمال قسم الدراسات: تسجيل البئر بقاعدة البيانات · ترقيم '+rec.i,u:me().n,ts:Date.now()});persist(r);
+ CMM=null;$('#modal').hidden=true;$('#modal').innerHTML='';WF=null;save._q=1;save();syncPulse();toast('✓ تم تسجيل البئر بقاعدة البيانات · ترقيم '+rec.i);W.tab='all';go('registry');renderWell(rec)}
+/* list page in the database section */
+let CMT='cm';
+VIEWS.cmte=()=>{const L=R.filter(r=>r.status==='closed');const by={cm:[],cmok:[],done:[],cmno:[]};L.forEach(r=>by[postSt(r)].push(r));
+ const tabs=[['cm','بانتظار قرار اللجنة العليا','var(--s5)'],['cmok','وافقت اللجنة · استكمال البيانات','var(--teal)'],['done','مسجل بقاعدة البيانات','var(--ok)'],['cmno','رفضته اللجنة','var(--bad)']];
+ const list=by[CMT].sort((a,b)=>((b.cm&&b.cm.date)||'').localeCompare((a.cm&&a.cm.date)||''));const openOK=pageOK('requests');
+ return `<div class="ph"><div><h2>المحوّل من منظومة التراخيص</h2><p>الطلبات المسلّمة لقسم التراخيص ← قرار اللجنة العليا ← استكمال قسم الدراسات لبيانات البئر ← مطابقة الإحداثيات مع قاعدة البيانات ← التسجيل.</p></div></div>
+ <div class="minis">${tabs.map(t=>`<button class="card cmk ${CMT===t[0]?'on':''}" data-cmtab="${t[0]}" style="--c:${t[2]}"><span class="muted">${t[1]}</span><b>${by[t[0]].length}</b></button>`).join('')}</div>
+ <div class="card"><h3>${tabs.find(t=>t[0]===CMT)[1]} <small>${list.length}</small></h3>${list.length?`<div class="tw"><table><thead><tr><th>الطلب</th><th>العميل</th><th>المنطقة</th><th>النوع</th><th>اللجنة العليا</th><th>التطابق</th><th></th></tr></thead><tbody>${list.map(r=>{const mt=CMT==='cmok'?cmMatches(r.wd):[];return `<tr style="cursor:default"><td class="num">م ${r.id}<br><small class="muted">${esc(r.file||'')}</small></td><td><b>${esc(r.name)}</b></td><td>${esc(r.city)}</td><td>${esc(KL(r.kind))}</td><td>${r.cm?`${fD(r.cm.date)}<br><small class="muted">${esc(r.cm.dec)}${r.cm.dno?' · '+esc(r.cm.dno):''}</small>`:'<span class="muted">—</span>'}</td><td>${CMT==='cmok'?(mt.length?`<span class="tag" style="background:var(--warn-soft);color:var(--warn)">⚠ ${mt.length} ${mt[0].d!=null?'· '+mt[0].d+' م':'بالاسم'}</span>`:'<span class="muted">لا يوجد</span>'):CMT==='done'&&r.wi!=null?'ترقيم '+r.wi:'—'}</td>
+   <td style="display:flex;gap:6px;flex-wrap:wrap">${CMT==='cm'&&canCommittee()?`<button class="btn sm pri" data-cmopen="${r.id}">قرار اللجنة</button>`:''}${CMT==='cmok'&&canComplete()?`<button class="btn sm pri" data-cmfill="${r.id}">استكمال البيانات</button>`:''}${CMT==='done'&&r.wi!=null&&WB.findIndex(x=>x.i==r.wi)>=0?`<button class="btn sm" data-well="${WB.findIndex(x=>x.i==r.wi)}">عرض البئر</button>`:''}${(CMT==='cmok'||CMT==='cmno')&&canCommittee()?`<button class="btn sm ghost" data-cmopen="${r.id}">تعديل القرار</button>`:''}${openOK?`<button class="btn sm ghost" data-open="${r.id}">ملف الطلب</button>`:''}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty">لا توجد طلبات في هذه الخانة.</div>`}</div>
+ <div class="note">قرار اللجنة: قسم التراخيص أو قسم الدراسات أو الأدمن. استكمال البيانات والمطابقة والتعديل: قسم الدراسات والأدمن (تحكم كامل).</div>`};
+
 /* ---------- global events ---------- */
 document.addEventListener('click',e=>{
   const t=e.target;let el;
   if(!t.closest('.gsw')&&$('#gres'))$('#gres').hidden=true;
   if(!t.closest('.bw')||t.closest('#npanel button'))setTimeout(()=>{const p=$('#npanel');if(p)p.hidden=true});
   if(t.closest('#gres [data-open],#gres [data-well],#gres [data-go]'))setTimeout(()=>{$('#gres').hidden=true;$('#gsearch').blur()});
-  if(el=t.closest('[data-go]')){e.preventDefault();if(drawerOpen())closeDetail();go(el.dataset.go);return}
+  if(el=t.closest('[data-go]')){e.preventDefault();if(el.dataset.cmtab)CMT=el.dataset.cmtab;if(drawerOpen())closeDetail();go(el.dataset.go);return}
   if(el=t.closest('[data-open]')){openDetail(+el.dataset.open);return}
   if(t.closest('[data-close]')||t===$('#scrim')){if($('#side').classList.contains('open')){$('#side').classList.remove('open');if(!drawerOpen())$('#scrim').classList.remove('on')}else closeDetail();uiNav();return}
   if(el=t.closest('[data-kpi]')){F=F0();if(el.dataset.kpi==='m'){F.from=todayISO().slice(0,8)+'01';F.adv=true}else F.stage=el.dataset.kpi;go('requests');return}
@@ -2355,7 +2536,7 @@ document.addEventListener('click',e=>{
   if(el=t.closest('[data-xtpl]')){exportTemplate(el.dataset.xtpl);return}
   if(t.closest('[data-mclose]')||t.id==='modal'){IMP=null;SCO=false;PAIR=null;renderModal();return}
   if(t.closest('[data-sync]')){SCO=true;$('#side').classList.remove('open');if(!drawerOpen())$('#scrim').classList.remove('on');renderSync();return}
-  if(t.closest('[data-syncnow]')){flush();return}
+  if(t.closest('[data-syncnow]')){flush().then(()=>clPull(false));return}
   if(t.closest('[data-impback]')){IMP={kind:IMP.kind,step:'pick'};renderModal();return}
   if(t.closest('[data-impgo]')){doImport();return}
   if(t.closest('[data-bknow]')){makeSnap('يدوي').then(s_=>{if(s_){toast('✓ تم إنشاء نسخة احتياطية');rerender()}});return}
@@ -2381,6 +2562,12 @@ document.addEventListener('click',e=>{
   if(t.closest('[data-pxtpl]')){exportCoordTpl();return}
   if(el=t.closest('[data-trkcopy]')){const r=R.find(x=>x.id==el.dataset.trkcopy);const txt='السيد/ '+r.name+'\nرقم متابعة طلبكم بمنظومة تراخيص الآبار بالخارجة: '+trackCode(r)+'\nالحالة: '+(r.status==='closed'?'تم الإنهاء والتسليم لقسم التراخيص':r.status==='rejected'?'مرفوض':stat(r).t)+'\nتابعوا طلبكم من «بوابة المواطن» برقم المتابعة وآخر 4 أرقام من الرقم القومي.';(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('تم نسخ رسالة المتابعة')).catch(()=>toast('رقم المتابعة: '+trackCode(r)));return}
   if(el=t.closest('[data-wtab]')){W.tab=el.dataset.wtab;W.page=1;if(cur!=='registry')go('registry');else rerender();return}
+  if(el=t.closest('[data-cmopen]')){openCm(el.dataset.cmopen);return}
+  if(el=t.closest('[data-cmsave]')){saveCm(el.dataset.cmsave);return}
+  if(el=t.closest('[data-cmfill]')){cmFill(el.dataset.cmfill);return}
+  if(el=t.closest('[data-cmmerge]')){cmMerge(+el.dataset.cmmerge);return}
+  if(t.closest('[data-cmnew]')){if(CMM)cmCreate(CMM.r,CMM.o);return}
+  if(el=t.closest('[data-cmtab]')){CMT=el.dataset.cmtab;if(!el.dataset.go){rerender();return}}
   if(el=t.closest('[data-well]')){renderWell(WB[+el.dataset.well]);return}
   if(el=t.closest('[data-wpg]')){W.page+=+el.dataset.wpg;rerender();return}
   if(el=t.closest('[data-wreg]')){W.reg=el.dataset.wreg;W.tab='all';W.page=1;rerender();window.scrollTo(0,0);return}
@@ -2428,6 +2615,7 @@ function renderLoginMap(){
 const b64=x=>Uint8Array.from(atob(x),c=>c.charCodeAt(0));
 const ub64=u=>{let t='';for(let i=0;i<u.length;i+=0x8000)t+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(t)};
 async function kek(pw,salt){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:ENC.it,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function unwrapW(w,pw){try{const k=await kek(pw,b64(w.s));return new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(w.iv)},k,b64(w.ct)))}catch(e){return null}}
 async function unwrap(u,pw){const w=(S.kw&&S.kw[u])||(S.kwx&&S.kwx[u]?null:ENC.kw[u]);if(!w)return null;try{const k=await kek(pw,b64(w.s));return new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(w.iv)},k,b64(w.ct)))}catch(e){return null}}
 async function wrapFor(u,pw){if(!KRAW)return;const s_=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));const k=await kek(pw,s_);const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,KRAW));(S.kw=S.kw||{})[u.toLowerCase()]={s:ub64(s_),iv:ub64(iv),ct:ub64(ct)};save()}
 async function sha(x){const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(x));return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('')}
@@ -2436,22 +2624,28 @@ async function boot(raw){const p=await openData(raw);KRAW=raw;RAW=p.req;WREG=p.r
 function allowed(u){if(!u)return 'هذا الحساب لم يعد موجوداً. تواصل مع المطوّر.';if(!u.on)return 'هذا الحساب موقوف. تواصل مع المطوّر لإعادة تفعيله.';if(u.exp&&u.exp<todayISO())return 'انتهت مدة صلاحية الحساب في '+fD(u.exp)+'. تواصل مع المطوّر للتجديد.';return ''}
 function enter(u){(S.auth=S.auth||[]).unshift({ts:Date.now(),u:u.n,t:'تسجيل دخول',dev:(devs().find(d=>d.self)||{}).n||''});S.auth=S.auth.slice(0,200);setTimeout(()=>pill(),50);setTimeout(()=>autoBackup(true),1500);S.cur=u.u;u.last=fD(todayISO())+' · '+nowT();saveRaw();setTimeout(()=>{pill();flush()},800);try{sessionStorage.setItem('wl-k',ub64(KRAW));sessionStorage.setItem('wl-u',u.u)}catch(_){}if(u.r===5)R=R.filter(r=>r.stage===4&&r.status==='pending');$('#login').hidden=true;document.body.classList.remove('locked');UE=null;NAV=[];go(firstPage());const h=(location.hash||'').slice(1);if(h&&h!=='dash'&&PAGES.some(x=>x[0]===h))go(h)}
 $('#sTheme').onclick=()=>$('#themeBtn').click();$('#sOut').onclick=()=>$('#logoutBtn').click();
-$('#logoutBtn').onclick=()=>{try{sessionStorage.removeItem('wl-k');sessionStorage.removeItem('wl-u')}catch(_){}location.reload()};
+$('#logoutBtn').onclick=()=>{try{sessionStorage.removeItem('wl-k');sessionStorage.removeItem('wl-u')}catch(_){}if(!(S.q||[]).length)clClear();location.reload()};
 $('#lpEye').onclick=()=>{const i=$('#lp');i.type=i.type==='password'?'text':'password'};
 $('#lactBtn').onclick=()=>{const b=$('#lactBox');b.hidden=!b.hidden;if(!b.hidden)$('#lcode').focus()};
-$('#lactGo').onclick=async()=>{const c=$('#lcode').value.trim().toUpperCase().replace(/\s/g,'');const ok=$('#lok');ok.hidden=true;if(!c)return lerr('اكتب كود التفعيل.');const h=await sha(c);const un=(S.ch&&h in S.ch)?S.ch[h]:ENC.ch[h];
+$('#lactGo').onclick=async()=>{const c=$('#lcode').value.trim().toUpperCase().replace(/\s/g,'');const ok=$('#lok');ok.hidden=true;if(!c)return lerr('اكتب كود التفعيل.');const h=await sha(c);let un=(S.ch&&h in S.ch)?S.ch[h]:ENC.ch[h];if(!un&&await clProbe()===true){try{un=await clRpc('code_user',{p_hash:h})}catch(_){}}
   if(!un)return lerr('كود التفعيل غير صحيح أو تم إلغاؤه. تواصل مع المطوّر للحصول على كود جديد.');
   lerr('');$('#lu').value=un;$('#lp').value='';$('#lp').focus();ok.hidden=false;ok.textContent='✓ كود صحيح. تم تفعيل هذا الجهاز لحساب «'+un+'». اكتب كلمة المرور، ويعمل الحساب داخل مدة صلاحيته المحددة.';try{localStorage.setItem('wl-dev-act',un)}catch(_){}};
 $('#loginForm').onsubmit=async e=>{e.preventDefault();if(!window.crypto||!crypto.subtle)return lerr('هذا المتصفح لا يدعم فتح البيانات المشفرة. استخدم متصفحاً حديثاً.');const btn=$('.lbtn'),un=$('#lu').value.trim().toLowerCase(),pw=$('#lp').value;if(!un||!pw)return lerr('اكتب اسم المستخدم وكلمة المرور.');
   btn.disabled=true;btn.textContent='جارٍ التحقق وفتح البيانات…';lerr('');
-  try{let raw=await unwrap(un,pw);if(!raw&&pw.trim()!==pw)raw=await unwrap(un,pw.trim());if(!raw){lerr('اسم المستخدم أو كلمة المرور غير صحيحة.');return}
-   if(!BOOTED)await boot(raw);const u=S.users.find(x=>x.u.toLowerCase()===un);const m=allowed(u);if(m)return lerr(m);
-   enter(u);toast('مرحباً '+u.n)}
+  try{let pwu=pw;let raw=await unwrap(un,pw);if(!raw&&pw.trim()!==pw){raw=await unwrap(un,pw.trim());if(raw)pwu=pw.trim()}
+   btn.textContent='جارٍ الاتصال بالسحابة…';let cs=await clSignIn(un,pwu);if(cs==='bad'&&pw.trim()!==pwu){cs=await clSignIn(un,pw.trim());if(cs==='ok')pwu=pw.trim()}
+   if(cs==='bad'){lerr('اسم المستخدم أو كلمة المرور غير صحيحة.');return}
+   let mine=null;if(cs==='ok'){try{mine=await clMyStaff()}catch(_){}if(!mine){clClear();lerr('هذا الحساب غير مسجل في المنظومة السحابية. تواصل مع المطوّر.');return}if(!mine.active)return lerr('هذا الحساب موقوف. تواصل مع المطوّر لإعادة تفعيله.');if(!raw&&mine.kw)raw=await unwrapW(mine.kw,pwu)}
+   else if(cs==='off'&&clLoad(un)){/* offline: cloud session kept for later sync */}
+   if(!raw){lerr(cs==='off'?'اسم المستخدم أو كلمة المرور غير صحيحة، أو يلزم اتصال بالإنترنت لأول دخول بهذا الحساب على هذا الجهاز.':'تعذر فتح البيانات لهذا الحساب. اطلب من المطوّر إعادة تعيين كلمة المرور.');return}
+   btn.textContent='جارٍ فتح البيانات…';if(!BOOTED)await boot(raw);if(mine)mergeStaff([mine],[]);const u=S.users.find(x=>x.u.toLowerCase()===un);const m=allowed(u);if(m){clClear();return lerr(m)}
+   if(cs==='ok'&&mine&&!mine.kw){wrapObj(pwu).then(w=>clRpc('set_staff_kw',{p_kw:w})).catch(()=>{})}
+   enter(u);toast('مرحباً '+u.n+(cs==='ok'?' · ☁ متصل بالسحابة':''));if(clActive()){clRpc('touch_staff').catch(()=>{});setTimeout(async()=>{await clPull(false);flush()},300)}}
   catch(err){lerr('تعذر فتح البيانات على هذا المتصفح. استخدم متصفحاً حديثاً.')}
   finally{btn.disabled=false;btn.textContent='دخول إلى المنظومة'}};
 document.documentElement.dir='rtl';document.documentElement.lang='ar';document.body.classList.add('locked');
 (async()=>{let k=null,un=null;try{k=sessionStorage.getItem('wl-k');un=sessionStorage.getItem('wl-u')}catch(_){}
-  if(k){try{await boot(b64(k));const u=S.users.find(x=>x.u===un);if(!allowed(u)){enter(u);return}}catch(_){}}
+  if(k){try{await boot(b64(k));const u=S.users.find(x=>x.u===un);if(!allowed(u)){clLoad((un||'').toLowerCase());enter(u);if(CL.ref){clRefresh().then(async ok=>{if(ok){CL.on=true;await clPull(true);flush()}})}return}}catch(_){}}
   showLogin();try{const a=localStorage.getItem('wl-dev-act');if(a)$('#lu').value=a}catch(_){}if(location.hash==='#portal')openPortal('track')})();
 </script>
 </body></html>

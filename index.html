@@ -861,6 +861,13 @@ body.pon{overflow:hidden}
 .updbox img{width:72px;height:72px}.updbox h3{margin:0;font-family:"Reem Kufi",sans-serif;font-size:20px}.updbox p{margin:0;color:var(--muted);font-size:14px;line-height:1.8}
 .updbar2{width:100%;height:6px;background:var(--surface2);border-radius:6px;overflow:hidden}.updbar2 i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),#E5BD63);transition:width 1s linear}
 .updbox .btn{width:100%;justify-content:center}
+@media (max-width:600px){.mbox .form{grid-template-columns:1fr!important}.mbox .form>*{grid-column:auto!important}}
+
+.dlist{display:flex;flex-direction:column;gap:6px}.dli{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.dli.ok{border-color:color-mix(in srgb,var(--ok) 45%,var(--line));background:var(--ok-soft)}.dli>div{flex:1;min-width:0;display:flex;flex-direction:column}.dli small{color:var(--muted);font-size:11.5px}
+.dn{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--teal);color:#fff;font-weight:700;font-size:12px;flex:none}.dli.ok .dn{background:var(--ok)}
+.catg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}.catg>div{display:flex;flex-direction:column;gap:8px}
+.catbar{display:flex;height:14px;border-radius:8px;overflow:hidden;gap:2px;background:var(--surface2)}.catbar i{display:block;min-width:3px}
+.catl{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}.catl span{display:flex;align-items:center;gap:6px}.catl i{width:10px;height:10px;border-radius:3px}.catl b{font-size:15px}
 </style>
 
 <div class="login" id="login" hidden>
@@ -1071,7 +1078,7 @@ function init(){
   R.forEach(r=>{if(r.stage>5)r.stage=5});
   if(S.tpl&&S.tpl.report&&/القطاع/.test(S.tpl.report.b))S.tpl.report.b=TPL_DEFAULT.report.b;
 }
-function persist(r){enqueue('r'+r.id,'طلب: '+r.name,'طلب');save._q=1;if(r._new){const i=S.added.findIndex(a=>a.id===r.id);S.added[i]=r}else{S.mods[r.id]={stage:r.stage,status:r.status,appt:r.appt,reason:r.reason,log:r.log,sec:r.sec,stu:r.stu,rep:r.rep,sysno:r.sysno,file:r.file,area:r.area,coords:r.coords,poly:r.poly,cfile:r.cfile,badc:r.badc,conf:r.conf,idate:r.idate,insp:r.insp,tc:r.tc}}save()}
+function persist(r){enqueue('r'+r.id,'طلب: '+r.name,'طلب');save._q=1;if(r._new){const i=S.added.findIndex(a=>a.id===r.id);S.added[i]=r}else{S.mods[r.id]=strip(r)}save()}
 
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
@@ -1150,6 +1157,11 @@ function donut(items,total,label,attr='data-kpi'){const C=2*Math.PI*62;let off=0
  <div class="dleg">${items.map(i=>`<button ${attr}="${i[3]}"><i style="background:${i[2]}"></i><span>${i[0]}</span><b>${i[1]}</b><em>${total?Math.round(i[1]/total*100):0}%</em></button>`).join('')}</div></div>`}
 function segBar(items){const t=items.reduce((a,i)=>a+i[1],0)||1;return `<div class="sbar">${items.filter(i=>i[1]).map(i=>`<i style="width:${i[1]/t*100}%;background:${i[2]}" title="${esc(i[0])}: ${i[1]}"></i>`).join('')}</div><div class="slist">${items.map(i=>`<div><i style="background:${i[2]}"></i><span>${esc(i[0])}</span><b>${i[1]}</b><em>${Math.round(i[1]/t*100)}%</em></div>`).join('')}</div>`}
 function licStrip(){if(!WB.length)return '';const so=WB.filter(o=>o._c==='soon').length,ex=WB.filter(o=>o._c==='expired').length;return `<div class="lstrip"><span class="lsi">!</span><div><b>تنبيهات التراخيص</b><span>${so} رخصة تنتهي خلال ${ALERT_DAYS} يوماً · <em>${ex.toLocaleString('en-US')} رخصة منتهية</em></span></div><button class="btn sm" data-wtab="soon">القريبة من الانتهاء</button><button class="btn sm bad" data-wtab="expired">المنتهية</button></div>`}
+function catCard(){const tw=a=>a.reduce((s,r)=>s+nwOf(r),0);const cl=[['أهالي / أفراد','var(--teal)'],['استثمار / شركات','var(--gold)'],['حكومي','var(--s2)']];const rq=CATS.map(c=>tw(R.filter(r=>catOf(r)===c))),db=CATS.map(c=>WB.filter(o=>ownCat(o)===c).length);const rt=rq.reduce((a,b)=>a+b,0)||1,dt=db.reduce((a,b)=>a+b,0)||1;
+ const bar=(v,t)=>`<div class="catbar">${cl.map(([c,col],i)=>`<i style="flex:${v[i]||0.0001};background:${col}" title="${c}: ${v[i]}"></i>`).join('')}</div>`;
+ return `<div class="card catc"><h3>الآبار حسب الفئة <small>أهالي · استثمار وشركات · حكومي</small></h3><div class="catg">
+  <div><span class="muted">طلبات التراخيص <small>(إجمالي الآبار بالطلبات)</small></span>${bar(rq,rt)}<div class="catl">${cl.map(([c,col],i)=>`<span><i style="background:${col}"></i>${c}<b>${nf(rq[i])}</b></span>`).join('')}</div></div>
+  ${typeof WB!=='undefined'&&WB.length?`<div><span class="muted">قاعدة بيانات الآبار</span>${bar(db,dt)}<div class="catl">${cl.map(([c,col],i)=>`<span><i style="background:${col}"></i>${c}<b>${nf(db[i])}</b></span>`).join('')}</div></div>`:''}</div></div>`}
 VIEWS.dash=()=>{
   const c=counts(),T=R.length,open=R.filter(r=>r.status!=='closed'&&r.status!=='rejected');
   const now=new Date(),TM=todayISO().slice(0,7),pd=new Date(now.getFullYear(),now.getMonth()-1,1),LM=pd.getFullYear()+'-'+String(pd.getMonth()+1).padStart(2,'0');
@@ -1175,6 +1187,7 @@ VIEWS.dash=()=>{
   <div class="kpis">
    ${[['all','إجمالي الطلبات',T,'var(--ink)',`${open.length} مفتوح · ${c[7]} مُسلَّم`],['m','وارد هذا الشهر',thisM,'var(--teal)',lastM?`<span style="color:${dlt>=0?'var(--ok)':'var(--bad)'}">${dlt>=0?'▲':'▼'} ${Math.abs(dlt)}%</span> عن الشهر الماضي (${lastM})`:'أول شهر'],['1','فحص المستندات',c[1],sc(1),`<span style="color:var(--warn)">${late} متأخر</span> أكثر من 30 يوماً`],['2','المطابقة',c[2],sc(2),R.filter(r=>r.stage===2&&r.appt&&r.status==='pending').length+' بموعد محدد'],['3','المعاينة والتقرير',c[3]+c[4],sc(3),c[4]+' بانتظار التقرير'],['5','الإنهاء والتسليم',c[5],sc(5),`متوسط عمر الطلب المفتوح ${avgAge} يوماً`]].map(k=>`<button class="kpi" style="--c:${k[3]}" data-kpi="${k[0]}"><span>${k[1]}</span><b>${k[2]}</b><em>${k[4]}</em></button>`).join('')}
   </div>
+  ${catCard()}
   <div class="card"><h3>مسار الطلبات عبر المراحل <small>عرض كل شريحة بحجم طلباتها · اضغط للتفاصيل</small></h3>
    <div class="pipe">${STAGES.map(s=>{const v=c[s.n];return `<button data-kpi="${s.n}" style="background:${sc(s.n)};flex:${Math.max(v,T*0.07)} 1 0"><b>${v}</b><span>${s.n}. ${s.t}</span></button>`}).join('')}<button data-kpi="7" style="background:var(--ok);flex:${Math.max(c[7],T*0.07)} 1 0"><b>${c[7]}</b><span>تم التسليم</span></button><button data-kpi="0" style="background:var(--bad);flex:${Math.max(c[0],T*0.05)} 1 0"><b>${c[0]}</b><span>مرفوض</span></button></div></div>
   <div class="grid g-dash">
@@ -1274,7 +1287,11 @@ function renderDrawer(){const r=R.find(x=>x.id==openId);if(!r)return;
   <div class="db">
    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${stPill(r)}${lic(r)}</div>
    ${actionPanel(r)}
-   <div class="card"><h3>بيانات الطلب</h3><div class="kv">
+   <div class="card"><h3>بيانات الطلب ${canEditReq()?`<button class="btn sm ghost" data-redit="${r.id}" style="margin-inline-start:auto">تعديل بيانات الطلب</button>`:''}</h3><div class="kv">
+    <div><span>نوع الترخيص</span><b>${esc(KL(r.kind))}</b></div>
+    <div><span>الغرض · نوع الأرض</span><b>${esc(r.use||'—')} · ${esc(r.land||'—')}</b></div>
+    <div><span>فئة الأرض</span><b>${esc(catOf(r))}</b></div>
+    <div><span>عدد الآبار</span><b class="num">${nwOf(r)} ${r.nwm?'<small class="muted">(معدّل يدوياً)</small>':r.cat==='استثمار / شركات'?`<small class="muted">(تلقائي: بئر لكل ${WPF} فدان${fedOf(r)?' · '+fedOf(r).toFixed(1)+' فدان':' · سجّل المساحة'})</small>`:''}</b></div>
     <div><span>تاريخ الإضافة</span><b>${fD(r.date,true)}</b></div>
     <div><span>الرقم القومي</span><b class="num">${pv(r.nid)} ${r.nidok?'':'<span class="flag">غير صالح</span>'}</b></div>
     ${r.info&&r.info.y?`<div><span>بيانات مستخرجة من الرقم القومي</span><b>مواليد ${r.info.y} · ${r.info.g} · ${r.info.s}</b></div>`:''}
@@ -1294,7 +1311,7 @@ function renderDrawer(){const r=R.find(x=>x.id==openId);if(!r)return;
   </div>`;
   wireAP($('#drawer'),r);const dw=$('#drawer');wireArea(dw,'d');phHydrate(dw);
   dw.querySelector('[data-areaedit]').onclick=()=>{const w=dw.querySelector('#d-wrap');w.hidden=!w.hidden;w.style.display=w.hidden?'':'grid'};
-  dw.querySelector('[data-areasave]').onclick=()=>{const a=readArea(dw,'d');if(!a)return toast('أدخل المساحة');if(a.err)return toast(a.err);r.area=a;r.log.push({d:todayISO(),t:'تسجيل المساحة: '+areaTxt(a),u:me().n,ts:Date.now()});persist(r);syncPulse();toast('تم حفظ المساحة');renderDrawer()};
+  dw.querySelector('[data-areasave]').onclick=()=>{const a=readArea(dw,'d');if(!a)return toast('أدخل المساحة');if(a.err)return toast(a.err);r.area=a;r.log.push({d:todayISO(),t:'تسجيل المساحة: '+areaTxt(a)+(r.cat==='استثمار / شركات'&&!r.nwm?' · عدد الآبار المحسوب تلقائياً: '+autoNW(r):''),u:me().n,ts:Date.now()});persist(r);syncPulse();toast('تم حفظ المساحة');renderDrawer()};
 }
 /* action panel per stage */
 function suggestFile(){const y=new Date().getFullYear();const m=Math.max(0,...R.map(r=>{const x=(r.file||'').replace(/\s/g,'').match(new RegExp(y+'-+(\\d+)$'));return x?+x[1]:0}));return 'KHG-'+y+'-'+(m+1)}
@@ -1383,6 +1400,8 @@ VIEWS.new=()=>{
    <div class="fld"><label for="n-use">الغرض</label><select class="inp" id="n-use" style="width:100%"><option>زراعي</option><option>غير زراعي</option><option value="other">أخرى</option></select></div>
    <div class="fld" id="n-other-w" hidden><label for="n-other">اكتب الغرض</label><input class="inp" id="n-other" placeholder="مثال: صناعي، سياحي، شرب"></div>
    <div class="fld"><label for="n-land">نوع الأرض</label><select class="inp" id="n-land" style="width:100%"><option>أرض قديمة</option><option>أرض جديدة</option></select></div>
+   <div class="fld"><label for="n-cat">فئة الأرض</label><select class="inp" id="n-cat" style="width:100%">${CATS.map(c=>`<option>${c}</option>`).join('')}</select></div>
+   <div class="fld"><label for="n-nw">عدد الآبار</label><input class="inp num" id="n-nw" type="number" min="1" max="99" value="1"><span class="muted" id="n-nwh" style="font-size:11.5px">بئر واحد</span></div>
    <div class="fld"><label for="n-city">المنطقة</label><input class="inp" id="n-city" list="cities" placeholder="اكتب أو اختر المنطقة" autocomplete="off"><datalist id="cities">${cities.map(c=>`<option value="${esc(c)}">`).join('')}</datalist><span class="muted" id="n-city-h" style="font-size:11.5px"></span></div>
    <div class="fld span2"><label for="n-dept">الإدارة العامة</label><input class="inp ro" id="n-dept" value="الإدارة العامة للمياه الجوفية بالخارجة ودرب الأربعين" readonly></div>
    <div class="span4" id="n-wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px">${areaFields('n',null)}</div>
@@ -1395,6 +1414,8 @@ const allCities=()=>[...new Set([...R.map(r=>r.city),...(S.cities||[])])].filter
 function addCity(c){c=(c||'').trim().replace(/\s+/g,' ');if(!c)return false;if(allCities().some(x=>norm(x)===norm(c)))return false;(S.cities=S.cities||[]).push(c);save();const dl=$('#cities');if(dl)dl.insertAdjacentHTML('beforeend',`<option value="${esc(c)}">`);return true}
 function decodeNID(n){if(!/^[23]\d{13}$/.test(n))return null;const y=(n[0]==='2'?1900:2000)+ +n.slice(1,3),m=+n.slice(3,5),d=+n.slice(5,7);const dt=new Date(y,m-1,d);if(dt.getMonth()!==m-1||m<1)return null;return{y,m,d,g:GOV[n.slice(7,9)]||'كود محافظة غير معروف',s:+n[12]%2?'ذكر':'أنثى'}}
 AFTER.new=()=>{wireArea($('#nf'),'n');
+  const nwc=()=>{const a=readArea($('#nf'),'n');const t={cat:$('#n-cat').value,area:a&&!a.err?a:null};const v=autoNW(t);if(!$('#n-nw')._man)$('#n-nw').value=v;$('#n-nwh').textContent=$('#n-nw')._man?'معدّل يدوياً':t.cat==='استثمار / شركات'?(t.area?'تلقائي: بئر لكل '+WPF+' فدان ('+(t.area.m2/FED).toFixed(1)+' فدان)':'أدخل المساحة ليُحسب تلقائياً'):'بئر واحد'};
+  $('#n-cat').onchange=nwc;$('#nf').addEventListener('input',e=>{if(e.target.closest('#n-wrap'))nwc()});$('#nf').addEventListener('change',e=>{if(e.target.closest('#n-wrap'))nwc()});$('#n-nw').oninput=()=>{$('#n-nw')._man=1;nwc()};
   if(NP){$('#n-name').value=NP.n;$('#n-city').value=NP.reg||'';$('#n-kind').value='تجديد ترخيص';if(NP.ar){$('#n-f').value=NP.ar;$('#n-f').dispatchEvent(new Event('input'))}$('#nf').insertAdjacentHTML('afterbegin','<div class="note ok" style="margin-bottom:12px">طلب تجديد ترخيص لبئر من سجل الآبار. أكمل الرقم القومي والهاتف ثم احفظ.</div>');NP=null}
   $('#n-use').onchange=e=>{const o=e.target.value==='other';$('#n-other-w').hidden=!o;if(o)$('#n-other').focus()};
   $('#n-city').oninput=e=>{const v=e.target.value.trim();$('#n-city-h').textContent=v&&!allCities().some(x=>norm(x)===norm(v))?'منطقة جديدة · تُحفظ تلقائياً في قائمة المناطق':''};
@@ -1409,7 +1430,7 @@ AFTER.new=()=>{wireArea($('#nf'),'n');
   $('#nf').onsubmit=e=>{e.preventDefault();const name=$('#n-name').value.trim(),n=$('#n-nid').value.replace(/\D/g,''),p=$('#n-phone').value.replace(/\D/g,'');
     if(!name)return toast('اكتب اسم العميل');if(!decodeNID(n))return toast('الرقم القومي غير صالح');if(!/^01[0125]\d{8}$/.test(p))return toast('رقم الهاتف غير صحيح');const city=$('#n-city').value.trim().replace(/\s+/g,' ');if(!city)return toast('اكتب المنطقة');addCity(city);let use=$('#n-use').value;if(use==='other'){use=$('#n-other').value.trim();if(!use)return toast('اكتب الغرض الآخر')}
     const area=readArea($('#nf'),'n');if(area&&area.err)return toast(area.err);const x=decodeNID(n),coords=[];const cv=$('#n-coord').value.trim();if(cv){const m=cv.split(',').map(Number);if(m.length===2&&!isNaN(m[0])&&!isNaN(m[1]))coords.push([m[0],m[1],m[0]>=22&&m[0]<=27.5&&m[1]>=24&&m[1]<=33])}
-    const r={_new:1,id:+$('#n-id').value,date:todayISO(),name,nid:n.slice(0,4)+'•••••••'+n.slice(-3),nidk:n.slice(0,3)+n.slice(-4),nidok:true,info:{y:x.y,g:x.g,s:x.s},file:'',kind:$('#n-kind').value,use,land:$('#n-land').value,city,phone:p.slice(0,3)+'•••••'+p.slice(-3),ph:p,phok:true,stage:1,sub:'',legacy:'',status:'pending',coords,area,badc:coords.some(c=>!c[2]),dup:false,multi:R.filter(q=>q.nidk===n.slice(0,3)+n.slice(-4)).length+1,tc:genTC(),log:[{d:todayISO(),t:'تسجيل الطلب ووروده للمنظومة',u:me().n,ts:Date.now()}]};
+    const r={_new:1,id:+$('#n-id').value,date:todayISO(),name,nid:n.slice(0,4)+'•••••••'+n.slice(-3),nidk:n.slice(0,3)+n.slice(-4),nidok:true,info:{y:x.y,g:x.g,s:x.s},file:'',kind:$('#n-kind').value,use,land:$('#n-land').value,cat:$('#n-cat').value,nwm:!!$('#n-nw')._man,nw:+$('#n-nw').value||1,city,phone:p.slice(0,3)+'•••••'+p.slice(-3),ph:p,phok:true,stage:1,sub:'',legacy:'',status:'pending',coords,area,badc:coords.some(c=>!c[2]),dup:false,multi:R.filter(q=>q.nidk===n.slice(0,3)+n.slice(-4)).length+1,tc:genTC(),log:[{d:todayISO(),t:'تسجيل الطلب ووروده للمنظومة',u:me().n,ts:Date.now()}]};
     R.push(r);S.added.push(r);
     if($('#n-wa').checked){waPush(r,'new','السيد/ '+name+'\nتم استلام طلبكم ('+KL(r.kind)+') برقم مسلسل '+r.id+' بتاريخ '+fD(r.date,true)+'، والطلب الآن في مرحلة فحص المستندات.\nرقم المتابعة: '+r.tc+' · تابعوا الطلب من بوابة المواطن برقم المتابعة وآخر 4 أرقام من الرقم القومي.')}
     enqueue('r'+r.id,'طلب جديد: '+r.name,'طلب');save._q=1;save();syncPulse();toast('تم حفظ الطلب رقم '+r.id);go('requests');openDetail(r.id)};
@@ -1746,7 +1767,11 @@ const REPORTS=[
   return {k:[['إجمالي الطلبات',L.length],['في الفحص',tot(1)],['في المطابقة والمعاينة',tot(2)+tot(3)+tot(4)],['الإنهاء والتسليم',tot(5)+tot(7)]],b:`<h4>حسب المنطقة والمرحلة</h4>${tb('l1a',['المنطقة',...cols.map(c=>c[1]),'الإجمالي'],cs.map(c=>[esc(c),...cols.map(k=>by[c][k[0]]||''),`<b>${Object.values(by[c]).reduce((x,y)=>x+y)}</b>`]),['الإجمالي',...cols.map(k=>tot(k[0])),L.length])}
   <h4>حسب نوع الترخيص والغرض ونوع الأرض</h4><div class="rgrid">${tb('l1b',['نوع الترخيص','العدد','النسبة'],cnt(L,r=>KL(r.kind)).map(([k,v])=>[k,v,pct(v,L.length)]))}${tb('l1c',['الغرض','العدد','النسبة'],cnt(L,r=>r.use).map(([k,v])=>[esc(k),v,pct(v,L.length)]))}${tb('l1d',['نوع الأرض','العدد','النسبة'],cnt(L,r=>r.land).map(([k,v])=>[k,v,pct(v,L.length)]))}</div>`,n:L.length}}},
  {id:'L2',g:'L',t:'الطلبات حسب المرحلة (تفصيلي)',d:'كشف بكل طلب ومرحلته وحالته وعمره',f:['range','city','stage'],run:()=>{const L=reqL().filter(r=>RP.stage==null||RP.stage===''||String(stageOf(r))===RP.stage).sort((a,b)=>stageOf(a)-stageOf(b)||(a.date<b.date?-1:1));
-  return {k:[['عدد الطلبات',L.length],['متوسط العمر',(L.length?Math.round(L.reduce((a,r)=>a+days(r.date),0)/L.length):0)+' يوم'],['بموعد محدد',L.filter(r=>r.appt).length],['بدون رقم ملف',L.filter(r=>!r.file).length]],b:tb('l2',['م','تاريخ الإضافة','العميل','رقم الملف','نوع الترخيص','المنطقة','المرحلة','الحالة','العمر (يوم)'],L.map(r=>[r.id,fD(r.date),esc(r.name),r.file?ltr(r.file):'—',KL(r.kind),esc(r.city),stName(r),esc(stat(r).t),days(r.date)])),n:L.length}}},
+  return {k:[['عدد الطلبات',L.length],['متوسط العمر',(L.length?Math.round(L.reduce((a,r)=>a+days(r.date),0)/L.length):0)+' يوم'],['بموعد محدد',L.filter(r=>r.appt).length],['بدون رقم ملف',L.filter(r=>!r.file).length]],b:tb('l2',['م','تاريخ الإضافة','العميل','رقم الملف','نوع الترخيص','الفئة','عدد الآبار','المنطقة','المرحلة','الحالة','العمر (يوم)'],L.map(r=>[r.id,fD(r.date),esc(r.name),r.file?ltr(r.file):'—',KL(r.kind),esc(catOf(r)),nwOf(r),esc(r.city),stName(r),esc(stat(r).t),days(r.date)])),n:L.length}}},
+ {id:'L10',g:'L',t:'الآبار حسب الفئة (أهالي / استثمار / حكومي)',d:'عدد الطلبات وإجمالي الآبار لكل فئة، بمسلسل واحد لكل طلب',f:['range','city'],run:()=>{const L=reqL();const W=c=>L.filter(r=>catOf(r)===c);const tw=a=>a.reduce((s,r)=>s+nwOf(r),0);
+  return {k:[['إجمالي الآبار بالطلبات',nf(tw(L))],...CATS.map(c=>[c,nf(tw(W(c)))+' بئر · '+W(c).length+' طلب'])],b:`<h4>حسب الفئة</h4>${tb('l10a',['الفئة','عدد الطلبات','إجمالي الآبار','النسبة من الآبار','مُسلّم','وافقت اللجنة'],CATS.map(c=>{const a=W(c);return [c,a.length,tw(a),pct(tw(a),tw(L)),a.filter(r=>r.status==='closed').length,a.filter(r=>['cmok','done'].includes(postSt(r))).length]}))}
+  <h4>حسب الفئة والمرحلة (عدد الآبار)</h4>${tb('l10b',['الفئة',...STAGES.map(s=>s.t),'مُسلّم'],CATS.map(c=>{const a=W(c);return [c,...STAGES.map(s=>tw(a.filter(r=>r.status!=='closed'&&r.stage===s.n))),tw(a.filter(r=>r.status==='closed'))]}))}
+  <h4>كشف الطلبات (مسلسل واحد لكل طلب مع عدد آباره)</h4>${tb('l10c',['م','العميل','الفئة','عدد الآبار','المساحة (فدان)','نوع الترخيص','المنطقة','الحالة'],L.slice().sort((a,b)=>nwOf(b)-nwOf(a)||a.id-b.id).map(r=>[r.id,esc(r.name),esc(catOf(r)),nwOf(r),fedOf(r)?fedOf(r).toFixed(1):'—',KL(r.kind),esc(r.city),esc(stat(r).t)]))}`,n:L.length}}},
  {id:'L3',g:'L',t:'الطلبات المتأخرة',d:'طلبات تجاوزت مدة محددة في مرحلتها الحالية',f:['city','days'],run:()=>{const L=R.filter(r=>r.status!=='closed'&&r.status!=='rejected'&&days(r.date)>RP.days&&(!RP.city||r.city===RP.city)).sort((a,b)=>a.date<b.date?-1:1);const by=cnt(L,r=>STAGES[r.stage-1].t);
   return {k:[['طلبات متأخرة',L.length],['أكثر من 90 يوماً',L.filter(r=>days(r.date)>90).length],['أقدم طلب',L.length?days(L[0].date)+' يوم':'—'],['أكثر مرحلة تأخيراً',by[0]?by[0][0]:'—']],b:`<h4>حسب المرحلة</h4>${tb('l3a',['المرحلة','عدد المتأخر'],by)}<h4>الكشف التفصيلي</h4>${tb('l3',['م','العميل','المنطقة','المرحلة الحالية','تاريخ الإضافة','مدة الانتظار (يوم)'],L.map(r=>[r.id,esc(r.name),esc(r.city),STAGES[r.stage-1].t,fD(r.date),`<b style="color:#B9362F">${days(r.date)}</b>`]))}`,n:L.length}}},
  {id:'L4',g:'L',t:'مواعيد المطابقة والمعاينة',d:'المواعيد المحددة للعملاء خلال فترة',f:['range','city'],run:()=>{const L=R.filter(r=>r.appt&&r.appt>=RP.from&&r.appt<=RP.to&&(!RP.city||r.city===RP.city)).sort((a,b)=>a.appt<b.appt?-1:1);
@@ -1761,6 +1786,9 @@ const REPORTS=[
   return {k:[['إجمالي الإجراءات',A.length],['مستخدمون نشطون',by.length],['أكثر مستخدم',by[0]?by[0][0]:'—'],['رسائل واتساب',S.outbox.length]],b:`${tb('l8a',['المستخدم','عدد الإجراءات','النسبة'],by.map(([k,v])=>[esc(k),v,pct(v,A.length)]))}<h4>سجل الإجراءات</h4>${tb('l8',['التاريخ','المستخدم','الطلب','الإجراء'],A.sort((a,b)=>(b.l.ts||0)-(a.l.ts||0)).map(a=>[fD(a.l.d),esc(a.l.u),esc(a.r.name),esc(a.l.t)]))}`,n:A.length}}},
  {id:'L9',g:'L',t:'جودة بيانات الطلبات',d:'المكرر وغير الصالح والناقص',f:['city'],run:()=>{const L=R.filter(r=>(!RP.city||r.city===RP.city)&&(r.dup||!r.nidok||!r.phok||r.badc||(r.stage>1&&!r.file)));const why=r=>[r.dup&&'مكرر',!r.nidok&&'رقم قومي غير صالح',!r.phok&&'هاتف غير صالح',r.badc&&'إحداثيات خارج النطاق',r.stage>1&&!r.file&&'بدون رقم ملف'].filter(Boolean).join('، ');
   return {k:[['سجلات تحتاج مراجعة',L.length],['مكررة',L.filter(r=>r.dup).length],['بدون رقم ملف',L.filter(r=>r.stage>1&&!r.file).length],['بيانات غير صالحة',L.filter(r=>!r.nidok||!r.phok||r.badc).length]],b:tb('l9',['م','العميل','المنطقة','المرحلة','الملاحظة'],L.map(r=>[r.id,esc(r.name),esc(r.city),STAGES[r.stage-1].t,`<span style="color:#B56E12">${why(r)}</span>`])),n:L.length}}},
+ {id:'D10',g:'D',t:'آبار قاعدة البيانات حسب الفئة',d:'أهالي / استثمار وشركات / حكومي مع موقف الترخيص',f:['region'],run:()=>{const L=wellL();const W=c=>L.filter(o=>ownCat(o)===c);
+  return {k:[['إجمالي الآبار',nf(L.length)],...CATS.map(c=>[c,nf(W(c).length)])],b:`<h4>حسب الفئة وموقف الترخيص</h4>${tb('d10a',['الفئة','الإجمالي','النسبة',...Object.keys(WCAT).map(k=>WCAT[k].t)],CATS.map(c=>{const a=W(c);return [c,nf(a.length),pct(a.length,L.length),...Object.keys(WCAT).map(k=>nf(a.filter(o=>o._c===k).length))]}))}
+  <h4>حسب الفئة والمنطقة</h4>${tb('d10b',['المنطقة',...CATS,'الإجمالي'],Object.entries(L.reduce((m,o)=>{const g=o.reg||'غير محدد';(m[g]=m[g]||{t:0});m[g].t++;m[g][ownCat(o)]=(m[g][ownCat(o)]||0)+1;return m},{})).sort((a,b)=>b[1].t-a[1].t).slice(0,40).map(([g,v])=>[esc(g),...CATS.map(c=>nf(v[c]||0)),nf(v.t)]))}`,n:L.length}}},
  {id:'D1',g:'D',t:'الملخص العام لقاعدة الآبار',d:'موقف الترخيص ونوع البئر والغرض وطريقة التشغيل',f:['region'],run:()=>{const L=wellL();const c=k=>L.filter(o=>o._c===k).length;
   return {k:[['إجمالي الآبار',nf(L.length)],['سارية',nf(c('valid')+c('soon'))],['منتهية',nf(c('expired'))],['مخالفة',nf(c('viol'))]],b:`<div class="rgrid">${tb('d1a',['موقف الترخيص','العدد','النسبة'],Object.keys(WCAT).map(k=>[WCAT[k].t,nf(c(k)),pct(c(k),L.length)]))}${tb('d1b',['نوع البئر','العدد','النسبة'],cnt(L,o=>o.own).map(([k,v])=>[esc(k),nf(v),pct(v,L.length)]))}${tb('d1c',['الغرض','العدد','النسبة'],cnt(L,o=>o.pur).map(([k,v])=>[esc(k),nf(v),pct(v,L.length)]))}${tb('d1d',['طريقة التشغيل','العدد','النسبة'],cnt(L,o=>o.op).map(([k,v])=>[esc(k),nf(v),pct(v,L.length)]))}${tb('d1e',['طريقة الري','العدد','النسبة'],cnt(L,o=>o.irr).map(([k,v])=>[esc(k),nf(v),pct(v,L.length)]))}${tb('d1f',['صلاحية البئر','العدد','النسبة'],cnt(L,o=>o.wk).map(([k,v])=>[esc(k),nf(v),pct(v,L.length)]))}</div>`,n:L.length}}},
  {id:'D2',g:'D',t:'رخص تقترب من الانتهاء',d:'الرخص التي تنتهي خلال عدد أيام تحدده',f:['region','days'],run:()=>{const L=wellL().filter(o=>o.end&&o._d!=null&&o._d>=0&&o._d<=RP.days).sort((a,b)=>a._d-b._d);
@@ -1999,8 +2027,8 @@ function wfField(f,o){const [k,l,t,sp=1,req=0,unit]=f;const st=`grid-column:span
  return ''}
 VIEWS.wellform=()=>{
  if(!(WF&&WF.mode==='draft'?canComplete():(WF&&WF.mode==='edit')?can(9):canAddWell()))return `<div class="ph"><div><h2>إضافة بئر للسجل</h2></div></div><div class="note warn">تحتاج صلاحية «تعديل بيانات الطلبات».</div>`;
- if(!WF)WF={mode:'new'};const _dr=WF.mode==='draft'?R.find(x=>x.id==WF.rid):null;const o=WF.mode==='edit'?WB[WF.idx]:_dr?Object.assign({i:Math.max(...WB.map(x=>x.i||0))+1,gov:'الوادي الجديد'},_dr.wd):{i:Math.max(...WB.map(x=>x.i||0))+1,src:'جوفي',gov:'الوادي الجديد'};
- return `<div class="ph"><div><h2>${_dr?'استكمال بيانات بئر · موافقة اللجنة العليا':WF.mode==='edit'?'تعديل بيانات بئر':'إضافة بئر لسجل الآبار'}</h2><p>${_dr?'طلب م '+_dr.id+' · '+esc(_dr.name)+(_dr.cm?' · لجنة '+fD(_dr.cm.date)+' ('+esc(_dr.cm.dec)+')':'')+' · البيانات المتاحة من الطلب مُدخلة تلقائياً. بعد الحفظ تُطابق الإحداثيات مع قاعدة البيانات.':WF.mode==='edit'?esc(o.n)+' · ترقيم '+o.i:'نفس أعمدة قاعدة بيانات الإدارة العامة. الحقول المعلَّمة * مطلوبة.'}</p></div><div class="filters"><button class="btn" data-go="${_dr?'cmte':'registry'}">إلغاء</button><button class="btn pri" id="wfSave2">${ico('new')} حفظ البئر</button></div></div>
+ if(!WF)WF={mode:'new'};const _dr=WF.mode==='draft'?R.find(x=>x.id==WF.rid):null;const o=WF.mode==='edit'?WB[WF.idx]:_dr?Object.assign({i:nextWellI(),gov:'الوادي الجديد'},DRAFTS(_dr)[WF.k||0]||{}):{i:nextWellI(),src:'جوفي',gov:'الوادي الجديد'};
+ return `<div class="ph"><div><h2>${_dr?'استكمال بيانات بئر'+(DRAFTS(_dr).length>1?' '+((WF.k||0)+1)+' من '+DRAFTS(_dr).length:'')+' · موافقة اللجنة العليا':WF.mode==='edit'?'تعديل بيانات بئر':'إضافة بئر لسجل الآبار'}</h2><p>${_dr?'طلب م '+_dr.id+' · '+esc(_dr.name)+(_dr.cm?' · لجنة '+fD(_dr.cm.date)+' ('+esc(_dr.cm.dec)+')':'')+' · البيانات المتاحة من الطلب مُدخلة تلقائياً. بعد الحفظ تُطابق الإحداثيات مع قاعدة البيانات.':WF.mode==='edit'?esc(o.n)+' · ترقيم '+o.i:'نفس أعمدة قاعدة بيانات الإدارة العامة. الحقول المعلَّمة * مطلوبة.'}</p></div><div class="filters"><button class="btn" data-go="${_dr?'cmte':'registry'}">إلغاء</button><button class="btn pri" id="wfSave2">${ico('new')} حفظ البئر</button></div></div>
  <div class="wfwrap">
   <nav class="wfnav" aria-label="أقسام النموذج">${WSEC.map((s_,i)=>`<a href="#wsec-${s_.id}" data-wsec="${s_.id}"><span>${i+1}</span>${s_.t}</a>`).join('')}</nav>
   <form id="wform" novalidate class="wfsecs">
@@ -2028,7 +2056,7 @@ function wfSave(){const o=wfCollect(),e=wfCheck(o);if(e.length){toast('أكمل:
  const nid=o._nid;delete o._nid;if(nid)o.nid=nid.slice(0,4)+'•••••••'+nid.slice(-3);
  if(o.la!=null){o.la=+o.la.toFixed(6);o.lo=+o.lo.toFixed(6)}else{delete o.la;delete o.lo}
  Object.keys(o).forEach(k=>{if(o[k]==null||o[k]==='')delete o[k]});
- if(WF.mode==='draft'){const dr=(R.find(x=>x.id==WF.rid)||{}).wd||{};if(!o.nid&&dr.nid)o.nid=dr.nid;o.i=+($('#wf-i')||{}).value||dr.i;return cmFinish(o)}
+ if(WF.mode==='draft'){const dr=DRAFTS(R.find(x=>x.id==WF.rid)||{})[WF.k||0]||{};if(!o.nid&&dr.nid)o.nid=dr.nid;o.i=+($('#wf-i')||{}).value||dr.i;return cmFinish(o)}
  let rec;if(WF.mode==='edit'){rec=WB[WF.idx];const keep={i:rec.i,_i:rec._i,nid:rec.nid};Object.keys(rec).forEach(k=>{if(!k.startsWith('_'))delete rec[k]});Object.assign(rec,o,{i:keep.i});if(!o.nid&&keep.nid)rec.nid=keep.nid;(S.wmod=S.wmod||{})[rec.i]=strip(rec)}
  else{rec=Object.assign({i:+$('#wf-i').value},o);rec._i=WB.length;WB.push(rec);(S.wadd=S.wadd||[]).push(strip(rec))}
  rec._n=null;rec._c=wcat(rec);enqueue('w'+rec.i,'بئر: '+rec.n,'بئر');save._q=1;save();syncPulse();const msg=(WF.mode==='edit'?'تم تحديث بيانات البئر ':'تمت إضافة البئر للسجل · ترقيم ')+rec.i;WF=null;W.tab=rec._c==='soon'||rec._c==='expired'?rec._c:'all';W.q='';go('registry');renderWell(rec);toast(msg)}
@@ -2088,7 +2116,7 @@ function notifs(){const T=todayISO(),T1=addDays(T,1),out=[];
  if(pageOK('registry')){const s7=WB.filter(o=>o._c==='soon'&&o._d<=7).sort((a,b)=>a._d-b._d),s60=WB.filter(o=>o._c==='soon');
   if(s7.length)out.push({lv:'bad',ic:'⏳',t:`${s7.length} رخصة تنتهي خلال 7 أيام`,s:s7.slice(0,3).map(o=>o.n+' ('+o._d+' يوم)').join('، '),a:'data-wtab="soon"'});
   else if(s60.length)out.push({lv:'warn',ic:'⏳',t:`${s60.length} رخصة تنتهي خلال 60 يوماً`,s:'أقربها بعد '+Math.min(...s60.map(o=>o._d))+' يوم',a:'data-wtab="soon"'});}
- {const cl=R.filter(r=>r.status==='closed');const ncm=cl.filter(r=>postSt(r)==='cm').length,nok=cl.filter(r=>postSt(r)==='cmok');if(canComplete()&&nok.length){const nm=nok.filter(r=>cmMatches(r.wd).length).length;out.push({lv:'warn',ic:'🗂',t:`${nok.length} طلب وافقت عليه اللجنة العليا بانتظار استكمال البيانات`,s:nm?`⚠ منها ${nm} تتطابق إحداثياتها مع آبار قائمة`:'قسم الدراسات · قاعدة البيانات',a:'data-cmtab="cmok" data-go="cmte"'})}if(canCommittee()&&ncm)out.push({lv:'info',ic:'🏛',t:`${ncm} ملف مُسلّم بانتظار قرار اللجنة العليا`,s:'سجّل تاريخ وقرار اللجنة',a:'data-cmtab="cm" data-go="cmte"'})}
+ {const cl=R.filter(r=>r.status==='closed');const ncm=cl.filter(r=>postSt(r)==='cm').length,nok=cl.filter(r=>postSt(r)==='cmok');if(canComplete()&&nok.length){const nm=nok.filter(r=>draftMatches(r)).length;out.push({lv:'warn',ic:'🗂',t:`${nok.length} طلب (${nok.reduce((a,r)=>a+pendDrafts(r).length,0)} بئر) وافقت عليه اللجنة العليا بانتظار استكمال البيانات`,s:nm?`⚠ منها ${nm} تتطابق إحداثياتها مع آبار قائمة`:'قسم الدراسات · قاعدة البيانات',a:'data-cmtab="cmok" data-go="cmte"'})}if(canCommittee()&&ncm)out.push({lv:'info',ic:'🏛',t:`${ncm} ملف مُسلّم بانتظار قرار اللجنة العليا`,s:'سجّل تاريخ وقرار اللجنة',a:'data-cmtab="cm" data-go="cmte"'})}
  if(canInspect()){const ni=R.filter(r=>r.stage===4&&r.status==='pending'&&!(r.insp&&r.insp.length)).length;if(ni)out.push({lv:'info',ic:'📷',t:`${ni} طلب بانتظار رفع المعاينة`,s:'مرحلة تقرير المعاينة',a:'data-dq="insp"'})}
  if(pageOK('requests')){const ap=R.filter(r=>r.appt&&(r.appt===T||r.appt===T1)&&r.status!=='closed'&&r.status!=='rejected');
   if(ap.length)out.push({lv:'info',ic:'📅',t:`${ap.length} موعد اليوم وغداً`,s:ap.slice(0,3).map(r=>r.name).join('، '),a:'data-go="cal"'});
@@ -2137,7 +2165,15 @@ function trackCard(r){const steps=STAGES.map(s=>({t:s.t,st:r.status==='closed'||
  return `<div class="card trk"><h3>بطاقة متابعة المواطن <small>ما يراه العميل عند الاستعلام</small></h3><div class="trkb"><div class="trkh"><img src="${LOGO_S}" alt=""><div><b>منظومة تراخيص الآبار بالخارجة</b><span>رقم المتابعة: <bdi dir="ltr" class="num">${trackCode(r)}</bdi></span></div></div><div class="trks">${steps.map(s_=>`<div class="ts ${s_.st}"><i></i><span>${s_.t}</span></div>`).join('')}</div><div class="trkm">${r.status==='rejected'?'تم رفض الطلب: '+esc(r.reason||''):r.status==='closed'?'تم إنهاء الطلب وتسليمه لقسم التراخيص':'الحالة الحالية: '+esc(stat(r).t)}${r.appt&&r.stage===2?' · موعد المطابقة '+fD(r.appt,true):''}</div></div><div class="filters" style="margin-top:8px"><button class="btn sm" data-trkcopy="${r.id}">نسخ رسالة المتابعة للعميل</button></div></div>`}
 
 /* ---------- field inspection photos (GPS-stamped, per-slot, full-resolution) ---------- */
-const ISLOTS=r=>r.kind==='جديد'?[['pt','نقطة البئر','الموقع المقترح لحفر البئر على الطبيعة']]:[['well','البئر','صورة واضحة لرأس البئر وموقعه'],['irr','الري الحديث','شبكة الري الحديث بالأرض (تنقيط / رش / محوري)'],['meter','العداد','عداد قياس التصرف مركباً على البئر'],['serial','الرقم المسلسل للعداد','صورة مقربة يُقرأ فيها الرقم المسلسل بوضوح']];
+const WPF=238,CATS=['أهالي / أفراد','استثمار / شركات','حكومي'];
+const catOf=r=>!r||!r.cat||r.cat==='أفراد'?'أهالي / أفراد':r.cat;
+const ownCat=o=>o.own==='شركات'?'استثمار / شركات':o.own==='حكومي'?'حكومي':'أهالي / أفراد';
+const CAT_OWN={'أهالي / أفراد':'أهالي','استثمار / شركات':'شركات','حكومي':'حكومي'};
+const fedOf=r=>r&&r.area&&r.area.m2?r.area.m2/FED:0;
+const autoNW=r=>r.cat==='استثمار / شركات'&&fedOf(r)>0?Math.max(1,Math.ceil(fedOf(r)/WPF-1e-9)):1;
+const nwOf=r=>r.nwm&&+r.nw>0?+r.nw:autoNW(r);
+const ISLOTS=r=>{const b=ISLOT1(r),n=Math.min(nwOf(r),20);if(n<=1)return b;const out=[];for(let i=1;i<=n;i++)b.forEach(([k,t,d])=>{if(k==='irr'&&i>1)return;out.push([k==='irr'?k:k+i,k==='irr'?t:t+' '+i,d])});return out};
+const ISLOT1=r=>r.kind==='جديد'?[['pt','نقطة البئر','الموقع المقترح لحفر البئر على الطبيعة']]:[['well','البئر','صورة واضحة لرأس البئر وموقعه'],['irr','الري الحديث','شبكة الري الحديث بالأرض (تنقيط / رش / محوري)'],['meter','العداد','عداد قياس التصرف مركباً على البئر'],['serial','الرقم المسلسل للعداد','صورة مقربة يُقرأ فيها الرقم المسلسل بوضوح']];
 const slotName=(r,k)=>(ISLOTS(r).find(s=>s[0]===k)||[,k&&k!=='extra'?k:'صورة إضافية'])[1];
 const PHURL={},PH_BLANK='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 3"><rect width="4" height="3" fill="#8a9a9a" opacity=".25"/></svg>');
 async function phHydrate(root){const L=[...(root||document).querySelectorAll('img[data-ph]')];for(const im of L){const hk=im.dataset.ph;if(PHURL[hk]){im.src=PHURL[hk];continue}let b=null;try{b=await pGet(hk+':t')}catch(_){}if(!b&&typeof clActive==='function'&&clActive())b=await clPhoto(hk,'t');if(b){PHURL[hk]=URL.createObjectURL(b);document.querySelectorAll(`img[data-ph="${hk}"]`).forEach(x=>x.src=PHURL[hk])}}}
@@ -2192,10 +2228,10 @@ async function buildPhoto(r,slot,p,m){const meta=Object.assign({},m,{ts:p.ts,slo
  await pPut(hk+':s',full);await pPut(hk+':o',p.f);await pPut(hk+':m',med);await pPut(hk+':t',thumb);PHURL[hk]=URL.createObjectURL(thumb);enqueue('ph:'+hk,'صور المعاينة: '+slotName(r,slot),'صور');
  return {slot,img:'',hk,w:p.img.naturalWidth,h:p.img.naturalHeight,sz:full.size,la:m.la,lo:m.lo,alt:m.alt,ts:p.ts,note:m.note,reg:m.reg,place:m.place,src:m.pre?'كاميرا GPS':'ختم المنظومة',by:me().n,at:Date.now()}}
 function inspFields(r){const c=r.coords.find(q=>q[2]),S_=ISLOTS(r),ex=r.kind!=='جديد';
- return `<div class="span2 islots-h"><b>صور المعاينة الإلزامية · ${r.kind==='جديد'?'بئر جديد':'بئر قائم / تجديد ترخيص'}</b><span>${S_.length} ${S_.length>1?'صور':'صورة'} · تُختم كل صورة أعلاها بتوقيع «منظومة التراخيص - ${ORG}» واسم ${esc(r.name)} ومنطقة ${esc(r.city)}، وأسفلها بالموقع والإحداثيات والوقت بتنسيق كاميرا GPS، وتُحفظ بالدقة الكاملة</span></div>
+ return `<div class="span2 islots-h"><b>صور المعاينة الإلزامية · ${r.kind==='جديد'?'بئر جديد':'بئر قائم / تجديد ترخيص'}${nwOf(r)>1?' · '+nwOf(r)+' آبار':''}</b><span>${S_.length} ${S_.length>1?'صور':'صورة'} · تُختم كل صورة أعلاها بتوقيع «منظومة التراخيص - ${ORG}» واسم ${esc(r.name)} ومنطقة ${esc(r.city)}، وأسفلها بالموقع والإحداثيات والوقت بتنسيق كاميرا GPS، وتُحفظ بالدقة الكاملة</span></div>
  ${liveOK()?'':`<div class="span2 note warn" style="grid-column:1/-1"><b>الكاميرا المباشرة وGPS غير متاحين في هذه الطريقة للفتح.</b> المنظومة مفتوحة كملف من الجهاز (${esc(location.protocol.replace(':',''))})، والمتصفح لا يسمح بالكاميرا المباشرة أو الموقع إلا من رابط آمن https. افتحها من رابط المنظومة المستضاف ليظهر الختم لايف بالإحداثيات أثناء التصوير. حالياً ستُفتح كاميرا الجهاز العادية ويُضاف الختم بعد الالتقاط.</div>`}
  <div class="span2 islots">${S_.map(([k,t,d],i)=>`<div class="islot" data-slot="${k}"><span class="isn">${i+1}</span><span class="isimg" data-ipv="${k}" title="عرض الصورة بالختم"><svg class="ico" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span><b>${t} <em>*</em></b><small>${d}</small><span class="isst">لم تُرفع</span><span class="isbtn"><button type="button" class="btn sm pri" data-cam="${k}"><svg class="ico" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg> تصوير</button><label class="btn sm"><svg class="ico" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg> رفع<input type="file" accept="image/*" data-slotin="${k}" hidden></label></span></div>`).join('')}</div>
- ${ex?`<div class="fld span2"><label for="rp-msn">الرقم المسلسل للعداد (كتابة) <span style="color:var(--bad)">*</span></label><input class="inp num" id="rp-msn" dir="ltr" placeholder="كما يظهر على العداد" autocomplete="off"></div>`:''}
+ ${ex?`<div class="fld span2"><label for="rp-msn">${nwOf(r)>1?'أرقام مسلسل العدادات ('+nwOf(r)+' آبار، افصل بينها بفاصلة)':'الرقم المسلسل للعداد (كتابة)'} <span style="color:var(--bad)">*</span></label><input class="inp num" id="rp-msn" dir="ltr" placeholder="${nwOf(r)>1?'مثال: A123, A124':'كما يظهر على العداد'}" autocomplete="off"></div>`:''}
  <div class="fld"><label for="ip-la">خط العرض (عشري)</label><input class="inp num" id="ip-la" dir="ltr" value="${c?c[0]:''}"></div><div class="fld"><label for="ip-lo">خط الطول (عشري)</label><input class="inp num" id="ip-lo" dir="ltr" value="${c?c[1]:''}"></div>
  <div class="fld"><label for="ip-alt">الارتفاع (م)</label><input class="inp num" id="ip-alt" inputmode="numeric" placeholder="من الصورة أو يدوياً"></div><div class="fld"><label for="ip-place">العنوان (من GPS تلقائياً)</label><input class="inp" id="ip-place" value="${esc(r.city)}, Kharga, New Valley, Egypt"></div>
  <div class="fld span2"><label for="ip-note">الملاحظة (اسم المالك)</label><input class="inp" id="ip-note" value="${esc(r.name)}"></div><input type="hidden" id="ip-reg" value="${esc(r.city)}">
@@ -2446,15 +2482,23 @@ async function clNeedLogin(){if(!BOOTED||clActive()||!navigator.onLine)return;if
 const CM_DEC=['موافقة','موافقة مشروطة','تأجيل','رفض'];const MATCH_M=50;
 const canCommittee=()=>{const u=me();return [0,1,3,4].includes(u.r)&&lvOf(u)!=='view'};
 const canComplete=()=>{const u=me();return [0,1,3].includes(u.r)&&lvOf(u)!=='view'};
-function postSt(r){if(r.status!=='closed')return null;if(r.post==='done')return 'done';const c=r.cm;if(!c||c.dec==='تأجيل')return 'cm';if(c.dec==='رفض')return 'cmno';return 'cmok'}
+const DRAFTS=r=>r.wds||(r.wd?[r.wd]:[]);const pendDrafts=r=>DRAFTS(r).filter(d=>d.wi==null);
+function nextWellI(){let m=Math.max(0,...WB.map(x=>+x.i||0));R.forEach(r=>DRAFTS(r).forEach(d=>{if(d.wi==null&&+d.i>m)m=+d.i}));return m+1}
+const draftMatches=r=>pendDrafts(r).reduce((a,d)=>a+cmMatches(d).length,0);
+function postSt(r){if(r.status!=='closed')return null;if(r.post==='done'||(r.post==='cmok'&&DRAFTS(r).length&&!pendDrafts(r).length))return 'done';const c=r.cm;if(!c||c.dec==='تأجيل')return 'cm';if(c.dec==='رفض')return 'cmno';return 'cmok'}
 const POST={cm:{t:'بانتظار اللجنة العليا',c:'var(--s5)',bg:'var(--gold-soft)'},cmok:{t:'وافقت اللجنة العليا · استكمال البيانات',c:'var(--teal)',bg:'var(--teal-soft)'},done:{t:'مسجل بقاعدة البيانات',c:'var(--ok)',bg:'var(--ok-soft)'},cmno:{t:'رفضته اللجنة العليا',c:'var(--bad)',bg:'var(--bad-soft)'}};
 const mapPur=u=>/زراع/.test(u||'')?'الزراعة':/صناع/.test(u||'')?'الصناعة':/شرب/.test(u||'')?'مياه شرب (جمعيات)':'أخرى (خدمة طريق، حمام سباحة، ...)';
 function cmDraft(r,cm){const c=r.coords.find(q=>q[2])||[];const ip=(r.insp||[]).find(o=>o.la!=null)||{};const rp=r.rep||{};
  const d={n:r.name,nid:r.nid,reg:r.city,la:c[0]!=null?c[0]:ip.la,lo:c[1]!=null?c[1]:ip.lo,ar:cm.ar!=null&&cm.ar!==''?+cm.ar:(r.area?+(r.area.m2/FED).toFixed(4):null),q:cm.q!=null&&cm.q!==''?+cm.q:null,
-  pur:mapPur(r.use),fileNo:r.file,com:cm.date,ls:r.kind==='جديد'?'جاري ترخيصه مقترح':'جاري ترخيصه قائم',own:/شرك|مؤسس|جمعي/.test(r.name)?'شركات':'أهالي',src:'جوفي',
+  pur:mapPur(r.use),fileNo:r.file,com:cm.date,ls:r.kind==='جديد'?'جاري ترخيصه مقترح':'جاري ترخيصه قائم',own:r.cat?CAT_OWN[catOf(r)]:/شرك|مؤسس|جمعي/.test(r.name)?'شركات':'أهالي',src:'جوفي',
   op:/شمس/.test(rp.pw||'')?'طاقة شمسية':/ديزل/.test(rp.pw||'')?'ديزل':/كهرب/.test(rp.pw||'')?'كهرباء':null,dep:+rp.depth||null,
-  nt:'محوّل من منظومة التراخيص · طلب م '+r.id+(r.tc?' ('+r.tc+')':'')+(rp.msn?' · مسلسل العداد '+rp.msn:'')+(cm.cond?' · شروط اللجنة العليا: '+cm.cond:'')};
+  nt:'محوّل من منظومة التراخيص · طلب م '+r.id+(r.tc?' ('+r.tc+')':'')+(nwOf(r)>1?' · عدد الآبار المرخصة بالطلب: '+nwOf(r):'')+(rp.msn?' · مسلسل العداد '+rp.msn:'')+(cm.cond?' · شروط اللجنة العليا: '+cm.cond:'')};
  Object.keys(d).forEach(k=>{if(d[k]==null||d[k]===''||Number.isNaN(d[k]))delete d[k]});return d}
+function cmDrafts(r,cm){const base=cmDraft(r,cm);const n=nwOf(r);const st=nextWellI();if(n<=1){base.i=st;return [base]}
+ const cs=r.coords.filter(q=>q[2]);const qT=cm.q!==''&&cm.q!=null?+cm.q:null,aT=base.ar!=null?base.ar:null;const out=[];
+ for(let k=0;k<n;k++){const d=Object.assign({},base,{n:r.name+' / بئر '+(k+1),i:st+k});delete d.la;delete d.lo;const c=cs[k];if(c){d.la=c[0];d.lo=c[1]}else if(k===0&&base.la!=null){d.la=base.la;d.lo=base.lo}
+  if(qT!=null)d.q=+(qT/n).toFixed(2);else delete d.q;if(aT!=null)d.ar=+(aT/n).toFixed(4);
+  d.nt=base.nt+' · بئر '+(k+1)+' من '+n+(qT!=null?' · التصرف المعتمد الإجمالي '+qT+' م³/يوم':'')+(aT!=null?' · المساحة الإجمالية '+aT+' فدان':'');out.push(d)}return out}
 function cmMatches(o){if(!o)return [];const nn=norm(o.n||''),nr=norm(o.reg||'');return WB.map((w,idx)=>{let d=null;if(o.la!=null&&o.lo!=null&&w.la!=null&&w.lo!=null)d=Math.round(distM({la:o.la,lo:o.lo},{la:w.la,lo:w.lo}));const nm=!!nn&&norm(w.n||'')===nn&&(!nr||norm(w.reg||'')===nr);return {w,idx,d,nm}}).filter(x=>(x.d!=null&&x.d<=MATCH_M)||x.nm).sort((a,b)=>(a.d??1e9)-(b.d??1e9)).slice(0,5)}
 /* committee decision form (modal) */
 function openCm(rid){const r=R.find(x=>x.id==rid);if(!r)return;const c=r.cm||{};const m=$('#modal');m.hidden=false;const ar=r.area?+(r.area.m2/FED).toFixed(2):'';
@@ -2476,26 +2520,27 @@ function saveCm(rid){if(!canCommittee())return toast('تسجيل قرار الل
  const cm={date:g('cm-date'),mno:g('cm-mno').trim(),dec:g('cm-dec'),dno:g('cm-dno').trim(),q:g('cm-q').trim(),ar:g('cm-ar').trim(),cond:g('cm-cond').trim(),by:me().n,at:Date.now()};
  if(!cm.date){$('#cm-date').focus();return toast('تاريخ اللجنة العليا إلزامي')}if(!cm.dec){$('#cm-dec').focus();return toast('اختر قرار اللجنة')}if((cm.dec==='رفض'||cm.dec==='تأجيل'||cm.dec==='موافقة مشروطة')&&!cm.cond){$('#cm-cond').focus();return toast('اكتب '+(cm.dec==='موافقة مشروطة'?'الشروط':'السبب'))}
  const wa=$('#cm-wa').checked;r.cm=cm;const ok=cm.dec==='موافقة'||cm.dec==='موافقة مشروطة';
- if(ok){r.wd=Object.assign(cmDraft(r,cm),r.wd&&r.post!=='done'?{}:{});r.post='cmok'}else{r.post=null}
+ if(ok){const ex=DRAFTS(r);if(!(ex.length===nwOf(r)&&ex.some(d=>d.wi!=null))){r.wds=cmDrafts(r,cm);delete r.wd}r.post=pendDrafts(r).length?'cmok':'done'}else{r.post=null}
  r.log.push({d:todayISO(),t:'قرار اللجنة العليا ('+fD(cm.date)+(cm.mno?' · جلسة '+cm.mno:'')+'): '+cm.dec+(cm.dno?' · قرار رقم '+cm.dno:'')+(cm.cond?' · '+cm.cond:'')+(ok?' · تم التحويل لقاعدة البيانات (بانتظار استكمال قسم الدراسات)':''),u:me().n,ts:Date.now()});
  if(wa){const txt=cm.dec+(cm.dec==='موافقة مشروطة'||cm.dec==='رفض'||cm.dec==='تأجيل'?': '+cm.cond:'');send('committee',r,{date:cm.date,reason:txt})}
  persist(r);syncPulse();$('#modal').hidden=true;$('#modal').innerHTML='';
- const mt=ok?cmMatches(r.wd):[];toast(ok?'✓ تم تسجيل الموافقة وتحويل الطلب لقاعدة البيانات'+(mt.length?' · ⚠ يوجد تطابق مع '+mt.length+' بئر بالقاعدة':''):'✓ تم تسجيل قرار اللجنة: '+cm.dec);
+ const mt=ok?draftMatches(r):0;toast(ok?'✓ تم تسجيل الموافقة وتحويل '+(nwOf(r)>1?nwOf(r)+' آبار':'الطلب')+' لقاعدة البيانات'+(mt?' · ⚠ يوجد تطابق مع '+mt+' بئر بالقاعدة':''):'✓ تم تسجيل قرار اللجنة: '+cm.dec);
  if(drawerOpen()&&openId==r.id)renderDrawer();rerender()}
 /* drawer panel for delivered requests */
-function postPanel(r){const ps=postSt(r);const P=POST[ps];const c=r.cm;const mt=ps==='cmok'?cmMatches(r.wd):[];const w=r.wi!=null?WB.findIndex(x=>x.i==r.wi):-1;
+function postPanel(r){const ps=postSt(r);const P=POST[ps];const c=r.cm;const D=DRAFTS(r);const nm=ps==='cmok'?draftMatches(r):0;
  return `<div class="ap" style="--c:${P.c}"><div class="aph">ما بعد التسليم · ${P.t}</div><div class="apb">
-  <div class="psteps">${[['تسليم قسم التراخيص',1],['قرار اللجنة العليا',ps!=='cm'],['استكمال بيانات البئر (الدراسات)',ps==='done'],['التسجيل بقاعدة البيانات',ps==='done']].map(([t,d],i)=>`<span class="${d?'done':ps==='cmno'&&i===1?'rej':''}"><i>${d?'✓':ps==='cmno'&&i===1?'✕':i+5}</i>${t}</span>`).join('')}</div>
-  ${c?`<div class="kv" style="margin:4px 0"><div><span>تاريخ اللجنة</span><b>${fD(c.date,true)}</b></div><div><span>القرار</span><b>${esc(c.dec)}${c.dno?' · رقم '+esc(c.dno):''}${c.mno?' · جلسة '+esc(c.mno):''}</b></div>${c.q?`<div><span>التصرف المعتمد</span><b class="num">${esc(c.q)} م³/يوم</b></div>`:''}${c.ar?`<div><span>المساحة المعتمدة</span><b class="num">${esc(c.ar)} فدان</b></div>`:''}${c.cond?`<div style="grid-column:1/-1"><span>الشروط / الملاحظات</span><b>${esc(c.cond)}</b></div>`:''}</div>`:''}
-  ${mt.length?`<div class="note warn">⚠ إحداثيات البئر تتطابق مع ${mt.length} بئر قائم بقاعدة البيانات (أقربها ${mt[0].d!=null?mt[0].d+' م':'بالاسم'}). سيُعرض الاختلاف لقسم الدراسات عند الاستكمال.</div>`:''}
-  <div class="filters">${ps==='cm'&&canCommittee()?`<button class="btn pri" data-cmopen="${r.id}">تسجيل قرار اللجنة العليا</button>`:''}${ps==='cmok'&&canComplete()?`<button class="btn pri" data-cmfill="${r.id}">استكمال بيانات البئر بقاعدة البيانات</button>`:''}${(ps==='cmok'||ps==='cmno')&&canCommittee()?`<button class="btn ghost" data-cmopen="${r.id}">تعديل قرار اللجنة</button>`:''}${ps==='done'&&w>=0?`<button class="btn" data-well="${w}">عرض البئر بقاعدة البيانات · ترقيم ${r.wi}</button>`:''}</div>
+  <div class="psteps">${[['تسليم قسم التراخيص',1],['قرار اللجنة العليا',ps!=='cm'],['استكمال بيانات '+(nwOf(r)>1?'الآبار':'البئر')+' (الدراسات)',ps==='done'],['التسجيل بقاعدة البيانات',ps==='done']].map(([t,d],i)=>`<span class="${d?'done':ps==='cmno'&&i===1?'rej':''}"><i>${d?'✓':ps==='cmno'&&i===1?'✕':i+5}</i>${t}</span>`).join('')}</div>
+  ${c?`<div class="kv" style="margin:4px 0"><div><span>تاريخ اللجنة</span><b>${fD(c.date,true)}</b></div><div><span>القرار</span><b>${esc(c.dec)}${c.dno?' · رقم '+esc(c.dno):''}${c.mno?' · جلسة '+esc(c.mno):''}</b></div>${c.q?`<div><span>التصرف المعتمد</span><b class="num">${esc(c.q)} م³/يوم</b></div>`:''}${c.ar?`<div><span>المساحة المعتمدة</span><b class="num">${esc(c.ar)} فدان</b></div>`:''}<div><span>عدد الآبار</span><b class="num">${nwOf(r)}</b></div>${c.cond?`<div style="grid-column:1/-1"><span>الشروط / الملاحظات</span><b>${esc(c.cond)}</b></div>`:''}</div>`:''}
+  ${D.length&&ps!=='cmno'?`<div class="dlist">${D.map((d,k)=>{const wx=d.wi!=null?WB.findIndex(x=>x.i==d.wi):-1;const mt=d.wi==null?cmMatches(d):[];return `<div class="dli ${d.wi!=null?'ok':''}"><span class="dn">${k+1}</span><div><b>${esc(d.n||r.name)}</b><small>${d.wi!=null?'✓ مسجل بقاعدة البيانات · ترقيم '+d.wi:'بانتظار الاستكمال · ترقيم محجوز '+(d.i||'—')}${d.la!=null?' · '+(+d.la).toFixed(5)+'، '+(+d.lo).toFixed(5):' · الإحداثيات تُستكمل'}${mt.length?' · <span style="color:var(--warn);font-weight:700">⚠ تطابق '+(mt[0].d!=null?mt[0].d+' م':'بالاسم')+'</span>':''}</small></div>${d.wi==null&&canComplete()?`<button class="btn sm pri" data-cmfill="${r.id}|${k}">استكمال</button>`:wx>=0?`<button class="btn sm" data-well="${wx}">عرض</button>`:''}</div>`}).join('')}</div>`:''}
+  ${nm?`<div class="note warn">⚠ ${nm} تطابق في الإحداثيات مع آبار قائمة بقاعدة البيانات. سيُعرض الاختلاف لقسم الدراسات عند الاستكمال.</div>`:''}
+  <div class="filters">${ps==='cm'&&canCommittee()?`<button class="btn pri" data-cmopen="${r.id}">تسجيل قرار اللجنة العليا</button>`:''}${(ps==='cmok'||ps==='cmno')&&canCommittee()?`<button class="btn ghost" data-cmopen="${r.id}">تعديل قرار اللجنة</button>`:''}</div>
   ${ps==='cm'&&!canCommittee()?'<div class="muted" style="font-size:12.5px">يسجل قرار اللجنة العليا قسمُ التراخيص أو قسمُ الدراسات.</div>':''}</div></div>`}
 /* completing data: draft well form → match → merge or create */
-function cmFill(rid){if(!canComplete())return toast('استكمال البيانات متاح لقسم الدراسات والأدمن');WF={mode:'draft',rid:+rid};closeDetail();go('wellform')}
-function cmFinish(o){const r=R.find(x=>x.id==WF.rid);if(!r)return toast('الطلب غير موجود');o.i=o.i||Math.max(...WB.map(x=>x.i||0))+1;r.wd=Object.assign({},o);persist(r);
- const mt=cmMatches(o);if(!mt.length)return cmCreate(r,o);cmMatchModal(r,o,mt)}
+function cmFill(arg){if(!canComplete())return toast('استكمال البيانات متاح لقسم الدراسات والأدمن');const [rid,kk]=String(arg).split('|');const r=R.find(x=>x.id==rid);if(!r)return;const k=kk!=null?+kk:DRAFTS(r).findIndex(d=>d.wi==null);WF={mode:'draft',rid:+rid,k:Math.max(0,k)};closeDetail();go('wellform')}
+function cmFinish(o){const r=R.find(x=>x.id==WF.rid);if(!r)return toast('الطلب غير موجود');const k=WF.k||0;const D=DRAFTS(r);const dr=D[k]||{};o.i=o.i||dr.i||nextWellI();if(!r.wds){r.wds=D;delete r.wd}r.wds[k]=Object.assign({},o);persist(r);
+ const mt=cmMatches(o);if(!mt.length)return cmCreate(r,o,k);cmMatchModal(r,o,mt,k)}
 const CM_LIC=['ls','lic','fileNo','f0','st0','end','com','ren','q','qa','ar','pay','fee','feep'];const CM_KEY=['ls','lic','fileNo','f0','st0','end','com','ren','q','qa','ar','la','lo','n','reg','pur','op','dep'];
-function cmMatchModal(r,o,mt){const m=$('#modal');m.hidden=false;const cols=WELL_COLS.filter(c=>c[0]!=='i');
+function cmMatchModal(r,o,mt,k){const m=$('#modal');m.hidden=false;const cols=WELL_COLS.filter(c=>c[0]!=='i');
  const fmt=(k,v)=>v==null||v===''?'<span class="muted">—</span>':(k==='la'||k==='lo')?(+v).toFixed(6):esc(String(v));
  m.innerHTML=`<div class="mbox lbx" role="dialog" aria-label="تطابق مع بئر قائم"><div class="mhd"><h3>⚠ تطابق مع ${mt.length>1?mt.length+' آبار قائمة':'بئر قائم'} بقاعدة البيانات</h3><button class="ibtn" data-mclose aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="mbd">
   <div class="note warn">بيانات الطلب (${esc(r.name)} · م ${r.id}) تتطابق ${mt[0].d!=null?'في الإحداثيات':'في الاسم والمنطقة'} مع آبار مسجلة. راجع الاختلافات، واختر القيم المعتمدة، ثم حدّث البئر القائم أو سجّله كبئر جديد مستقل.</div>
@@ -2504,15 +2549,17 @@ function cmMatchModal(r,o,mt){const m=$('#modal');m.hidden=false;const cols=WELL
     ${diff.length?`<div class="tw"><table class="cmt"><thead><tr><th>الحقل</th><th>القيمة بقاعدة البيانات</th><th>القيمة من الطلب / الاستكمال</th><th>اعتماد الجديدة</th></tr></thead><tbody>${diff.map(([k,l])=>`<tr class="${CM_KEY.includes(k)?'key':''}"><td>${esc(l)}</td><td class="num">${fmt(k,w[k])}</td><td class="num">${fmt(k,o[k])}</td><td>${o[k]!=null&&o[k]!==''?`<input type="checkbox" data-cmk="${j}|${k}" ${w[k]==null||w[k]===''||CM_LIC.includes(k)?'checked':''} aria-label="اعتماد ${esc(l)}">`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="note ok">لا توجد اختلافات في البيانات.</div>'}
     <div class="filters" style="margin-top:8px"><button class="btn pri" data-cmmerge="${j}">تحديث هذا البئر بالقيم المحددة وربطه بالطلب</button></div></details>`}).join('')}
   <div class="filters"><button class="btn" data-mclose>رجوع للتعديل</button><button class="btn ghost" data-cmnew style="margin-inline-start:auto">تجاهل التطابق وتسجيله كبئر جديد مستقل</button></div></div></div>`;
- CMM={r,o,mt}}
+ CMM={r,o,mt,k}}
 let CMM=null;
-function cmMerge(j){const {r,o,mt}=CMM;const x=mt[j];const rec=WB[x.idx];const ks=[...document.querySelectorAll(`[data-cmk^="${j}|"]`)].filter(c=>c.checked).map(c=>c.dataset.cmk.split('|')[1]);
+function cmDone(r,k,wi,txt){const D=DRAFTS(r);if(!r.wds){r.wds=D;delete r.wd}if(r.wds[k])r.wds[k].wi=wi;const n=r.wds.length,left=pendDrafts(r).length;r.wis=r.wds.map(d=>d.wi).filter(x=>x!=null);r.wi=r.wis[0];r.post=left?'cmok':'done';
+ r.log.push({d:todayISO(),t:'استكمال قسم الدراسات'+(n>1?' (بئر '+(k+1)+' من '+n+')':'')+': '+txt+(n>1?(left?' · متبقي '+left:' · اكتمل تسجيل كل الآبار'):''),u:me().n,ts:Date.now()});persist(r);if(left)setTimeout(()=>{const l=pendDrafts(r).length;if(l)toast('تبقى '+l+(l>1?' آبار':' بئر')+' لهذا الطلب · من «المحوّل من التراخيص»')},2900)}
+function cmMerge(j){const {r,o,mt,k}=CMM;const x=mt[j];const rec=WB[x.idx];const ks=[...document.querySelectorAll(`[data-cmk^="${j}|"]`)].filter(c=>c.checked).map(c=>c.dataset.cmk.split('|')[1]);
  const ch=[];ks.forEach(k=>{if(String(rec[k]??'')!==String(o[k]??'')){ch.push((WELL_COLS.find(c=>c[0]===k)||[,k])[1]);rec[k]=o[k]}});
  rec._n=null;rec._c=wcat(rec);(S.wmod=S.wmod||{})[rec.i]=strip(rec);enqueue('w'+rec.i,'بئر: '+rec.n,'بئر');
- r.post='done';r.wi=rec.i;r.log.push({d:todayISO(),t:'استكمال قسم الدراسات: تحديث البئر القائم ترقيم '+rec.i+(ch.length?' ('+ch.join('، ')+')':' بدون تغيير'),u:me().n,ts:Date.now()});persist(r);
+ cmDone(r,k,rec.i,'تحديث البئر القائم ترقيم '+rec.i+(ch.length?' ('+ch.join('، ')+')':' بدون تغيير'));
  CMM=null;$('#modal').hidden=true;$('#modal').innerHTML='';WF=null;save._q=1;save();syncPulse();toast('✓ تم تحديث البئر ترقيم '+rec.i+' وربطه بالطلب');W.tab='all';go('registry');renderWell(rec)}
-function cmCreate(r,o){const rec=Object.assign({},o);if(WB.some(x=>x.i==rec.i))rec.i=Math.max(...WB.map(x=>x.i||0))+1;rec._i=WB.length;rec._c=wcat(rec);WB.push(rec);(S.wadd=S.wadd||[]).push(strip(rec));enqueue('w'+rec.i,'بئر: '+rec.n,'بئر');
- r.post='done';r.wi=rec.i;r.log.push({d:todayISO(),t:'استكمال قسم الدراسات: تسجيل البئر بقاعدة البيانات · ترقيم '+rec.i,u:me().n,ts:Date.now()});persist(r);
+function cmCreate(r,o,k){const rec=Object.assign({},o);if(!rec.i||WB.some(x=>x.i==rec.i))rec.i=nextWellI();rec._i=WB.length;rec._c=wcat(rec);WB.push(rec);(S.wadd=S.wadd||[]).push(strip(rec));enqueue('w'+rec.i,'بئر: '+rec.n,'بئر');
+ cmDone(r,k||0,rec.i,'تسجيل البئر بقاعدة البيانات · ترقيم '+rec.i);
  CMM=null;$('#modal').hidden=true;$('#modal').innerHTML='';WF=null;save._q=1;save();syncPulse();toast('✓ تم تسجيل البئر بقاعدة البيانات · ترقيم '+rec.i);W.tab='all';go('registry');renderWell(rec)}
 /* list page in the database section */
 let CMT='cm';
@@ -2521,12 +2568,12 @@ VIEWS.cmte=()=>{const L=R.filter(r=>r.status==='closed');const by={cm:[],cmok:[]
  const list=by[CMT].sort((a,b)=>((b.cm&&b.cm.date)||'').localeCompare((a.cm&&a.cm.date)||''));const openOK=pageOK('requests');
  return `<div class="ph"><div><h2>المحوّل من منظومة التراخيص</h2><p>الطلبات المسلّمة لقسم التراخيص ← قرار اللجنة العليا ← استكمال قسم الدراسات لبيانات البئر ← مطابقة الإحداثيات مع قاعدة البيانات ← التسجيل.</p></div></div>
  <div class="minis">${tabs.map(t=>`<button class="card cmk ${CMT===t[0]?'on':''}" data-cmtab="${t[0]}" style="--c:${t[2]}"><span class="muted">${t[1]}</span><b>${by[t[0]].length}</b></button>`).join('')}</div>
- <div class="card"><h3>${tabs.find(t=>t[0]===CMT)[1]} <small>${list.length}</small></h3>${list.length?`<div class="tw"><table><thead><tr><th>الطلب</th><th>العميل</th><th>المنطقة</th><th>النوع</th><th>اللجنة العليا</th><th>التطابق</th><th></th></tr></thead><tbody>${list.map(r=>{const mt=CMT==='cmok'?cmMatches(r.wd):[];return `<tr style="cursor:default"><td class="num">م ${r.id}<br><small class="muted">${esc(r.file||'')}</small></td><td><b>${esc(r.name)}</b></td><td>${esc(r.city)}</td><td>${esc(KL(r.kind))}</td><td>${r.cm?`${fD(r.cm.date)}<br><small class="muted">${esc(r.cm.dec)}${r.cm.dno?' · '+esc(r.cm.dno):''}</small>`:'<span class="muted">—</span>'}</td><td>${CMT==='cmok'?(mt.length?`<span class="tag" style="background:var(--warn-soft);color:var(--warn)">⚠ ${mt.length} ${mt[0].d!=null?'· '+mt[0].d+' م':'بالاسم'}</span>`:'<span class="muted">لا يوجد</span>'):CMT==='done'&&r.wi!=null?'ترقيم '+r.wi:'—'}</td>
-   <td style="display:flex;gap:6px;flex-wrap:wrap">${CMT==='cm'&&canCommittee()?`<button class="btn sm pri" data-cmopen="${r.id}">قرار اللجنة</button>`:''}${CMT==='cmok'&&canComplete()?`<button class="btn sm pri" data-cmfill="${r.id}">استكمال البيانات</button>`:''}${CMT==='done'&&r.wi!=null&&WB.findIndex(x=>x.i==r.wi)>=0?`<button class="btn sm" data-well="${WB.findIndex(x=>x.i==r.wi)}">عرض البئر</button>`:''}${(CMT==='cmok'||CMT==='cmno')&&canCommittee()?`<button class="btn sm ghost" data-cmopen="${r.id}">تعديل القرار</button>`:''}${openOK?`<button class="btn sm ghost" data-open="${r.id}">ملف الطلب</button>`:''}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty">لا توجد طلبات في هذه الخانة.</div>`}</div>
+ <div class="card"><h3>${tabs.find(t=>t[0]===CMT)[1]} <small>${list.length}</small></h3>${list.length?`<div class="tw"><table><thead><tr><th>الطلب</th><th>العميل</th><th>المنطقة</th><th>النوع</th><th>الآبار</th><th>اللجنة العليا</th><th>التطابق</th><th></th></tr></thead><tbody>${list.map(r=>{const nmt=CMT==='cmok'?draftMatches(r):0;const D=DRAFTS(r),dn=D.filter(d=>d.wi!=null).length;return `<tr style="cursor:default"><td class="num">م ${r.id}<br><small class="muted">${esc(r.file||'')}</small></td><td><b>${esc(r.name)}</b></td><td>${esc(r.city)}</td><td>${esc(KL(r.kind))}<br><small class="muted">${esc(catOf(r))}</small></td><td class="num"><b>${nwOf(r)}</b></td><td>${r.cm?`${fD(r.cm.date)}<br><small class="muted">${esc(r.cm.dec)}${r.cm.dno?' · '+esc(r.cm.dno):''}</small>`:'<span class="muted">—</span>'}</td><td>${CMT==='cmok'?(nmt?`<span class="tag" style="background:var(--warn-soft);color:var(--warn)">⚠ ${nmt} تطابق</span>`:'<span class="muted">لا يوجد</span>'):CMT==='done'&&D.length?'ترقيم '+D.map(d=>d.wi).filter(x=>x!=null).join('، '):'—'}</td>
+   <td style="display:flex;gap:6px;flex-wrap:wrap">${CMT==='cm'&&canCommittee()?`<button class="btn sm pri" data-cmopen="${r.id}">قرار اللجنة</button>`:''}${CMT==='cmok'&&canComplete()?`<button class="btn sm pri" data-cmfill="${r.id}">استكمال البيانات${D.length>1?' ('+dn+'/'+D.length+')':''}</button>`:''}${CMT==='done'&&r.wi!=null&&WB.findIndex(x=>x.i==r.wi)>=0?`<button class="btn sm" data-well="${WB.findIndex(x=>x.i==r.wi)}">عرض البئر</button>`:''}${(CMT==='cmok'||CMT==='cmno')&&canCommittee()?`<button class="btn sm ghost" data-cmopen="${r.id}">تعديل القرار</button>`:''}${openOK?`<button class="btn sm ghost" data-open="${r.id}">ملف الطلب</button>`:''}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty">لا توجد طلبات في هذه الخانة.</div>`}</div>
  <div class="note">قرار اللجنة: قسم التراخيص أو قسم الدراسات أو الأدمن. استكمال البيانات والمطابقة والتعديل: قسم الدراسات والأدمن (تحكم كامل).</div>`};
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.10.25-2008';
+const APP_VER='2026.10.25-2121';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -2560,6 +2607,31 @@ function waPush(r,key,text){const m={id:Date.now().toString(36)+Math.random().to
  if(m.st!=='sent')waBar(m);return m}
 function waBar(m){let b=$('#wabar');if(!b){b=document.createElement('div');b.id='wabar';b.className='wabar';document.body.appendChild(b)}
  b.innerHTML=`<span class="wabi"><b>رسالة واتساب جاهزة</b><small>${esc(m.name)}</small></span>${waBtn(m)}<button class="ibtn" data-wabx aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>`;b.hidden=false;clearTimeout(waBar._t);waBar._t=setTimeout(()=>{b.hidden=true},25000)}
+
+/* ---------- edit request basics ---------- */
+const canEditReq=()=>{const u=me();return [0,1,2].includes(u.r)&&lvOf(u)!=='view'};
+function openReqEdit(rid){const r=R.find(x=>x.id==rid);if(!r)return;const m=$('#modal');m.hidden=false;const other=r.use&&!['زراعي','غير زراعي'].includes(r.use);
+ m.innerHTML=`<div class="mbox" role="dialog" aria-label="تعديل بيانات الطلب"><div class="mhd"><h3>تعديل بيانات الطلب · م ${r.id}</h3><button class="ibtn" data-mclose aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="mbd">
+  <div class="form" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+   <div class="fld"><label for="re-kind">نوع الترخيص</label><select class="inp" id="re-kind" style="width:100%">${[['قائم','بئر قائم'],['جديد','بئر جديد'],['تجديد ترخيص','تجديد ترخيص']].map(([v,t])=>`<option value="${v}" ${r.kind===v?'selected':''}>${t}</option>`).join('')}</select></div>
+   <div class="fld"><label for="re-cat">فئة الأرض</label><select class="inp" id="re-cat" style="width:100%">${CATS.map(c=>`<option ${catOf(r)===c?'selected':''}>${c}</option>`).join('')}</select></div>
+   <div class="fld"><label for="re-use">الغرض</label><select class="inp" id="re-use" style="width:100%"><option ${r.use==='زراعي'?'selected':''}>زراعي</option><option ${r.use==='غير زراعي'?'selected':''}>غير زراعي</option><option value="other" ${other?'selected':''}>أخرى</option></select></div>
+   <div class="fld" id="re-ow" ${other?'':'hidden'}><label for="re-other">اكتب الغرض</label><input class="inp" id="re-other" value="${other?esc(r.use):''}"></div>
+   <div class="fld"><label for="re-land">نوع الأرض</label><select class="inp" id="re-land" style="width:100%"><option ${r.land==='أرض قديمة'?'selected':''}>أرض قديمة</option><option ${r.land==='أرض جديدة'?'selected':''}>أرض جديدة</option></select></div>
+   <div class="fld"><label for="re-city">المنطقة</label><input class="inp" id="re-city" list="cities" value="${esc(r.city)}"></div>
+   <div class="fld span2"><label for="re-nw">عدد الآبار</label><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><input class="inp num" id="re-nw" type="number" min="1" max="99" style="width:110px" value="${nwOf(r)}" ${r.nwm?'':'readonly'}><label class="ack" style="margin:0;background:var(--surface2)"><input type="checkbox" id="re-nwa" ${r.nwm?'':'checked'}> حساب تلقائي (استثمار / شركات: بئر لكل ${WPF} فدان)</label></div><small class="muted" id="re-nwh"></small></div>
+  </div>
+  <div class="filters"><button class="btn" data-mclose>إلغاء</button><button class="btn pri" data-resave="${r.id}" style="margin-inline-start:auto">حفظ التعديلات</button></div></div></div>`;
+ const calc=()=>{const t={cat:$('#re-cat').value,area:r.area};const a=autoNW(t);const auto=$('#re-nwa').checked;const nw=$('#re-nw');nw.readOnly=auto;if(auto)nw.value=a;$('#re-nwh').textContent=fedOf(r)?`المساحة ${fedOf(r).toFixed(2)} فدان · المحسوب تلقائياً: ${a} ${a>1?'آبار':'بئر'}`:'المساحة غير مسجلة · سجّلها من بيانات الطلب ليُحسب العدد تلقائياً'};
+ $('#re-cat').onchange=calc;$('#re-nwa').onchange=calc;$('#re-use').onchange=e=>{$('#re-ow').hidden=e.target.value!=='other'};calc()}
+function saveReqEdit(rid){if(!canEditReq())return toast('تعديل بيانات الطلب متاح لمهندس المنظومة والأدمن');const r=R.find(x=>x.id==rid);const g=id=>$('#'+id).value.trim();
+ let use=g('re-use');if(use==='other'){use=g('re-other');if(!use)return toast('اكتب الغرض')}const city=g('re-city').replace(/\s+/g,' ');if(!city)return toast('اكتب المنطقة');
+ const auto=$('#re-nwa').checked,nw=Math.max(1,parseInt(g('re-nw'))||1);
+ const nv={kind:g('re-kind'),use,land:g('re-land'),city,cat:g('re-cat')};const ch=[];const L={kind:'نوع الترخيص',use:'الغرض',land:'نوع الأرض',city:'المنطقة',cat:'فئة الأرض'};
+ Object.keys(nv).forEach(k=>{if((k==='cat'?catOf(r):(r[k]||''))!==nv[k]){ch.push(L[k]+': '+(k==='kind'?KL(r[k]||'')+' ← '+KL(nv[k]):(r[k]||'—')+' ← '+nv[k]));r[k]=nv[k]}});
+ const oldN=nwOf(r);if(auto){r.nwm=false;delete r.nw}else{r.nwm=true;r.nw=nw}const newN=nwOf(r);if(oldN!==newN||(!auto&&ch.length===0))ch.push('عدد الآبار: '+oldN+' ← '+newN+(auto?' (تلقائي)':' (يدوي)'));
+ if(!ch.length){$('#modal').hidden=true;return toast('لا توجد تعديلات')}addCity(city);
+ r.log.push({d:todayISO(),t:'تعديل بيانات الطلب: '+ch.join(' · '),u:me().n,ts:Date.now()});persist(r);syncPulse();$('#modal').hidden=true;$('#modal').innerHTML='';toast('✓ تم حفظ التعديلات');if(drawerOpen())renderDrawer();rerender()}
 
 /* ---------- global events ---------- */
 document.addEventListener('click',e=>{
@@ -2624,11 +2696,13 @@ document.addEventListener('click',e=>{
   if(t.closest('[data-pxtpl]')){exportCoordTpl();return}
   if(el=t.closest('[data-trkcopy]')){const r=R.find(x=>x.id==el.dataset.trkcopy);const txt='السيد/ '+r.name+'\nرقم متابعة طلبكم بمنظومة تراخيص الآبار بالخارجة: '+trackCode(r)+'\nالحالة: '+(r.status==='closed'?'تم الإنهاء والتسليم لقسم التراخيص':r.status==='rejected'?'مرفوض':stat(r).t)+'\nتابعوا طلبكم من «بوابة المواطن» برقم المتابعة وآخر 4 أرقام من الرقم القومي.';(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('تم نسخ رسالة المتابعة')).catch(()=>toast('رقم المتابعة: '+trackCode(r)));return}
   if(el=t.closest('[data-wtab]')){W.tab=el.dataset.wtab;W.page=1;if(cur!=='registry')go('registry');else rerender();return}
+  if(el=t.closest('[data-redit]')){openReqEdit(el.dataset.redit);return}
+  if(el=t.closest('[data-resave]')){saveReqEdit(el.dataset.resave);return}
   if(el=t.closest('[data-cmopen]')){openCm(el.dataset.cmopen);return}
   if(el=t.closest('[data-cmsave]')){saveCm(el.dataset.cmsave);return}
   if(el=t.closest('[data-cmfill]')){cmFill(el.dataset.cmfill);return}
   if(el=t.closest('[data-cmmerge]')){cmMerge(+el.dataset.cmmerge);return}
-  if(t.closest('[data-cmnew]')){if(CMM)cmCreate(CMM.r,CMM.o);return}
+  if(t.closest('[data-cmnew]')){if(CMM)cmCreate(CMM.r,CMM.o,CMM.k);return}
   if(el=t.closest('[data-cmtab]')){CMT=el.dataset.cmtab;if(!el.dataset.go){rerender();return}}
   if(el=t.closest('[data-well]')){renderWell(WB[+el.dataset.well]);return}
   if(el=t.closest('[data-wpg]')){W.page+=+el.dataset.wpg;rerender();return}

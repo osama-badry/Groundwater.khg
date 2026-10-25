@@ -906,8 +906,8 @@ body.pon{overflow:hidden}
     <form class="lcard" id="loginForm" novalidate>
       <div class="lbrand"><img src="" data-logo alt="شعار منظومة تراخيص الآبار بالخارجة"><div><h1>منظومة تراخيص الآبار بالخارجة</h1><p>الإدارة العامة للمياه الجوفية بالخارجة ودرب الأربعين</p></div></div>
       <h2>تسجيل الدخول</h2>
-      <label class="lf"><span>اسم المستخدم</span><input id="lu" value="" placeholder="username" autocomplete="username" dir="ltr"></label>
-      <label class="lf"><span>كلمة المرور</span><span class="lpw"><input id="lp" type="password" value="" placeholder="••••••••" autocomplete="current-password" dir="ltr"><button type="button" id="lpEye" aria-label="إظهار كلمة المرور"><svg class="ico" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
+      <label class="lf"><span>اسم المستخدم</span><input id="lu" value="" placeholder="username" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" dir="ltr"></label>
+      <label class="lf"><span>كلمة المرور</span><span class="lpw"><input id="lp" type="password" value="" placeholder="••••••••" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" dir="ltr"><button type="button" id="lpEye" aria-label="إظهار كلمة المرور"><svg class="ico" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
       <div class="lerr" id="lerr" hidden></div>
       <button class="lbtn" type="submit">دخول إلى المنظومة</button>
       <button type="button" class="lportal" data-portal="track"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span><b>بوابة المواطن</b><small>استعلم عن حالة طلبك برقم المتابعة</small></span></button>
@@ -2443,7 +2443,7 @@ $('#lactGo').onclick=async()=>{const c=$('#lcode').value.trim().toUpperCase().re
   lerr('');$('#lu').value=un;$('#lp').value='';$('#lp').focus();ok.hidden=false;ok.textContent='✓ كود صحيح. تم تفعيل هذا الجهاز لحساب «'+un+'». اكتب كلمة المرور، ويعمل الحساب داخل مدة صلاحيته المحددة.';try{localStorage.setItem('wl-dev-act',un)}catch(_){}};
 $('#loginForm').onsubmit=async e=>{e.preventDefault();if(!window.crypto||!crypto.subtle)return lerr('هذا المتصفح لا يدعم فتح البيانات المشفرة. استخدم متصفحاً حديثاً.');const btn=$('.lbtn'),un=$('#lu').value.trim().toLowerCase(),pw=$('#lp').value;if(!un||!pw)return lerr('اكتب اسم المستخدم وكلمة المرور.');
   btn.disabled=true;btn.textContent='جارٍ التحقق وفتح البيانات…';lerr('');
-  try{const raw=await unwrap(un,pw);if(!raw){lerr('اسم المستخدم أو كلمة المرور غير صحيحة.');return}
+  try{let raw=await unwrap(un,pw);if(!raw&&pw.trim()!==pw)raw=await unwrap(un,pw.trim());if(!raw){lerr('اسم المستخدم أو كلمة المرور غير صحيحة.');return}
    if(!BOOTED)await boot(raw);const u=S.users.find(x=>x.u.toLowerCase()===un);const m=allowed(u);if(m)return lerr(m);
    enter(u);toast('مرحباً '+u.n)}
   catch(err){lerr('تعذر فتح البيانات على هذا المتصفح. استخدم متصفحاً حديثاً.')}

@@ -884,7 +884,7 @@ body.pon{overflow:hidden}
 .mgh:hover{background:rgb(255 255 255/.07)}
 .mg.open .mgh{background:linear-gradient(90deg,rgb(229 189 99/.10),rgb(229 189 99/.24));border-color:rgb(229 189 99/.35)}.mg.open .mgh b{color:#F3D791}
 .mg.cur:not(.open) .mgh{box-shadow:inset -3px 0 0 #E5BD63}
-.mg:not(.main) .mgh{padding:9px 12px}.mg:not(.main) .mgh b{font-size:14.5px}.mg:not(.main) .mgic{width:28px;height:28px;background:rgb(127 214 211/.10);color:#7FD6D3}
+.mg:not(.mgm) .mgh{padding:9px 12px}.mg:not(.mgm) .mgh b{font-size:14.5px}.mg:not(.mgm) .mgic{width:28px;height:28px;background:rgb(127 214 211/.10);color:#7FD6D3}
 .mgb{display:none;margin:6px 0 4px;padding:6px;border-radius:13px;background:linear-gradient(180deg,#0E3B42,#0A2E34);border:1px solid rgb(127 214 211/.16)}
 .mg.open .mgb{display:flex;flex-direction:column;gap:2px;animation:mgo .18s ease-out}@keyframes mgo{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .mgb a{font-size:14px!important;padding:9px 12px!important;color:#D9E6E3!important;opacity:.92}.mgb a .ico{color:#7FD6D3}
@@ -1234,7 +1234,7 @@ function menu(){topUser();const vis=p=>pageOK(p[0])&&!(p[0]==='users'&&!can(8))&
  const mo=S.mopen||(S.mopen={});const cg=(G.find(x=>x.items.some(p=>p[0]===cur))||{}).k;if(menu._c!==cur){menu._c=cur;if(cg)mo[cg]=true}
  const it=p=>`<a href="#${p[0]}" data-go="${p[0]}" class="${cur===p[0]?'on':''}">${ico(p[0])}${p[1]}${p[0]==='requests'?`<span class="cnt">${R.length}</span>`:''}${p[0]==='registry'&&WB.length?`<span class="cnt alertc">${(WC().soon||0)+(WC().expired||0)}</span>`:''}${p[0]==='whatsapp'&&S.outbox.length?`<span class="cnt">${S.outbox.length}</span>`:''}${p[0]==='drills'&&decls().length?`<span class="cnt">${decls().length}</span>`:''}</a>`;
  $('#menu').innerHTML=G.map(g=>{const its=g.items.filter(vis);if(!its.length)return '';const open=!!mo[g.k];const main=['lic','lsec','db'].includes(g.k);
-  return `<div class="mg mg-${g.k} ${open?'open':''} ${main?'main':''} ${g.k===cg?'cur':''}"><button class="mgh" data-mg="${g.k}" aria-expanded="${open}"><span class="mgic"><svg class="ico" viewBox="0 0 24 24">${MGIC[g.k]||''}</svg></span><b>${g.t}</b><small>${its.length}</small><svg class="ico chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button><div class="mgb">${its.map(it).join('')}</div></div>`}).join('')}
+  return `<div class="mg mg-${g.k} ${open?'open':''} ${main?'mgm':''} ${g.k===cg?'cur':''}"><button class="mgh" data-mg="${g.k}" aria-expanded="${open}"><span class="mgic"><svg class="ico" viewBox="0 0 24 24">${MGIC[g.k]||''}</svg></span><b>${g.t}</b><small>${its.length}</small><svg class="ico chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button><div class="mgb">${its.map(it).join('')}</div></div>`}).join('')}
 function bell(){const e=$('#bellN');if(!e)return;const n=BOOTED?notifs().length:0;e.textContent=n||'';e.hidden=!n}
 function topUser(){bell();const u=me(),e=$('#userChip');if(e)e.innerHTML=`<div class="av" style="background:${u.r===0?'var(--gold)':'var(--teal)'}">${esc(u.n.replace('م/ ','').trim()[0])}</div><div class="un"><b>${esc(u.n)}</b><div class="muted" style="font-size:11px">${ROLES[u.r]}${lvOf(u)!=='full'?` · <span class="lvb lv-${lvOf(u)}">${LV[lvOf(u)]}</span>`:''}</div></div>`}
 let NAV=[];
@@ -2682,7 +2682,7 @@ VIEWS.cmte=()=>{const L=R.filter(r=>r.status==='closed');const by={cm:[],cmok:[]
  <div class="note">قرار اللجنة: قسم التراخيص أو قسم الدراسات أو الأدمن. استكمال البيانات والمطابقة والتعديل: قسم الدراسات والأدمن (تحكم كامل).</div>`};
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.10.26-1508';
+const APP_VER='2026.10.26-1602';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);

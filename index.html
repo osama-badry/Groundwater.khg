@@ -4,7 +4,7 @@
 <style>[hidden]{display:none!important}</style></head><body><title>منظومة تراخيص الآبار بالخارجة</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@200..1000&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=IBM+Plex+Mono:wght@500;700&display=swap">
 <style>
 /* Layout: fixed deep-aquifer sidebar on the right (RTL) + working canvas; drawer for a request file on the left */
 :root{
@@ -16,8 +16,8 @@
   --wa:#1F9D55; --wa-bubble:#DCF8C6; --wa-ink:#13281A; --wa-bg:#EAE3D8;
   --paper:#FFFFFF; --paper-ink:#1A2326; --paper-line:#D9DEDD;
   --shadow:0 1px 2px rgb(15 37 41/.06),0 8px 24px rgb(15 37 41/.07);
-  --f-display:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;
-  --f-body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,Arial,sans-serif;
+  --f-display:"Cairo","Segoe UI",Tahoma,Arial,sans-serif;
+  --f-body:"Cairo","Segoe UI",Tahoma,Arial,sans-serif;
   --r:12px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -43,7 +43,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .num,td,.kpi b{font-variant-numeric:tabular-nums}
-h1,h2,h3{font-family:var(--f-display);font-weight:600;text-wrap:balance;margin:0;line-height:1.3}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;text-wrap:balance;margin:0;line-height:1.3}
 a{color:var(--teal)}
 
 /* shell */
@@ -621,7 +621,7 @@ select.accsel{font-size:12.5px;font-weight:700;padding:5px 9px;border-color:tran
 body{font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-kerning:normal}
 p{text-wrap:pretty}
 h2{letter-spacing:0}
-.card h3{font-family:var(--f-display);font-weight:600;font-size:17px;line-height:1.4;letter-spacing:0}
+.card h3{font-family:var(--f-display);font-weight:700;font-size:17px;line-height:1.4;letter-spacing:0}
 .card h3 small{font-family:var(--f-body);font-size:12.5px;font-weight:500}
 .fld label,.flab{font-size:13px;font-weight:600;line-height:1.5}
 .inp,select.inp,input.inp,textarea.inp{font-size:15px;line-height:1.5;padding:9px 12px}
@@ -725,8 +725,8 @@ body.pon{overflow:hidden}
 .pclose{display:inline-flex;align-items:center;gap:6px;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.14);color:#E8E1CC;border-radius:999px;padding:7px 14px 7px 12px;font:inherit;font-size:13px;cursor:pointer}
 .pclose:hover{background:rgb(255 255 255/.14)}.pclose .ico{width:16px;height:16px}
 .pbrand{display:flex;align-items:center;gap:14px;margin-top:18px}.pbrand img{width:62px;height:62px;border-radius:50%;background:#fff;padding:3px;box-shadow:0 0 0 3px rgb(229 189 99/.35)}
-.pbrand h1{font-family:"Reem Kufi",sans-serif;font-size:26px;margin:0;color:#fff;letter-spacing:0}.pbrand p{margin:2px 0 0;font-size:13px;color:#B9C8C6}
-.phero{margin:26px 0 22px;max-width:640px}.phero h2{font-family:"Reem Kufi",sans-serif;font-size:clamp(26px,4.4vw,40px);line-height:1.35;margin:0;color:#fff;font-weight:600}
+.pbrand h1{font-family:"Cairo",sans-serif;font-size:26px;margin:0;color:#fff;letter-spacing:0}.pbrand p{margin:2px 0 0;font-size:13px;color:#B9C8C6}
+.phero{margin:26px 0 22px;max-width:640px}.phero h2{font-family:"Cairo",sans-serif;font-size:clamp(26px,4.4vw,40px);line-height:1.35;margin:0;color:#fff;font-weight:600}
 .phero h2 em{font-style:normal;color:#E5BD63}.phero p{color:#C9D6D4;font-size:15px;line-height:1.9;margin:10px 0 0}
 .ptabs{display:flex;gap:6px;padding:6px;background:rgb(0 0 0/.25);border:1px solid rgb(255 255 255/.08);border-radius:16px 16px 0 0;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
 .ptabs button{display:flex;align-items:center;gap:8px;border:0;background:none;color:#C9D6D4;font:inherit;font-size:14px;font-weight:600;padding:11px 18px;border-radius:12px;cursor:pointer;white-space:nowrap}
@@ -735,7 +735,7 @@ body.pon{overflow:hidden}
 .pbody{max-width:1080px;margin:0 auto;padding:22px 20px 30px;display:flex;flex-direction:column;gap:18px}
 .pgrid{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:18px;align-items:start}
 .pcard{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow-sm)}
-.pcard h3{margin:0 0 6px;font-size:18px;font-family:"Reem Kufi",sans-serif;font-weight:600}
+.pcard h3{margin:0 0 6px;font-size:18px;font-family:"Cairo",sans-serif;font-weight:600}
 .pmut{color:var(--muted);font-size:13.5px;line-height:1.8;margin:0 0 14px}
 .pf{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.pf span{font-size:13px;font-weight:600;color:var(--muted)}
 .pf input,.pf select,.pf textarea{font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface2);color:var(--ink);outline:none;transition:border-color .15s,background .15s}
@@ -752,7 +752,7 @@ body.pon{overflow:hidden}
 .pres{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-md);animation:pin .35s ease-out}
 @keyframes pin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .presh{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:20px 22px;background:linear-gradient(135deg,var(--surface2),var(--surface))}
-.presh h3{margin:4px 0;font-size:21px;font-family:"Reem Kufi",sans-serif;font-weight:600}.presh p{margin:0;color:var(--muted);font-size:13px;line-height:1.8}
+.presh h3{margin:4px 0;font-size:21px;font-family:"Cairo",sans-serif;font-weight:600}.presh p{margin:0;color:var(--muted);font-size:13px;line-height:1.8}
 .presh bdi{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;color:var(--ink)}
 .peye{font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.02em}
 .pst{flex:none;padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:700;background:var(--teal-soft);color:var(--teal)}
@@ -858,7 +858,7 @@ body.pon{overflow:hidden}
 .linst .ico{background:#7FD6D3;color:#05161B}
 .updforce{position:fixed;inset:0;z-index:200;background:rgb(4 16 19/.86);display:grid;place-items:center;padding:20px}
 .updbox{background:var(--surface);color:var(--ink);border-radius:20px;padding:26px 22px;max-width:380px;width:100%;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;box-shadow:0 20px 60px rgb(0 0 0/.4)}
-.updbox img{width:72px;height:72px}.updbox h3{margin:0;font-family:"Reem Kufi",sans-serif;font-size:20px}.updbox p{margin:0;color:var(--muted);font-size:14px;line-height:1.8}
+.updbox img{width:72px;height:72px}.updbox h3{margin:0;font-family:"Cairo",sans-serif;font-size:20px}.updbox p{margin:0;color:var(--muted);font-size:14px;line-height:1.8}
 .updbar2{width:100%;height:6px;background:var(--surface2);border-radius:6px;overflow:hidden}.updbar2 i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),#E5BD63);transition:width 1s linear}
 .updbox .btn{width:100%;justify-content:center}
 @media (max-width:600px){.mbox .form{grid-template-columns:1fr!important}.mbox .form>*{grid-column:auto!important}}
@@ -877,7 +877,7 @@ body.pon{overflow:hidden}
 /* accordion side menu */
 .menu{gap:6px}.mg{border-radius:14px}
 .mgh{width:100%;display:flex;align-items:center;gap:10px;padding:12px 12px;border:1px solid rgb(255 255 255/.06);background:rgb(255 255 255/.035);color:#EFE6CF;font:inherit;border-radius:13px;cursor:pointer;text-align:start;transition:background .15s}
-.mgh b{flex:1;min-width:0;font-family:"Reem Kufi",sans-serif;font-weight:700;font-size:15.5px;letter-spacing:0;color:#F7EED6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mgh{padding:11px 10px!important;gap:8px!important}.mgh small{display:none}.mgh b{font-size:15px!important}
+.mgh b{flex:1;min-width:0;font-family:"Cairo",sans-serif;font-weight:700;font-size:15.5px;letter-spacing:0;color:#F7EED6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mgh{padding:11px 10px!important;gap:8px!important}.mgh small{display:none}.mgh b{font-size:15px!important}
 .mgh small{font-size:11px;background:rgb(255 255 255/.1);border-radius:999px;padding:1px 8px;color:#C9D6D4}
 .mgic{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgb(229 189 99/.14);color:#E5BD63;flex:none}.mgic .ico{width:18px;height:18px}
 .mgh .chev{width:18px;height:18px;color:#B9C8C6;transition:transform .2s}.mg.open .mgh .chev{transform:rotate(180deg)}
@@ -892,11 +892,11 @@ body.pon{overflow:hidden}
 .mgb a:hover{background:rgb(255 255 255/.06)}
 /* drill search & form */
 .drres{display:flex;flex-direction:column;gap:6px;margin-top:10px}
-.drit{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);font:inherit;color:inherit;text-align:start;cursor:pointer}
-.drit:hover{border-color:var(--teal)}.drit.on{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}.drit.no{opacity:.7}
+.drit{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);font:inherit;color:inherit;text-align:start;cursor:pointer}
+.drit:hover{border-color:var(--teal)}.drit.on{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}.drit.no{border-color:color-mix(in srgb,var(--bad) 45%,var(--line));background:color-mix(in srgb,var(--bad-soft) 55%,var(--surface))}.drit.no .drt>b{color:var(--bad)}.drit.no .drn{background:var(--bad-soft);color:var(--bad)}.drw{flex:1 1 100%;display:flex;gap:6px;align-items:flex-start;margin-top:5px;padding:6px 9px;border-radius:9px;background:var(--bad-soft);color:var(--bad);font-size:12.5px;line-height:1.55}.drw i{font-style:normal;flex:none}.drw b{font-weight:800}
 .drn{min-width:48px;padding:3px 8px;border-radius:8px;background:var(--surface2);font-weight:700;text-align:center;font-size:13px}
-.drt{flex:1;display:flex;flex-direction:column;min-width:0}.drt small{color:var(--muted);font-size:12px}
-.drx{font-size:11px;font-weight:700;color:var(--bad);background:var(--bad-soft);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.drt{flex:1 1 170px;display:flex;flex-direction:column;min-width:0}.drt small{color:var(--muted);font-size:12px}
+.drcm{font-size:11.5px;font-weight:800;color:#7A5A12;background:linear-gradient(90deg,#F7E7B8,#EFD58E);border:1px solid #D9B65A;border-radius:999px;padding:2px 10px;white-space:nowrap}.drx{font-size:11px;font-weight:700;color:var(--bad);background:var(--bad-soft);border-radius:999px;padding:2px 8px;white-space:nowrap}
 .drsec{font-weight:800;font-size:13.5px;color:var(--teal);margin:12px 0 8px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
 .drform .form{grid-template-columns:repeat(2,minmax(0,1fr))}
 .drcx td{opacity:.6}
@@ -904,29 +904,31 @@ body.pon{overflow:hidden}
 #print{position:fixed;inset:0;z-index:150;background:#4f5a5c;overflow:auto}
 .prbar{position:sticky;top:0;display:flex;gap:10px;align-items:center;padding:10px 16px;background:var(--side);color:var(--side-ink);z-index:2;flex-wrap:wrap}
 .prwrap{padding:22px 10px;display:flex;justify-content:center}
-.a4{--ink:#0F1E22;--tl:#0B4A50;--gd:#B08A2E;width:210mm;height:297mm;background:#fff;color:var(--ink);box-shadow:0 12px 40px rgb(0 0 0/.45);padding:11mm 13mm 8mm;position:relative;overflow:hidden;font-family:"Cairo",sans-serif;font-size:11pt;line-height:1.6;display:flex;flex-direction:column;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;text-rendering:optimizeLegibility}
+.a4{--ink:#0F1E22;--tl:#0B4A50;--gd:#B08A2E;width:210mm;height:297mm;background:#fff;color:var(--ink);box-shadow:0 12px 40px rgb(0 0 0/.45);padding:11mm 13mm 8mm;position:relative;overflow:hidden;font-family:"Cairo",sans-serif;font-size:11pt;line-height:1.6;display:flex;flex-direction:column;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact;text-rendering:optimizeLegibility;font-weight:600}
 .a4 *{box-sizing:border-box}.a4>*{flex-shrink:0;position:relative;z-index:1}
 .a4frame{position:absolute!important;inset:5mm;border:1.6pt solid var(--tl);border-radius:2mm;pointer-events:none;z-index:0!important}
 .a4frame::after{content:"";position:absolute;inset:1.3mm;border:0.6pt solid var(--gd);border-radius:1.4mm}
 .a4wm{position:absolute!important;left:50%;top:56%;width:118mm;transform:translate(-50%,-50%);opacity:.04;pointer-events:none;z-index:0!important}
 .a4void{position:absolute!important;top:46%;left:50%;transform:translate(-50%,-50%) rotate(-24deg);font-size:7.091em;font-weight:900;color:rgb(190 30 30/.22);border:7px solid rgb(190 30 30/.22);border-radius:14px;padding:0 28px;z-index:5!important;font-family:"Cairo",sans-serif}
 .a4h{display:grid;grid-template-columns:1fr 1.25fr 1fr;align-items:center;gap:8px}
-.a4org{display:flex;flex-direction:column;line-height:1.45;color:var(--tl);font-size:0.964em}.a4org b{font-size:1.127em;font-weight:700;color:var(--tl)}
+.a4org{display:flex;flex-direction:column;align-items:center;text-align:center;justify-self:start;line-height:1.5;color:var(--tl);font-size:0.964em;font-weight:700}.a4org b{font-size:1.127em;font-weight:800;color:var(--tl)}
 .a4mid{text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px}
 .a4sys{font-family:"Cairo",sans-serif;font-size:0.764em;font-weight:600;color:var(--gd);letter-spacing:0;border:0.8pt solid color-mix(in srgb,var(--gd) 50%,transparent);border-radius:20px;padding:0 10px}
 .a4mid b{font-family:"Cairo",sans-serif;font-size:1.364em;color:var(--tl);font-weight:700;line-height:1.35}
 .a4sub{font-family:"Cairo",sans-serif;font-size:0.782em;color:#5B6B6E}
 .a4lg{display:flex;justify-content:flex-end}.a4logo{width:27mm;height:27mm;object-fit:contain}
 .a4rule{height:3px;margin:5px 0 6px;background:linear-gradient(90deg,var(--gd),var(--tl) 30%,var(--tl) 70%,var(--gd));border-radius:2px}
-.a4code{display:grid;grid-template-columns:1.75fr .75fr 1.2fr 1.15fr 1fr;border:0.8pt solid #CDB26E;border-radius:6px;overflow:hidden;background:#FCF8EC;font-family:"Cairo",sans-serif}
-.a4code>div{padding:3px 9px;display:flex;flex-direction:column;border-inline-start:0.8pt solid #E8DBB2;line-height:1.35}
+.a4code{display:grid;grid-template-columns:2.05fr .6fr 1.1fr 1fr .95fr 1fr;border:0.8pt solid #CDB26E;border-radius:6px;overflow:hidden;background:#FCF8EC;font-family:"Cairo",sans-serif}
+.a4code>div{padding:3px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-inline-start:0.8pt solid #E8DBB2;line-height:1.35}
 .a4code>div.k{border:0;background:var(--tl);color:#F3D791}
-.a4code span{font-size:0.655em;color:#7A6A3A;font-weight:500}.a4code .k span{color:#BFD3D1}
-.a4code b{font-size:0.891em;color:var(--tl);font-weight:700}.a4code .k b{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-size:1.000em;color:#F3D791;letter-spacing:.05em}
-.a4tw{display:flex;align-items:center;gap:14px;margin:4px 30mm 2px}.a4 .a4tw i{flex:1;height:1px!important;border:0!important;min-width:0!important;background:linear-gradient(90deg,transparent,var(--gd))}.a4tw i:last-child{background:linear-gradient(90deg,var(--gd),transparent)}
+.a4code span{font-size:0.655em;color:#7A6A3A;font-weight:500}.a4code .k span{color:#BFD3D1}.a4code>div.x{background:#7A1F1F}.a4code .x span{color:#F1C9C2}.a4code .x b{color:#fff}
+.a4code b{font-size:0.891em;color:var(--tl);font-weight:700}.a4code .k b{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-size:.96em;color:#F3D791;letter-spacing:.02em;white-space:nowrap}
+.a4tw{display:flex;align-items:center;gap:14px;margin:4px 30mm 2px}.a4 .a4tw i{flex:1;position:relative;height:8px!important;border:0!important;min-width:0!important;margin-top:.62em;background:linear-gradient(90deg,#5E420B,#8A6416 55%,transparent) top/100% 3.2px no-repeat,linear-gradient(90deg,#8A6416,#B08A2E 50%,transparent) bottom/100% 1.2px no-repeat}
+.a4 .a4tw i::after{content:'';position:absolute;top:50%;left:-3px;width:9px;height:9px;background:#5E420B;transform:translate(-50%,-50%) rotate(45deg)}.a4 .a4tw i:last-child{background:linear-gradient(270deg,#5E420B,#8A6416 55%,transparent) top/100% 3.2px no-repeat,linear-gradient(270deg,#8A6416,#B08A2E 50%,transparent) bottom/100% 1.2px no-repeat}
+.a4 .a4tw i:last-child::after{left:auto;right:-3px;transform:translate(50%,-50%) rotate(45deg)}
 .a4t{font-family:"Cairo",sans-serif;font-size:2.091em;margin:0;color:var(--tl);font-weight:700;line-height:1.3}
 .a4b p{margin:1.5px 0}
-.fv{font-weight:700;color:#000;background:#F1F6F5;border-bottom:1px dotted #8A9A9C;padding:0 6px;border-radius:3px}
+.fv{font-weight:800;color:#000;background:#F1F6F5;border-bottom:1px dotted #8A9A9C;padding:0 6px;border-radius:3px}
 .nm{font-family:"Cairo",sans-serif;letter-spacing:.02em}
 .lb{color:#55666A;font-size:0.945em}
 .a4xy{display:flex;justify-content:center;gap:10mm;margin:3px 0}.a4xy>div{display:flex;flex-direction:column;align-items:center;border:0.8pt solid #D5E3E1;background:#F6FAF9;border-radius:6px;padding:2px 16px;min-width:62mm}
@@ -937,7 +939,7 @@ body.pon{overflow:hidden}
 .a4l li{counter-increment:a4n;position:relative;padding-inline-start:22px;margin:1px 0}
 .a4l li::before{content:counter(a4n);position:absolute;inset-inline-start:0;top:.3em;width:1.45em;height:1.45em;border-radius:50%;background:var(--tl);color:#fff;font-family:"Cairo",sans-serif;font-size:0.691em;font-weight:700;display:grid;place-items:center;line-height:1.45em;text-align:center}
 .hl{background:#FFF3CF;padding:0 4px;border-radius:3px}
-.a4box{border:1.4pt solid #4C8F3C;background:#F5FAF2;border-radius:7px;padding:3px 12px;text-align:center;margin:5px 8mm 3px;display:flex;flex-direction:column;font-size:0.909em;line-height:1.5}.a4box b{font-size:1.000em;color:#2F6B22}
+.a4exp{display:block;font-weight:800;color:#7A1F1F;margin:1px 0 2px}.a4exp u{text-decoration-thickness:1.5px;text-underline-offset:3px}.a4box{border:1.4pt solid #4C8F3C;background:#F5FAF2;border-radius:7px;padding:3px 12px;text-align:center;margin:5px 8mm 3px;display:flex;flex-direction:column;font-size:0.909em;line-height:1.5}.a4box b{font-size:1.000em;color:#2F6B22}
 .a4c{text-align:center;font-weight:700;margin:1px 0!important}.a4u{text-decoration:underline;text-underline-offset:4px}
 .a4sig{display:grid;grid-template-columns:1fr 1fr;gap:8mm;margin-top:4px}.a4sig>div{border:0.8pt solid #CFDAD8;border-radius:7px;padding:3px 10px 4px;background:#FBFDFC}
 .a4sig h4{margin:0 0 2px;text-align:center;font-size:0.982em;color:var(--tl);font-family:"Cairo",sans-serif;font-weight:600;border-bottom:0.8pt solid #E2E9E8;padding-bottom:1px}
@@ -1016,7 +1018,7 @@ body.pon{overflow:hidden}
     <rect x="1176" y="452" width="4" height="400" fill="#fff" opacity=".45"/>
     <path d="M1166 852 h28 l-14 26z" fill="#B9C3C2"/>
     <g class="drops" fill="#7FE0DA"><circle cx="1180" cy="820" r="3.5"/><circle cx="1180" cy="760" r="3"/><circle cx="1180" cy="700" r="2.6"/><circle cx="1180" cy="640" r="2.2"/></g>
-    <g font-family="IBM Plex Sans Arabic, Tahoma, sans-serif" font-size="15" fill="#F2DDB4" opacity=".75" text-anchor="start">
+    <g font-family="Cairo, Tahoma, sans-serif" font-size="15" fill="#F2DDB4" opacity=".75" text-anchor="start">
       <text x="1215" y="585">سطح الأرض</text>
       <text x="1215" y="700">طبقات طينية وصخرية</text>
       <text x="1215" y="815" fill="#BFF1EC">الخزان الجوفي · الحجر الرملي النوبي</text>
@@ -1148,11 +1150,11 @@ const LV={view:'عرض فقط',add:'عرض وإضافة',edit:'عرض وإضاف
 const LVD={view:'يشاهد البيانات والتقارير فقط، بدون أي إضافة أو تعديل أو إجراء.',add:'يشاهد ويضيف طلبات وآباراً جديدة فقط، بدون تعديل أو تنفيذ مراحل.',edit:'يشاهد ويضيف ويعدّل وينفذ إجراءات المراحل حسب دوره، بدون إدارة المستخدمين.',full:'كل ما تسمح به مصفوفة الصلاحيات لدوره.'};
 const lvOf=u=>u.r===0?'full':(u.acc||'full');
 function lvOk(l,i){if(l==='full'||i===7||i===10)return true;if(l==='view')return false;if(l==='add')return i===0;if(l==='edit')return i!==8;return true}
-const RA_DEF=[{lic:'edit',db:'edit',rep:1,set:1,pd:1},{lic:'edit',db:'edit',rep:1,set:1,pd:1},{lic:'edit',db:'view',rep:1,set:0,pd:1},{lic:'none',db:'edit',rep:1,set:0,pd:1},{lic:'view',db:'view',rep:1,set:0,pd:1},{lic:'view',db:'view',rep:1,set:0,pd:1},{lic:'view',db:'view',rep:1,set:0,pd:0}];
-const SECN={lic:'منظومة التراخيص',db:'قاعدة البيانات'};const ACCN={edit:'إضافة وتعديل',view:'مشاهدة فقط',none:'بدون وصول'};
-function ra(u){u=u||me();if(u.r===0)return RA_DEF[0];return (S.ra&&S.ra[u.r])||RA_DEF[u.r]||RA_DEF[6]}
+const RA_DEF=[{lic:'edit',lsec:'edit',db:'edit',rep:1,set:1,pd:1},{lic:'edit',lsec:'edit',db:'edit',rep:1,set:1,pd:1},{lic:'edit',lsec:'none',db:'view',rep:1,set:0,pd:1},{lic:'none',lsec:'view',db:'edit',rep:1,set:0,pd:1},{lic:'view',lsec:'edit',db:'view',rep:1,set:0,pd:1},{lic:'view',lsec:'none',db:'view',rep:1,set:0,pd:1},{lic:'view',lsec:'view',db:'view',rep:1,set:0,pd:0}];
+const SECN={lic:'منظومة التراخيص',lsec:'قسم التراخيص',db:'قاعدة البيانات'};const ACCN={edit:'إضافة وتعديل',view:'مشاهدة فقط',none:'بدون وصول'};
+function ra(u){u=u||me();if(u.r===0)return RA_DEF[0];const d=RA_DEF[u.r]||RA_DEF[6];return Object.assign({},d,(S.ra&&S.ra[u.r])||{})}
 const PSEC={cal:'lic',audit:'set',dash:'lic',requests:'lic',new:'lic',map:'lic',whatsapp:'lic',portal:'lic',inspq:'lic',registry:'db',cmte:'db',drill:'lsec',drills:'lsec',wellform:'db',wmap:'db',monitor:'db',reports:'rep',users:'set',backup:'set'};
-function pageOK(p){const u=me();if(p==='inspq')return [0,1,5].includes(u.r);if(PSEC[p]==='lsec')return u.r===0||[1,3,4,6].includes(u.r);if(u.r===0)return true;if(u.r===5&&PSEC[p]==='lic'&&!['requests','map'].includes(p))return false;if(u.r===5&&p==='cmte')return false;const sc_=PSEC[p];if(!sc_)return true;const a=ra(u);if(sc_==='lic'||sc_==='db')return a[sc_]!=='none'&&(p!=='new'||can(0))&&(p!=='wellform'||canAddWell());if(sc_==='rep')return !!a.rep;if(sc_==='set')return !!a.set;return true}
+function pageOK(p){const u=me();if(p==='inspq')return [0,1,5].includes(u.r);if(PSEC[p]==='lsec')return u.r===0||ra(u).lsec!=='none';if(u.r===0)return true;if(u.r===5&&PSEC[p]==='lic'&&!['requests','map'].includes(p))return false;if(u.r===5&&p==='cmte')return false;const sc_=PSEC[p];if(!sc_)return true;const a=ra(u);if(sc_==='lic'||sc_==='db')return a[sc_]!=='none'&&(p!=='new'||can(0))&&(p!=='wellform'||canAddWell());if(sc_==='rep')return !!a.rep;if(sc_==='set')return !!a.set;return true}
 function firstPage(){return (me().r===5?['inspq']:[]).concat(['dash','registry','reports','mobile']).find(pageOK)||'mobile'}
 const can=i=>{const u=me();if(u.r===0)return true;const a=ra(u);let ok=i<=6?a.lic==='edit':i===7?!!a.rep:i===8?!!a.set:i===9?a.db==='edit':i===10?!!a.pd:false;return ok&&lvOk(lvOf(u),i)};
 const can_old=i=>{const u=me();if(u.r===0)return true;if(!(S.perm[u.r]&&S.perm[u.r][i]))return false;return lvOk(lvOf(u),i)};
@@ -1254,7 +1256,7 @@ const VIEWS={},AFTER={};
 const F0=()=>({stage:'all',city:'',kind:'',q:'',dq:'',page:1,from:'',to:'',sts:[],adv:false});let F=F0();
 function counts(){const c={0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0};R.forEach(r=>c[stageOf(r)]++);return c}
 function donut(items,total,label,attr='data-kpi'){const C=2*Math.PI*62;let off=0;const segs=items.filter(i=>i[1]>0).map(i=>{const len=i[1]/total*C;const s=`<circle r="62" cx="80" cy="80" fill="none" stroke="${i[2]}" stroke-width="22" stroke-dasharray="${Math.max(len-1.5,0.5)} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 80 80)"><title>${i[0]}: ${i[1]}</title></circle>`;off+=len;return s}).join('');
- return `<div class="donut"><svg viewBox="0 0 160 160" width="160" height="160"><circle r="62" cx="80" cy="80" fill="none" stroke="var(--surface2)" stroke-width="22"/>${segs}<text x="80" y="78" text-anchor="middle" font-size="26" font-weight="700" fill="var(--ink)" font-family="Reem Kufi, sans-serif">${total}</text><text x="80" y="98" text-anchor="middle" font-size="11" fill="var(--muted)">${label}</text></svg>
+ return `<div class="donut"><svg viewBox="0 0 160 160" width="160" height="160"><circle r="62" cx="80" cy="80" fill="none" stroke="var(--surface2)" stroke-width="22"/>${segs}<text x="80" y="78" text-anchor="middle" font-size="26" font-weight="700" fill="var(--ink)" font-family="Cairo, sans-serif">${total}</text><text x="80" y="98" text-anchor="middle" font-size="11" fill="var(--muted)">${label}</text></svg>
  <div class="dleg">${items.map(i=>`<button ${attr}="${i[3]}"><i style="background:${i[2]}"></i><span>${i[0]}</span><b>${i[1]}</b><em>${total?Math.round(i[1]/total*100):0}%</em></button>`).join('')}</div></div>`}
 function segBar(items){const t=items.reduce((a,i)=>a+i[1],0)||1;return `<div class="sbar">${items.filter(i=>i[1]).map(i=>`<i style="width:${i[1]/t*100}%;background:${i[2]}" title="${esc(i[0])}: ${i[1]}"></i>`).join('')}</div><div class="slist">${items.map(i=>`<div><i style="background:${i[2]}"></i><span>${esc(i[0])}</span><b>${i[1]}</b><em>${Math.round(i[1]/t*100)}%</em></div>`).join('')}</div>`}
 function licStrip(){if(!WB.length)return '';const so=WB.filter(o=>o._c==='soon').length,ex=WB.filter(o=>o._c==='expired').length;return `<div class="lstrip"><span class="lsi">!</span><div><b>تنبيهات التراخيص</b><span>${so} رخصة تنتهي خلال ${ALERT_DAYS} يوماً · <em>${ex.toLocaleString('en-US')} رخصة منتهية</em></span></div><button class="btn sm" data-wtab="soon">القريبة من الانتهاء</button><button class="btn sm bad" data-wtab="expired">المنتهية</button></div>`}
@@ -1811,7 +1813,7 @@ VIEWS.users=()=>{
   <td>${(dev||u.r>1)?`<button class="btn sm" data-uedit="${i}">تعديل</button>`:''}</td></tr>`}).join('')}
  </tbody></table></div>
  <div class="card"><h3>مستويات الوصول <small>${dev?'يحددها المطوّر لكل مستخدم، وتُطبق فوق صلاحيات الدور':'يحددها المطوّر'}</small></h3><div class="lvgrid">${Object.entries(LV).map(([k,v])=>`<div class="lvc lv-${k}"><b>${v}</b><span>${LVD[k]}</span><em>${S.users.filter(u=>u.r!==0&&lvOf(u)===k).length} مستخدم</em></div>`).join('')}</div></div>
- <div class="card"><h3>صلاحيات الأدوار <small>${dev?'يحددها المطوّر لكل دور · تُطبق على كل مستخدمي الدور':'يحددها المطوّر'}</small></h3><div class="tw"><table class="matrix ramx"><thead><tr><th>الدور</th><th>منظومة التراخيص</th><th>قاعدة البيانات</th><th>التقارير</th><th>الإعدادات والمستخدمون</th><th>البيانات الشخصية</th><th>المستخدمون</th></tr></thead><tbody>${ROLES.map((r,j)=>{const a=ra({r:j});const lock=j===0||!dev;const sel=(k)=>lock?`<span class="acc acc-${a[k]}">${ACCN[a[k]]}</span>`:`<select class="inp accsel acc-${a[k]}" data-ra="${j},${k}" aria-label="${r} - ${SECN[k]}">${['edit','view','none'].map(v=>`<option value="${v}" ${a[k]===v?'selected':''}>${ACCN[v]}</option>`).join('')}</select>`;const ck=(k)=>`<input type="checkbox" data-rack="${j},${k}" ${a[k]?'checked':''} ${lock?'disabled':''} aria-label="${r}">`;return `<tr style="cursor:default"><td><b>${r}</b></td><td>${sel('lic')}</td><td>${sel('db')}</td><td>${ck('rep')}</td><td>${ck('set')}</td><td>${ck('pd')}</td><td class="num">${S.users.filter(u=>u.r===j).length}</td></tr>`}).join('')}</tbody></table></div><div class="muted" style="font-size:12.5px;margin-top:8px">«إضافة وتعديل» تشمل إضافة الطلبات أو الآبار وتنفيذ المراحل والتعديل · «مشاهدة فقط» تعرض البيانات والخرائط بدون أي تعديل · «بدون وصول» يُخفي القسم من القائمة.</div></div>
+ <div class="card"><h3>صلاحيات الأدوار <small>${dev?'يحددها المطوّر لكل دور · تُطبق على كل مستخدمي الدور':'يحددها المطوّر'}</small></h3><div class="tw"><table class="matrix ramx"><thead><tr><th>الدور</th><th>منظومة التراخيص</th><th>قسم التراخيص</th><th>قاعدة البيانات</th><th>التقارير</th><th>الإعدادات والمستخدمون</th><th>البيانات الشخصية</th><th>المستخدمون</th></tr></thead><tbody>${ROLES.map((r,j)=>{const a=ra({r:j});const lock=j===0||!dev;const sel=(k)=>lock?`<span class="acc acc-${a[k]}">${ACCN[a[k]]}</span>`:`<select class="inp accsel acc-${a[k]}" data-ra="${j},${k}" aria-label="${r} - ${SECN[k]}">${['edit','view','none'].map(v=>`<option value="${v}" ${a[k]===v?'selected':''}>${ACCN[v]}</option>`).join('')}</select>`;const ck=(k)=>`<input type="checkbox" data-rack="${j},${k}" ${a[k]?'checked':''} ${lock?'disabled':''} aria-label="${r}">`;return `<tr style="cursor:default"><td><b>${r}</b></td><td>${sel('lic')}</td><td>${sel('lsec')}</td><td>${sel('db')}</td><td>${ck('rep')}</td><td>${ck('set')}</td><td>${ck('pd')}</td><td class="num">${S.users.filter(u=>u.r===j).length}</td></tr>`}).join('')}</tbody></table></div><div class="muted" style="font-size:12.5px;margin-top:8px">«إضافة وتعديل» تشمل إضافة الطلبات أو الآبار وتنفيذ المراحل والتعديل · «مشاهدة فقط» تعرض البيانات والخرائط بدون أي تعديل · «بدون وصول» يُخفي القسم من القائمة.</div></div>
  ${dev?`<div class="card"><h3>مدة ترخيص البرنامج للموظفين <small>للمطوّر فقط</small></h3><ul class="clean"><li>لكل موظف مدة ترخيص تظهر في عمود «مدة ترخيص البرنامج» بالجدول أعلاه، مع الأيام المتبقية.</li><li>للتمديد السريع اضغط «+30 يوم» أو «+سنة» بجانب الموظف، ويُحسب التمديد من تاريخ الانتهاء الحالي أو من اليوم إن كان منتهياً.</li><li>لتحديد مدة مختلفة اضغط «تعديل» واختر من «مدة ترخيص البرنامج»: دائم، 7 أيام، 30 يوماً، 3 شهور، 6 شهور، سنة، أو تاريخ محدد.</li><li>عند انتهاء المدة يتوقف الحساب تلقائياً على الكمبيوتر والموبايل، ويظهر للموظف عند الدخول أن ترخيصه انتهى ويتواصل مع المطوّر.</li></ul></div>`:''}
  ${dev?repMatrix():''}
  <div class="grid g2">
@@ -1838,7 +1840,7 @@ function drawQR(){const c=$('#qr');if(!c)return;const x=c.getContext('2d'),n=29,
 AFTER.users=()=>{if(!can(8))return;drawQR();
  document.querySelectorAll('[data-rp]').forEach(c=>c.onchange=()=>{const [u,id]=c.dataset.rp.split('|');S.rep=S.rep||{};const a=new Set(S.rep[u]||[]);c.checked?a.add(id):a.delete(id);S.rep[u]=[...a];save();syncPulse()});
  document.querySelectorAll('[data-acc]').forEach(c=>c.onchange=()=>{const u=S.users[+c.dataset.acc];u.acc=c.value;clUserSave(u,null,false,false);save();syncPulse();toast(u.n+': '+LV[u.acc]);rerender()});
- document.querySelectorAll('[data-ra]').forEach(c=>c.onchange=()=>{const [j,k]=c.dataset.ra.split(',');S.ra=S.ra||JSON.parse(JSON.stringify(RA_DEF));S.ra[+j][k]=c.value;save();syncPulse();toast(ROLES[+j]+' · '+SECN[k]+': '+ACCN[c.value]);rerender()});document.querySelectorAll('[data-rack]').forEach(c=>c.onchange=()=>{const [j,k]=c.dataset.rack.split(',');S.ra=S.ra||JSON.parse(JSON.stringify(RA_DEF));S.ra[+j][k]=c.checked?1:0;save();syncPulse()});
+ document.querySelectorAll('[data-ra]').forEach(c=>c.onchange=()=>{const [j,k]=c.dataset.ra.split(',');S.ra=S.ra||JSON.parse(JSON.stringify(RA_DEF));S.ra[+j]=Object.assign({},RA_DEF[+j],S.ra[+j]);S.ra[+j][k]=c.value;save();syncPulse();toast(ROLES[+j]+' · '+SECN[k]+': '+ACCN[c.value]);rerender()});document.querySelectorAll('[data-rack]').forEach(c=>c.onchange=()=>{const [j,k]=c.dataset.rack.split(',');S.ra=S.ra||JSON.parse(JSON.stringify(RA_DEF));S.ra[+j]=Object.assign({},RA_DEF[+j],S.ra[+j]);S.ra[+j][k]=c.checked?1:0;save();syncPulse()});
  document.querySelectorAll('[data-toggle]').forEach(c=>c.onchange=()=>{const u=S.users[+c.dataset.toggle];u.on=c.checked?1:0;clUserSave(u,null,false,false);save();syncPulse();toast(u.on?'تم تشغيل حساب '+u.n:'تم إيقاف حساب '+u.n+' · لن يستطيع الدخول من أي جهاز');rerender()});
  const f=$('#uform');if(!f)return;
  const d=$('#ue-d');if(d)d.onchange=()=>{$('#ue-dw').hidden=d.value!=='custom'};
@@ -2304,11 +2306,11 @@ let LOGO_IMG=null;function logoImg(){if(!LOGO_IMG){LOGO_IMG=new Image();LOGO_IMG
 /* GPS-camera style stamp; maxPx=0 keeps the photo's native resolution */
 function stampCanvas(img,m,maxPx){const W0=img.naturalWidth,H0=img.naturalHeight,lim=maxPx||8000,sc_=Math.min(1,lim/Math.max(W0,H0));const W=Math.round(W0*sc_),H=Math.round(H0*sc_);const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(img,0,0,W,H);drawStamp(x,W,H,m);return c}
 function drawStamp(x,W,H,m){
- {const fs=Math.max(8,Math.round(Math.min(Math.min(W,H*0.75)*0.032,H/26))),F=`"IBM Plex Sans Arabic",Tahoma,sans-serif`,l1='منظومة التراخيص - '+ORG,l2=[m.owner,m.rg].filter(Boolean).join(' · ');
+ {const fs=Math.max(8,Math.round(Math.min(Math.min(W,H*0.75)*0.032,H/26))),F=`"Cairo",Tahoma,sans-serif`,l1='منظومة التراخيص - '+ORG,l2=[m.owner,m.rg].filter(Boolean).join(' · ');
   x.save();x.direction='rtl';x.textAlign='center';x.font=`700 ${fs}px ${F}`;const w1=Math.min(W*0.96,x.measureText(l1).width+fs*2.4);const bh=fs*(l2?3.7:2.2),by=fs*0.7;
   const g_=x.createLinearGradient(0,by,0,by+bh);g_.addColorStop(0,'rgba(6,34,40,.82)');g_.addColorStop(1,'rgba(10,64,70,.74)');x.fillStyle=g_;x.beginPath();x.roundRect?x.roundRect((W-w1)/2,by,w1,bh,fs*0.55):x.rect((W-w1)/2,by,w1,bh);x.fill();
     x.fillStyle='#fff';x.fillText(l1,W/2,by+fs*1.45,w1-fs*1.2);if(l2){x.font=`600 ${fs*0.92}px ${F}`;x.fillStyle='#F2DDB4';x.fillText(l2,W/2,by+fs*2.85,w1-fs*1.2)}x.restore()}
- if(!m.pre){const fs=Math.max(8,Math.round(Math.min(Math.min(W,H*0.75)*0.034,H/24))),lh=fs*1.55,pad=fs*1.1,F=`"IBM Plex Sans Arabic",Tahoma,sans-serif`;const oh=Math.round(lh*8.2+pad);const oy=H-oh;
+ if(!m.pre){const fs=Math.max(8,Math.round(Math.min(Math.min(W,H*0.75)*0.034,H/24))),lh=fs*1.55,pad=fs*1.1,F=`"Cairo",Tahoma,sans-serif`;const oh=Math.round(lh*8.2+pad);const oy=H-oh;
   x.fillStyle='rgba(28,30,30,.58)';x.fillRect(0,oy,W,oh);
   x.font=`700 ${fs*0.92}px ${F}`;const bh=fs*2.6,bw=Math.max(fs*9,x.measureText('منظومة تراخيص الآبار').width+bh+fs*0.4),bx=W-bw-pad*0.4,by=oy-bh-fs*0.4;x.fillStyle='rgba(28,30,30,.72)';x.beginPath();x.roundRect?x.roundRect(bx,by,bw,bh,fs*0.4):x.rect(bx,by,bw,bh);x.fill();
   const li=logoImg();if(li.complete&&li.naturalWidth)x.drawImage(li,bx+fs*0.35,by+fs*0.3,bh-fs*0.6,bh-fs*0.6);
@@ -2353,7 +2355,7 @@ function wireInsp(ap,r){if(!ap.querySelector('[data-slotin]'))return;ap._ip={};
  let tmr=null;ap.querySelectorAll('#ip-la,#ip-lo,#ip-alt,#ip-place,#ip-note,#ip-reg').forEach(i=>i.addEventListener('input',()=>{clearTimeout(tmr);tmr=setTimeout(paint,300)}));ap.querySelector('#ip-pre').addEventListener('change',paint);
  ap.querySelectorAll('[data-slotin]').forEach(fi=>fi.onchange=async()=>{const f=fi.files[0];if(!f)return;const k=fi.dataset.slotin;fi.closest('.islot').querySelector('.isst').textContent='جارٍ التجهيز…';
   try{const p=await readPhoto(f);ap._ip[k]=p;if(p.ex.la&&!ap._gps){ap._gps=1;ap.querySelector('#ip-la').value=p.ex.la.toFixed(6);ap.querySelector('#ip-lo').value=p.ex.lo.toFixed(6)}else if(!p.ex.la&&!ap._warned){ap._warned=1;toast('الصورة لا تحتوي على موقع GPS · تُستخدم إحداثيات الطلب ويمكن تعديلها')}if(p.ex.alt!=null&&!ap.querySelector('#ip-alt').value)ap.querySelector('#ip-alt').value=p.ex.alt}
-  catch(_){toast('تعذر قراءة الصورة')}try{await document.fonts.ready}catch(_){}logoImg();paint();if(ap._ip[k])setTimeout(()=>ipPreview(ap,r,k),60)});
+  catch(_){toast('تعذر قراءة الصورة')}try{await Promise.all(['500','700'].map(w=>document.fonts.load(w+' 20px Cairo')));await document.fonts.ready}catch(_){}logoImg();paint();if(ap._ip[k])setTimeout(()=>ipPreview(ap,r,k),60)});
  check()}
 async function inspCommit(ap,r){const m=inspMeta(ap);const miss=ISLOTS(r).filter(s=>!ap._ip[s[0]]);if(miss.length){const el=ap.querySelector(`[data-slot="${miss[0][0]}"]`);miss.forEach(s=>ap.querySelector(`[data-slot="${s[0]}"]`).classList.add('need'));el.scrollIntoView({block:'center'});toast('صورة «'+miss.map(s=>s[1]).join('، ')+'» إلزامية');return null}
  if(isNaN(m.la)||isNaN(m.lo)){ap.querySelector('#ip-la').focus();toast('إحداثيات موقع المعاينة مطلوبة للختم · فعّل الموقع على الجهاز أو أدخلها يدوياً');return null}
@@ -2371,7 +2373,7 @@ async function saveLB(id,i,v){if(!canPhotoDL())return toast('التنزيل مت
  if(o.hk){try{bl=await pGet(o.hk+':'+v)}catch(_){}if(!bl&&clActive()){toast('☁ جارٍ تنزيل الصورة بالدقة الكاملة من السحابة…');bl=await clPhoto(o.hk,v)}}if(!bl){bl=await (await fetch(o.img)).blob();if(o.hk)toast('النسخة عالية الدقة لم تُرفع للسحابة بعد من جهاز المعاينة · تم تنزيل نسخة العرض')}
  saveFile('معاينة '+(r.file||r.id)+' - '+(o.slot?slotName(r,o.slot):i+1)+(v==='o'?' (أصل)':'')+'.jpg',bl)}
 async function inspReplace(id,i,f,add){if(!canPhotoEdit())return toast('الاستبدال والرفع متاح للأدمن ومهندس المنظومة');const r=R.find(x=>x.id==id);r.insp=r.insp||[];const base=r.insp[add?0:i]||{};toast('جارٍ تجهيز الصورة بالدقة الكاملة…');
- try{const p=await readPhoto(f);try{await document.fonts.ready}catch(_){}logoImg();const c=r.coords.find(q=>q[2])||[];const m={la:p.ex.la||base.la||c[0],lo:p.ex.lo||base.lo||c[1],alt:p.ex.alt!=null?p.ex.alt:base.alt,place:base.place||r.city,note:base.note||r.name,reg:base.reg||r.city,pre:false};
+ try{const p=await readPhoto(f);try{await Promise.all(['500','700'].map(w=>document.fonts.load(w+' 20px Cairo')));await document.fonts.ready}catch(_){}logoImg();const c=r.coords.find(q=>q[2])||[];const m={la:p.ex.la||base.la||c[0],lo:p.ex.lo||base.lo||c[1],alt:p.ex.alt!=null?p.ex.alt:base.alt,place:base.place||r.city,note:base.note||r.name,reg:base.reg||r.city,pre:false};
   if(m.la==null||m.lo==null)return toast('لا توجد إحداثيات لختم الصورة');
   const slot=add?(ISLOTS(r).find(s=>!r.insp.some(o=>o.slot===s[0]))||['extra'])[0]:(base.slot||ISLOTS(r)[0][0]);const o=await buildPhoto(r,slot,p,m);
   if(add)r.insp.push(o);else r.insp[i]=o;r.log.push({d:todayISO(),t:(add?'رفع صورة معاينة: ':'استبدال صورة المعاينة: ')+slotName(r,slot),u:me().n,ts:Date.now()});persist(r);syncPulse();toast('✓ تم '+(add?'رفع':'استبدال')+' الصورة بالدقة الكاملة');renderDrawer()}
@@ -2474,7 +2476,7 @@ async function openCam(ap,r,slot){CAM.ap=ap;CAM.r=r;CAM.slot=slot;const el=$('#c
  try{CAM.st=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:CAM.face},width:{ideal:4096},height:{ideal:3072}}})}catch(e){closeCam();toast('تعذر تشغيل الكاميرا المباشرة هنا · سيتم فتح كاميرا الجهاز');return camFallback(ap,slot)}
  const v=$('#cam-v');v.srcObject=CAM.st;try{await v.play()}catch(_){}
  CAM.gerr='';if(CAM.geo&&!CAM.geo.man)CAM.geo=null;let lastRG=0;geoStart((g,err)=>{camGpsUpd();if(g){const now=Date.now();if(now-lastRG>8000){lastRG=now;geoToForm(ap,g)}else{const s=(id,v)=>{const e=ap.querySelector('#'+id);if(e)e.value=v};s('ip-la',g.la.toFixed(6));s('ip-lo',g.lo.toFixed(6));if(g.alt!=='')s('ip-alt',g.alt)}}else if(!ap.querySelector('#ip-la').value){setTimeout(()=>{const m_=$('#cam-man');if(m_&&!CAM.geo)m_.hidden=false},400)}});
- try{await document.fonts.ready}catch(_){}logoImg();camLoop()}
+ try{await Promise.all(['500','700'].map(w=>document.fonts.load(w+' 20px Cairo')));await document.fonts.ready}catch(_){}logoImg();camLoop()}
 function camFallback(ap,slot){const i=ap.querySelector(`[data-slotin="${slot}"]`);if(!i)return;i.setAttribute('capture','environment');geoStart(g=>{if(g)geoToForm(ap,g)});i.click();setTimeout(()=>i.removeAttribute('capture'),1000)}
 function camLoop(){const v=$('#cam-v'),cv=$('#cam-cv');if(!v||!cv||$('#cam').hidden)return;const vw=v.videoWidth,vh=v.videoHeight;
  if(vw){const box=cv.parentElement.getBoundingClientRect(),s=Math.min(box.width/vw,box.height/vh),k=Math.min(1,1280/Math.max(vw,vh));const W=Math.round(vw*k),H=Math.round(vh*k);if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;cv.style.width=Math.round(vw*s)+'px';cv.style.height=Math.round(vh*s)+'px'}
@@ -2543,7 +2545,7 @@ async function clPull(quiet){if(!clActive()||!navigator.onLine||CL.busy)return;C
  try{const c=S.cur_=S.cur_||{};
   const rq=await clPage('requests',c.r,'id,data,updated_at');rq.forEach(mergeReq);if(rq.length){c.r=rq[rq.length-1].updated_at;n+=rq.length}
   const wl=await clPage('wells',c.w,'i,data,updated_at');wl.forEach(mergeWell);if(wl.length){c.w=wl[wl.length-1].updated_at;n+=wl.length;if(typeof WC==='function'&&WC._c)WC._c=null}
-  if([0,1,3,4,6].includes(me().r)){try{const dl=await clPage('declarations',c.d,'code,data,updated_at');dl.forEach(row=>{if(pendingKey('dr:'+row.code))return;const L=decls();const i=L.findIndex(x=>x.code===row.code);if(i>=0)L[i]=row.data;else L.unshift(row.data)});if(dl.length){c.d=dl[dl.length-1].updated_at;n+=dl.length;decls().sort((a,b)=>b.at.localeCompare(a.at))}}catch(_){}}
+  if(me().r===0||ra().lsec!=='none'){try{const dl=await clPage('declarations',c.d,'code,data,updated_at');dl.forEach(row=>{if(pendingKey('dr:'+row.code))return;const L=decls();const i=L.findIndex(x=>x.code===row.code);if(i>=0)L[i]=row.data;else L.unshift(row.data)});if(dl.length){c.d=dl[dl.length-1].updated_at;n+=dl.length;decls().sort((a,b)=>b.at.localeCompare(a.at))}}catch(_){}}
   const st=await clJson('/rest/v1/app_state?select=key,data,updated_at');S.stSnap=S.stSnap||{};(st||[]).forEach(s=>{S.stSnap[s.key]=JSON.stringify(s.data);if(s.key==='tpl')S.tpl=s.data;else if(s.key==='cities')S.cities=s.data;else if(s.key==='rep')S.rep=s.data;else if(s.key==='ra')S.ra=s.data});
   const sf=await clJson('/rest/v1/staff?select=*');let pws=[];if(me().r===0){try{pws=await clJson('/rest/v1/staff_pw?select=id,p')}catch(_){}}mergeStaff(sf||[],pws);
   if(me().r===5){try{const stt=await clRpc('req_states');const mp={};(stt||[]).forEach(x=>mp[x.id]=x);const before=R.length;R=R.filter(r=>{const x=mp[r.id];return !x||(x.stage===4&&x.status==='pending')||pendingKey('r'+r.id)});if(R.length!==before)n+=before-R.length}catch(_){}}
@@ -2562,7 +2564,7 @@ async function clPushOp(op){const k=op.key;
   const ws=[...Object.values(S.wmod||{}),...(S.wadd||[])];if([0,1,3].includes(me().r))for(let i=0;i<ws.length;i+=300)await clWellResult(await clRpc('save_wells',{rows:ws.slice(i,i+300).map(w=>{const o=WB.find(x=>x.i==w.i)||w;return {i:w.i,base:o._cu||null,data:strip(o)}})}));return}
  if(/^w\d+$/.test(k)){const i=+k.slice(1);const o=WB.find(x=>x.i==i);if(o)await clWellResult(await clRpc('save_wells',{rows:[{i,base:o._cu||null,data:strip(o)}]}));return}
  if(k.startsWith('p:')){const r=me().r;const keys=r===0?['tpl','cities','rep','ra']:r===1?['tpl','cities','rep']:r===2?['cities']:[];S.stSnap=S.stSnap||{};for(const kk of keys){const d=kk==='tpl'?S.tpl:kk==='cities'?S.cities:kk==='rep'?S.rep:S.ra;if(d==null)continue;const js=JSON.stringify(d);if(S.stSnap[kk]===js)continue;await clRpc('save_state',{k:kk,d});S.stSnap[kk]=js}return}
- if(k.startsWith('dr:')){const d=decls().find(x=>x.code===k.slice(3));if(d&&[0,1,4].includes(me().r))await clRpc('save_declarations',{rows:[{code:d.code,well_i:d.i,data:d}]});return}
+ if(k.startsWith('dr:')){const d=decls().find(x=>x.code===k.slice(3));if(d&&canDrill())await clRpc('save_declarations',{rows:[{code:d.code,well_i:d.i,data:d}]});return}
  if(k.startsWith('ph:')){const hk=k.slice(3);for(const v of ['t','m','s','o']){const b=await pGet(hk+':'+v);if(!b)continue;const r=await clFetch('/storage/v1/object/inspection/'+phPath(hk,v),{method:'POST',headers:{'Content-Type':b.type||'image/jpeg','x-upsert':'true'},body:b,timeout:120000});if(!r.ok&&r.status!==409){const e=new Error('upload_'+r.status);e.status=r.status;throw e}}return}
  /* users/devices ops are applied directly by the users screen */}
 const phPath=(hk,v)=>hk.split(':')[0]+'/'+hk.replace(/:/g,'_')+'-'+v+'.jpg';
@@ -2682,7 +2684,7 @@ VIEWS.cmte=()=>{const L=R.filter(r=>r.status==='closed');const by={cm:[],cmok:[]
  <div class="note">قرار اللجنة: قسم التراخيص أو قسم الدراسات أو الأدمن. استكمال البيانات والمطابقة والتعديل: قسم الدراسات والأدمن (تحكم كامل).</div>`};
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.10.26-1602';
+const APP_VER='2026.10.26-1646';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -2774,52 +2776,56 @@ function microFrame(d){const t=('إدارة التراخيص · الإدارة �
 const microLine=d=>`<div class="a4ml">${esc(('KHG · '+d.code+' · '+(d.h||'')+' · إدارة التراخيص · ').repeat(6))}</div>`;
 /* public verification (QR) */
 async function verifyDecl(code,h){let res=null,src='';try{if(await clProbe()===true){const r=await clRpc('verify_declaration',{p_code:code});if(r){res=r;src='cloud'}}}catch(_){}
- if(!res&&S.decl){const d=S.decl.find(x=>x.code===code);if(d){res={code:d.code,i:d.i,work:d.work,at:d.at,st:d.st,h:d.h,appl:maskName(d.appl),rig:maskName(d.rig),reg:d.reg,lic:d.lic,end:d.end};src='local'}}
+ if(!res&&S.decl){const d=S.decl.find(x=>x.code===code);if(d){res={code:d.code,i:d.i,work:d.work,at:d.at,st:d.st,h:d.h,appl:maskName(d.appl),rig:maskName(d.rig),reg:d.reg,lic:d.lic,end:d.end,kind:d.kind,com:d.com,exp:drExp(d)};src='local'}}
  return {res,src,match:res&&h?(String(res.h||'').replace('-','')===String(h).replace('-','')):null}}
 async function openVerify(code,h){let ov=$('#verify');if(!ov){ov=document.createElement('div');ov.id='verify';ov.className='portal';document.body.appendChild(ov)}ov.hidden=false;document.body.classList.add('pon');
  const head=`<div class="phd"><div class="phin"><button class="pclose" data-vclose><svg class="ico" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>إغلاق</button><div class="pbrand"><img src="${LOGO_S}" alt=""><div><h1>التحقق من إقرار حفر</h1><p>إدارة التراخيص · ${ORG}</p></div></div><div style="height:22px"></div></div></div>`;
  ov.innerHTML=head+`<div class="pbody"><div class="pcard"><div class="muted">جارٍ التحقق من الكود <bdi dir="ltr">${esc(code)}</bdi>…</div></div></div>`;
  const v=await verifyDecl(code,h);const r=v.res;let st,cls;
- if(!r){st='غير مسجل بالمنظومة';cls='bad'}else if(r.st==='ملغي'){st='إقرار مُلغى';cls='bad'}else if(v.match===false){st='رمز التحقق لا يطابق · مستند معدّل أو مزوّر';cls='bad'}else{st='إقرار صحيح ومسجل بالمنظومة';cls='ok'}
+ if(!r){st='غير مسجل بالمنظومة';cls='bad'}else if(r.st==='ملغي'){st='إقرار مُلغى';cls='bad'}else if(v.match===false){st='رمز التحقق لا يطابق · مستند معدّل أو مزوّر';cls='bad'}else if(drExpired(r)){st='إقرار منتهي الصلاحية · انتهت مدة سريانه في '+fD(drExp(r));cls='bad'}else{st='إقرار صحيح ومسجل بالمنظومة';cls='ok'}
  ov.innerHTML=head+`<div class="pbody"><div class="pres"><div class="presh"><div><span class="peye">كود الإقرار</span><h3 dir="ltr" style="text-align:right">${esc(code)}</h3><p>${v.src==='cloud'?'تم التحقق مباشرة من قاعدة بيانات المنظومة':v.src==='local'?'تم التحقق من بيانات هذا الجهاز':'تعذر العثور على الإقرار'}</p></div><span class="pst ${cls}">${cls==='ok'?'✓':'✕'} ${st}</span></div>
   ${r?`<div class="pnext ${cls}"><b>${st}</b><p>${cls==='ok'?'طابِق البيانات التالية مع المطبوع على الإقرار. أي اختلاف يعني أن المستند معدّل.':'لا يُعتد بهذا المستند. يرجى مراجعة الإدارة العامة للمياه الجوفية بالخارجة.'}</p></div>
-  <div class="kv" style="padding:14px 22px"><div><span>نوع العمل</span><b>${esc(r.work)}</b></div><div><span>ترقيم البئر</span><b>${r.i}</b></div><div><span>تاريخ الإصدار</span><b>${r.at?fD(String(r.at).slice(0,10),true):'—'}</b></div><div><span>رمز التحقق</span><b dir="ltr">${esc(r.h||'—')}</b></div><div><span>المُقر</span><b>${esc(r.appl||'—')}</b></div><div><span>صاحب آلة الحفر</span><b>${esc(r.rig||'—')}</b></div><div><span>الزمام</span><b>${esc(r.reg||'—')}</b></div><div><span>الرخصة</span><b dir="ltr">${esc(r.lic||'—')}</b>${r.end?' · حتى '+fD(r.end):''}</div></div>`:`<div class="pnote bad" style="margin:16px 22px">هذا الكود غير موجود في سجلات المنظومة${navigator.onLine?'':' (لا يوجد اتصال بالإنترنت للتحقق)'}. لا يُعتد بالمستند.</div>`}
+  <div class="kv" style="padding:14px 22px"><div><span>نوع العمل</span><b>${esc(r.work)}</b></div><div><span>ترقيم البئر</span><b>${r.i}</b></div><div><span>تاريخ الإصدار</span><b>${r.at?fD(String(r.at).slice(0,10),true):'—'}</b></div><div><span>مدة السريان</span><b>شهر واحد · حتى ${fD(drExp(r))}</b></div><div><span>رمز التحقق</span><b dir="ltr">${esc(r.h||'—')}</b></div><div><span>المُقر</span><b>${esc(r.appl||'—')}</b></div><div><span>صاحب آلة الحفر</span><b>${esc(r.rig||'—')}</b></div><div><span>الزمام</span><b>${esc(r.reg||'—')}</b></div>${r.kind==='cm'?`<div><span>السند</span><b>موافقة اللجنة العليا${r.com?' '+fD(r.com):''}</b>${r.end?' · صالحة حتى '+fD(r.end):''}</div>`:`<div><span>الرخصة</span><b dir="ltr">${esc(r.lic||'—')}</b>${r.end?' · حتى '+fD(r.end):''}</div>`}</div>`:`<div class="pnote bad" style="margin:16px 22px">هذا الكود غير موجود في سجلات المنظومة${navigator.onLine?'':' (لا يوجد اتصال بالإنترنت للتحقق)'}. لا يُعتد بالمستند.</div>`}
   <div class="pfoot">جميع الحقوق محفوظة للمصمم والمطور - م/ أسامه حسن بدري - 01145060007</div></div></div>`}
 function closeVerify(){const ov=$('#verify');if(ov){ov.hidden=true;ov.innerHTML=''}if($('#portal').hidden)document.body.classList.remove('pon');try{if(location.hash.startsWith('#v='))history.replaceState(null,'',location.pathname+location.search)}catch(_){}}
 function verifyFromHash(){const m=(location.hash||'').match(/^#v=([A-Z0-9-]+)\.([A-Z0-9]+)$/i);if(m){openVerify(m[1].toUpperCase(),m[2].toUpperCase());return true}return false}
 
 /* ---------- licensing department: drilling declarations (إقرار حفر) ---------- */
-const canDrill=()=>{const u=me();return [0,1,4].includes(u.r)&&lvOf(u)!=='view'};
+const canDrill=()=>{const u=me();return u.r===0||(ra(u).lsec==='edit'&&lvOf(u)!=='view')};
 const DRW=['حفر','تطهير','صيانة'];
 const DR={q:'',sel:null,view:null};
 const decls=()=>S.decl||(S.decl=[]);
-const drValid=o=>o&&(o._c==='valid'||o._c==='soon');
-function drWhy(o){if(!o)return '';if(o._c==='expired')return 'الترخيص منتهي منذ '+(-o._d)+' يوم ('+fD(o.end)+')';if(o._c==='proc')return 'البئر جاري ترخيصه ولم تصدر له رخصة سارية';if(o._c==='viol')return 'البئر غير مرخص (مخالف)';if(o._c==='gov')return 'بئر حكومي بدون رخصة سارية مسجلة';return 'لا توجد رخصة سارية'}
+const DR_CM_MONTHS=12,drCmEnd=o=>{if(!o||!o.com)return '';const [y,m,dd]=o.com.slice(0,10).split('-').map(Number);const t=new Date(Date.UTC(y,m-1+DR_CM_MONTHS,dd));return t.toISOString().slice(0,10)},
+drProp=o=>!!o&&!o.end&&/مقترح/.test(o.ls||''),
+drKind=o=>!o?null:(o._c==='valid'||o._c==='soon')?'lic':(drProp(o)&&o.com&&drCmEnd(o)>=todayISO())?'cm':null,
+drValid=o=>!!drKind(o),
+DR_VALID_MONTHS=1,drExp=d=>{if(!d)return '';if(d.exp)return d.exp;if(!d.at)return '';const t=new Date(d.at);t.setMonth(t.getMonth()+DR_VALID_MONTHS);return t.toLocaleDateString('en-CA')},drExpired=d=>!!drExp(d)&&drExp(d)<todayISO();
+function drWhy(o){if(!o)return '';if(drProp(o))return o.com?'موافقة اللجنة العليا بتاريخ '+fD(o.com)+' تجاوزت مدة صلاحيتها ('+DR_CM_MONTHS+' شهراً) دون صدور ترخيص':'بئر مقترح لم تصدر له موافقة اللجنة العليا بعد';if(o._c==='expired')return 'الترخيص منتهي منذ '+(-o._d)+' يوم ('+fD(o.end)+')';if(o._c==='proc')return 'البئر جاري ترخيصه ولم تصدر له رخصة سارية';if(o._c==='viol')return 'البئر غير مرخص (مخالف)';if(o._c==='gov')return 'بئر حكومي بدون رخصة سارية مسجلة';return 'لا توجد رخصة سارية'}
 const dmsP=(x,pos,neg)=>{if(x==null||!isFinite(x))return '—';const a=Math.abs(x),d=Math.floor(a),mf=(a-d)*60,m=Math.floor(mf),s=(mf-m)*60;return `${x>=0?pos:neg} ${d}° ${String(m).padStart(2,'0')}′ ${s.toFixed(1)}″`};
 function drCode(o){const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let c;do{const rnd=[...crypto.getRandomValues(new Uint8Array(3))].map(x=>A[x%A.length]).join('');c='KHG-DR-'+String(new Date().getFullYear()).slice(2)+'-'+o.i+'-'+rnd}while(decls().some(d=>d.code===c));return c}
 VIEWS.drill=()=>{const sel=DR.sel!=null?WB[DR.sel]:null;
  const q=DR.q.trim();const res=q.length>=2?WB.filter(o=>wMatch(o,q)).sort((a,b)=>(drValid(b)?1:0)-(drValid(a)?1:0)).slice(0,10):[];
  return `<div class="ph"><div><h2>طلب إقرار حفر</h2><p>يصدر الإقرار للآبار ذات الرخص السارية فقط · ابحث في قاعدة البيانات وتُسحب بيانات البئر تلقائياً.</p></div><div class="filters"><button class="btn" data-go="drills">${ico('drills')} سجل الإقرارات</button></div></div>
  <div class="card"><h3>البحث في قاعدة بيانات الآبار</h3><label class="search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="drq" value="${esc(DR.q)}" placeholder="اسم المالك أو الشركة، ترقيم البئر، رقم الرخصة، رقم الملف، أو آخر أرقام الرقم القومي" autocomplete="off"></label>
-  <div class="drres">${q.length<2?'<div class="muted" style="font-size:13px;padding:6px 2px">اكتب حرفين على الأقل للبحث.</div>':res.length?res.map(o=>`<button class="drit ${drValid(o)?'':'no'} ${sel===o?'on':''}" data-drsel="${o._i}"><span class="drn">${o.i}</span><span class="drt"><b>${esc(o.n)}</b><small>${esc(o.reg||'')}${o.lic?' · رخصة <bdi dir="ltr">'+esc(o.lic)+'</bdi>':''}${o.end?' · حتى '+fD(o.end):''}</small></span>${wPill(o)}${drValid(o)?'':'<span class="drx">غير مسموح</span>'}</button>`).join(''):'<div class="empty">لا توجد آبار مطابقة.</div>'}</div></div>
+  <div class="drres">${q.length<2?'<div class="muted" style="font-size:13px;padding:6px 2px">اكتب حرفين على الأقل للبحث.</div>':res.length?res.map(o=>`<button class="drit ${drValid(o)?'':'no'} ${sel===o?'on':''}" data-drsel="${o._i}"><span class="drn">${o.i}</span><span class="drt"><b>${esc(o.n)}</b><small>${esc(o.reg||'')}${o.lic?' · رخصة <bdi dir="ltr">'+esc(o.lic)+'</bdi>':''}${o.end?' · '+(drValid(o)?'سارية حتى ':'انتهت في ')+fD(o.end):''}${drKind(o)==='cm'?' · موافقة اللجنة العليا '+fD(o.com)+' · صالحة حتى '+fD(drCmEnd(o)):''}</small></span>${drKind(o)==='cm'?'<span class="drcm">✦ بئر مقترح · موافقة لجنة عليا</span>':wPill(o)}${drValid(o)?'':'<span class="drx">غير مسموح</span>'}${drValid(o)?'':`<span class="drw"><i>⚠️</i><span><b>لا يوجد ترخيص ساري لهذا المواطن / الشركة</b> · ${drWhy(o)}. لا يمكن طلب إقرار حفر إلا بعد تجديد الترخيص.</span></span>`}</button>`).join(''):'<div class="empty">لا توجد آبار مطابقة.</div>'}</div></div>
  ${sel?drForm(sel):''}`};
-function drForm(o){if(!drValid(o))return `<div class="note bad"><b>لا يمكن إصدار إقرار حفر لهذا البئر.</b> ${drWhy(o)}. إقرار الحفر متاح للرخص السارية فقط.</div>`;
- if(!canDrill())return `<div class="note warn">إصدار إقرارات الحفر متاح لقسم التراخيص والأدمن.</div>`;
+function drForm(o){if(!drValid(o))return `<div class="note bad"><b>⚠️ ${esc(o.n)} · لا يوجد ترخيص ساري</b><br>${drWhy(o)}. لا يمكن طلب إقرار حفر لهذا البئر إلا بعد تجديد الترخيص واعتماده بقاعدة البيانات.</div>`;
+ if(!canDrill())return `<div class="note warn">إصدار إقرارات الحفر يتطلب صلاحية «إضافة وتعديل» في قسم التراخيص · يحددها المطوّر من صلاحيات الأدوار.</div>`;
  const prev=decls().filter(d=>d.i===o.i&&d.st!=='ملغي');
- return `<div class="card drform"><h3>بيانات الإقرار · بئر ترقيم ${o.i} ${wPill(o)}</h3>
+ return `<div class="card drform"><h3>بيانات الإقرار · بئر ترقيم ${o.i} ${drKind(o)==='cm'?'<span class="drcm">✦ بئر مقترح · موافقة لجنة عليا</span>':wPill(o)}</h3>${drKind(o)==='cm'?`<div class="note" style="border-color:color-mix(in srgb,var(--gold) 45%,var(--line));background:var(--gold-soft)"><b>بئر جديد مقترح بموجب موافقة اللجنة العليا بتاريخ ${fD(o.com)}</b><br>يصدر له إقرار «حفر» فقط، وتسري الموافقة لإصدار الإقرار حتى ${fD(drCmEnd(o))} (${DR_CM_MONTHS} شهراً من تاريخ الموافقة).</div>`:''}
   ${prev.length?`<div class="note warn">صدر لهذا البئر ${prev.length} إقرار سابق: ${prev.slice(0,3).map(d=>`<bdi dir="ltr">${d.code}</bdi> (${d.work} · ${fD(d.at.slice(0,10))})`).join('، ')}</div>`:''}
   <div class="drsec">بيانات مسحوبة من قاعدة البيانات</div>
   <div class="form">
    <div class="fld span2"><label for="dr-appl">أقر وأتعهد أنا (اسم المُقر)</label><input class="inp" id="dr-appl" value="${esc(o.n)}"></div>
    <div class="fld"><label for="dr-apnid">الرقم القومي للمُقر</label><input class="inp num" id="dr-apnid" dir="ltr" inputmode="numeric" maxlength="14" value="${esc(o.nf||'')}" placeholder="14 رقماً"></div>
-   <div class="fld"><label for="dr-com">تاريخ موافقة اللجنة العليا</label><input class="inp" type="date" id="dr-com" value="${esc(o.com||o.st0||'')}"></div>
+   <div class="fld"><label for="dr-com">تاريخ موافقة اللجنة العليا</label><input class="inp" type="date" id="dr-com" value="${esc(o.com||o.st0||'')}" ${drKind(o)==='cm'?'readonly title="مسحوب من قاعدة البيانات"':''}></div>
    <div class="fld span2"><label for="dr-own">المواطن / الشركة</label><input class="inp" id="dr-own" value="${esc(o.n)}"></div>
    <div class="fld"><label for="dr-reg">الزمام / المنطقة</label><input class="inp" id="dr-reg" value="${esc(o.reg||'')}"></div>
    <div class="fld"><label for="dr-mrk">المركز</label><input class="inp" id="dr-mrk" value="الخارجة"></div>
    <div class="fld"><label>الإحداثيات (من قاعدة البيانات)</label><div class="inp ro num" dir="ltr" style="text-align:right">${dmsP(o.la,'N','S')} · ${dmsP(o.lo,'E','W')}</div></div>
    <div class="fld"><label>عمق البئر (من قاعدة البيانات)</label><div class="inp ro num" style="${o.dep?'':'color:var(--bad)'}">${o.dep?esc(+o.dep)+' م':'غير مسجل بقاعدة البيانات'}</div></div>
-   <div class="fld"><label>الرخصة</label><div class="inp ro num">${o.lic?'<bdi dir="ltr">'+esc(o.lic)+'</bdi>':'—'} · سارية حتى ${fD(o.end)}</div></div>
-   <div class="fld"><label for="dr-work">نوع العمل المطلوب</label><select class="inp" id="dr-work" style="width:100%">${DRW.map(w=>`<option>${w}</option>`).join('')}</select></div>
+   ${drKind(o)==='cm'?`<div class="fld"><label>سند الإقرار</label><div class="inp ro">موافقة اللجنة العليا ${fD(o.com)} · صالحة حتى ${fD(drCmEnd(o))}</div></div>`:`<div class="fld"><label>الرخصة</label><div class="inp ro num">${o.lic?'<bdi dir="ltr">'+esc(o.lic)+'</bdi>':'—'} · سارية حتى ${fD(o.end)}</div></div>`}
+   <div class="fld"><label for="dr-work">نوع العمل المطلوب</label><select class="inp" id="dr-work" style="width:100%">${(drKind(o)==='cm'?['حفر']:DRW).map(w=>`<option>${w}</option>`).join('')}</select></div>
   </div>
   <div class="drsec">بيانات صاحب آلة الحفر <span style="color:var(--bad)">* إلزامي</span></div>
   <div class="form">
@@ -2836,13 +2842,13 @@ async function drMake(){if(!canDrill())return;const o=WB[DR.sel];if(!drValid(o))
  if(apn&&!decodeNID(apn)){$('#dr-apnid').focus();return toast('الرقم القومي للمُقر غير صالح')}
  if(!g('dr-appl'))return toast('اكتب اسم المُقر');
  if(!(+o.dep>0))return toast('عمق البئر غير مسجل بقاعدة البيانات · يُستكمل أولاً من قاعدة البيانات');
- const d={code:drCode(o),i:o.i,wn:o.n,at:new Date().toISOString(),by:me().n,appl:g('dr-appl'),apnid:apn,own:g('dr-own'),com:g('dr-com'),reg:g('dr-reg'),mrk:g('dr-mrk')||'الخارجة',la:o.la,lo:o.lo,dep:String(+o.dep),lic:o.lic||'',end:o.end||'',work:g('dr-work'),rig,rignid:rn,st:'صادر',seq:decls().filter(x=>x.i===o.i).length+1};
+ const d={code:drCode(o),i:o.i,wn:o.n,at:new Date().toISOString(),by:me().n,appl:g('dr-appl'),apnid:apn,own:g('dr-own'),com:drKind(o)==='cm'?o.com:g('dr-com'),reg:g('dr-reg'),mrk:g('dr-mrk')||'الخارجة',la:o.la,lo:o.lo,dep:String(+o.dep),kind:drKind(o),lic:drKind(o)==='cm'?'':(o.lic||''),end:drKind(o)==='cm'?drCmEnd(o):(o.end||''),work:drKind(o)==='cm'?'حفر':g('dr-work'),rig,rignid:rn,st:'صادر',exp:(()=>{const t=new Date();t.setMonth(t.getMonth()+DR_VALID_MONTHS);return t.toLocaleDateString('en-CA')})(),seq:decls().filter(x=>x.i===o.i).length+1};
  d.h=await drHash(d);decls().unshift(d);enqueue('dr:'+d.code,'إقرار حفر: '+d.code,'إقرار');save._q=1;save();syncPulse();toast('✓ صدر الإقرار '+d.code);DR.sel=null;drShow(d.code)}
 VIEWS.drills=()=>{const L=decls();const q=norm(DR.fq||'');const F=L.filter(d=>!q||norm(d.code+' '+d.wn+' '+d.own+' '+d.rig+' '+d.i).includes(q));
  return `<div class="ph"><div><h2>سجل إقرارات الحفر</h2><p>${L.length} إقرار · ${L.filter(d=>d.st!=='ملغي').length} صادر</p></div><div class="filters">${canDrill()?`<button class="btn pri" data-go="drill">${ico('new')} طلب إقرار حفر</button>`:''}</div></div>
  <div class="card vbox"><h3>التحقق من صحة إقرار</h3><div class="filters"><input class="inp num" id="vcode" dir="ltr" placeholder="KHG-DR-26-0000-XXX" style="flex:2 1 200px"><input class="inp num" id="vhash" dir="ltr" placeholder="رمز التحقق XXXXX-XXXXX" style="flex:1 1 160px"><button class="btn pri" data-vgo>تحقق</button></div></div>
  <div class="card"><label class="search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="drfq" value="${esc(DR.fq||'')}" placeholder="الكود، اسم البئر أو المالك، صاحب آلة الحفر، ترقيم البئر"></label>
- ${F.length?`<div class="tw"><table><thead><tr><th>الكود</th><th>التاريخ</th><th>البئر</th><th>المُقر</th><th>صاحب آلة الحفر</th><th>العمل</th><th>الحالة</th><th></th></tr></thead><tbody>${F.map(d=>`<tr style="cursor:default" class="${d.st==='ملغي'?'drcx':''}"><td class="num"><bdi dir="ltr"><b>${d.code}</b></bdi></td><td class="num">${fD(d.at.slice(0,10))}</td><td>ترقيم ${d.i}<br><small class="muted">${esc(d.wn)}</small></td><td>${esc(d.appl)}</td><td>${esc(d.rig)}</td><td>${esc(d.work)}</td><td><span class="tag" style="${d.st==='ملغي'?'background:var(--bad-soft);color:var(--bad)':'background:var(--ok-soft);color:var(--ok)'}">${d.st}</span></td><td style="display:flex;gap:6px"><button class="btn sm pri" data-drshow="${d.code}">عرض وطباعة</button>${canDrill()&&d.st!=='ملغي'?`<button class="btn sm ghost" data-drvoid="${d.code}">إلغاء</button>`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">لا توجد إقرارات بعد.</div>'}</div>`};
+ ${F.length?`<div class="tw"><table><thead><tr><th>الكود</th><th>التاريخ</th><th>البئر</th><th>المُقر</th><th>صاحب آلة الحفر</th><th>العمل</th><th>الحالة</th><th></th></tr></thead><tbody>${F.map(d=>`<tr style="cursor:default" class="${d.st==='ملغي'?'drcx':''}"><td class="num"><bdi dir="ltr"><b>${d.code}</b></bdi></td><td class="num">${fD(d.at.slice(0,10))}</td><td>ترقيم ${d.i}<br><small class="muted">${esc(d.wn)}</small></td><td>${esc(d.appl)}</td><td>${esc(d.rig)}</td><td>${esc(d.work)}</td><td><span class="tag" style="${d.st==='ملغي'||drExpired(d)?'background:var(--bad-soft);color:var(--bad)':'background:var(--ok-soft);color:var(--ok)'}">${d.st==='ملغي'?d.st:drExpired(d)?'منتهي الصلاحية':d.st}</span><br><small class="muted">${d.st==='ملغي'?'':(drExpired(d)?'انتهى ':'سارٍ حتى ')+fD(drExp(d))}</small></td><td style="display:flex;gap:6px"><button class="btn sm pri" data-drshow="${d.code}">عرض وطباعة</button>${canDrill()&&d.st!=='ملغي'?`<button class="btn sm ghost" data-drvoid="${d.code}">إلغاء</button>`:''}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">لا توجد إقرارات بعد.</div>'}</div>`};
 AFTER.drills=()=>{const q=$('#drfq');if(q)q.oninput=()=>{DR.fq=q.value;const p_=q.selectionStart;rerender();const n=$('#drfq');n.focus();n.setSelectionRange(p_,p_)}};
 function drVoid(code,el){if(!el.dataset.sure){el.dataset.sure=1;el.textContent='تأكيد الإلغاء';el.classList.add('bad');return}const d=decls().find(x=>x.code===code);d.st='ملغي';d.vby=me().n;d.vat=new Date().toISOString();enqueue('dr:'+code,'إلغاء إقرار: '+code,'إقرار');save._q=1;save();syncPulse();toast('تم إلغاء الإقرار '+code);rerender()}
 /* printable A4 page */
@@ -2851,11 +2857,11 @@ function drHTML(d){const work=w=>`<span class="pw ${w===d.work?'on':''}">${w===d
  const seed=d.code+(d.h||'');
  return `<div class="a4" dir="rtl"><div class="a4frame"></div>${microFrame(d)}${guilloche(seed,210,210,'#0B4A50','#B08A2E')}${d.st==='ملغي'?'<div class="a4void">مُلغى</div>':''}<img class="a4wm" src="${LOGO}" alt="">
   <header class="a4h"><div class="a4org"><b>قطاع المياه الجوفية</b><span>الإدارة العامة للمياه الجوفية</span><span>بالخارجة ودرب الأربعين</span></div>
-   <div class="a4mid"><span class="a4sys">إدارة التراخيص</span><b>إقرار تنفيذ أعمال بئر مرخص</b><span class="a4sub">${esc(d.work)} · ترقيم ${d.i}</span></div>
+   <div class="a4mid"><span class="a4sys">إدارة التراخيص</span><b>${d.kind==='cm'?'إقرار حفر بئر جديد مقترح':'إقرار تنفيذ أعمال بئر مرخص'}</b><span class="a4sub">${d.kind==='cm'?'بموجب موافقة اللجنة العليا · ترقيم '+d.i:esc(d.work)+' · ترقيم '+d.i}</span></div>
    <div class="a4lg"><img class="a4logo" src="${LOGO}" alt="الشعار"></div></header>
   <div class="a4rule"></div>
   <div class="a4secbar"><div class="a4qr">${(()=>{try{return QR.svg(drQRtext(d),{quiet:1,fg:'#0B2F33'})}catch(_){return ''}})()}</div>
-   <div class="a4secr">${waveBand(seed,180,22,'#B08A2E')}<div class="a4code"><div class="k"><span>كود الإقرار</span><b dir="ltr">${d.code}</b></div><div><span>ترقيم البئر</span><b>${d.i}</b></div><div><span>رقم الرخصة</span><b dir="ltr">${esc(d.lic||'—')}</b></div><div><span>الرخصة سارية حتى</span><b>${d.end?dd(d.end):'—'}</b></div><div><span>تاريخ الإصدار</span><b>${dt.toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'numeric',year:'numeric'})}</b></div></div>
+   <div class="a4secr">${waveBand(seed,180,22,'#B08A2E')}<div class="a4code"><div class="k"><span>كود الإقرار</span><b dir="ltr">${d.code}</b></div><div><span>ترقيم البئر</span><b>${d.i}</b></div>${d.kind==='cm'?`<div><span>موافقة اللجنة العليا</span><b>${dd(d.com)}</b></div><div><span>الموافقة صالحة حتى</span><b>${d.end?dd(d.end):'—'}</b></div>`:`<div><span>رقم الرخصة</span><b dir="ltr">${esc(d.lic||'—')}</b></div><div><span>الرخصة سارية حتى</span><b>${d.end?dd(d.end):'—'}</b></div>`}<div><span>تاريخ الإصدار</span><b>${dt.toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'numeric',year:'numeric'})}</b></div><div class="x"><span>الإقرار سارٍ حتى</span><b>${dd(drExp(d))}</b></div></div>
    <div class="a4vf"><span>رمز التحقق</span><b dir="ltr">${esc(d.h||'—')}</b><em>امسح رمز QR للتحقق من صحة الإقرار لدى إدارة التراخيص · أي اختلاف في البيانات يعني أن المستند مزوّر</em></div></div></div>
   ${microLine(d)}
   <div class="a4tw"><i></i><h1 class="a4t">إقــــــرار</h1><i></i></div>
@@ -2866,9 +2872,9 @@ function drHTML(d){const work=w=>`<span class="pw ${w===d.work?'on':''}">${w===d
    <p>زمام / <b class="fv">${esc(d.reg||'…')}</b> &nbsp;&nbsp; مركز / <b class="fv">${esc(d.mrk)}</b> &nbsp;&nbsp; طبقاً للإحداثيات التالية:</p>
    <div class="a4xy" dir="ltr"><div><span>Latitude · خط العرض</span><b>${dmsP(d.la,'N','S')}</b></div><div><span>Longitude · خط الطول</span><b>${dmsP(d.lo,'E','W')}</b></div></div>
    <p>اسم صاحب آلة الحفر / <b class="fv">${esc(d.rig)}</b> &nbsp; <span class="lb">الرقم القومي:</span> <b class="fv nm" dir="ltr">${d.rignid}</b></p>
-   <h2 class="a4s">بأنني ملتزم عند تنفيذ ( ${work('تطهير')} &nbsp; ${work('حفر')} &nbsp; ${work('صيانة')} ) البئر المرخص بالآتي:</h2>
+   <h2 class="a4s">بأنني ملتزم عند تنفيذ ( ${work('تطهير')} &nbsp; ${work('حفر')} &nbsp; ${work('صيانة')} ) ${d.kind==='cm'?'البئر المقترح الصادر له موافقة اللجنة العليا':'البئر المرخص'} بالآتي:</h2>
    <ol class="a4l">${B.map(x=>`<li>${x}</li>`).join('')}</ol>
-   <div class="a4box"><b>أي كشط أو تعديل في هذا الإقرار يلغيه</b><span>مع العلم أن هذا الإقرار لا يُعتد به كمستند ملكية، ولا يُعتد به كمستند رسمي لترخيص البئر موضوع الطلب، ولا يمكن التعامل به مع أي جهة حكومية باستثناء الإدارة المختصة.</span></div>
+   <div class="a4box"><b>أي كشط أو تعديل في هذا الإقرار يلغيه</b><span class="a4exp">مدة سريان هذا الإقرار <u>شهر واحد</u> من تاريخ تحريره، وتنتهي في <bdi>${dd(drExp(d))}</bdi>؛ ويُعد لاغياً من تلقاء نفسه بانقضائها دون تنفيذ الأعمال، ويلزم استخراج إقرار جديد من إدارة التراخيص.</span><span>مع العلم أن هذا الإقرار لا يُعتد به كمستند ملكية، ولا يُعتد به كمستند رسمي لترخيص البئر موضوع الطلب، ولا يمكن التعامل به مع أي جهة حكومية باستثناء الإدارة المختصة.</span></div>
    <p class="a4c"><b>وهذا إقرار مني بذلك،</b></p>
    <p class="a4c a4u">وحال مخالفة ما سبق تكون مسئوليتي مسئولية تامة دون أدنى مسئولية على الإدارة.</p>
   </div>
@@ -3029,7 +3035,7 @@ function renderLoginMap(){
   g+=`<path d="M${X(30.55)} ${Y(25.44)} C ${X(30.6)} ${Y(24.4)}, ${X(30.8)} ${Y(23.2)}, ${X(31.1)} ${Y(22.05)}" fill="none" stroke="#E5BD63" stroke-opacity=".45" stroke-width="1.4" stroke-dasharray="4 4"/><text x="${X(30.7)-8}" y="${Y(23.3)}" font-size="10.5" fill="#E5BD63" fill-opacity=".85" text-anchor="end">درب الأربعين</text>`;
   g+=`<circle cx="${X(30.5)}" cy="${Y(25.35)}" r="26" fill="url(#lmg)" opacity=".5"/>`;
   cities.forEach(c=>g+=`<circle cx="${X(c[1])}" cy="${Y(c[2])}" r="${c[3]?4.5:3.2}" fill="#7FD6D3" stroke="#05161B" stroke-width="1.5"/><text x="${X(c[1])+c[5]}" y="${Y(c[2])+c[6]}" font-size="${c[3]?13:11}" font-weight="${c[3]?700:500}" fill="#EFE6CF" text-anchor="${c[4]==='e'?'end':c[4]}" stroke="#05161B" stroke-width="3" paint-order="stroke">${c[0]}</text>`);
-  g+=`<text x="${X(26.6)}" y="${Y(24.2)}" font-size="15" fill="#EFE6CF" fill-opacity=".55" font-family="Reem Kufi, sans-serif" text-anchor="middle">محافظة الوادي الجديد</text><g transform="translate(${X(25.4)},${Y(28.15)})"><path d="M0 -12 L5 4 L0 0 L-5 4Z" fill="#E5BD63"/><text y="16" font-size="9" text-anchor="middle" fill="#B9C8C6">ش</text></g>`;
+  g+=`<text x="${X(26.6)}" y="${Y(24.2)}" font-size="15" fill="#EFE6CF" fill-opacity=".55" font-family="Cairo, sans-serif" text-anchor="middle">محافظة الوادي الجديد</text><g transform="translate(${X(25.4)},${Y(28.15)})"><path d="M0 -12 L5 4 L0 0 L-5 4Z" fill="#E5BD63"/><text y="16" font-size="9" text-anchor="middle" fill="#B9C8C6">ش</text></g>`;
   const m=$('#lmap');if(m)m.innerHTML=g;
 }
 const b64=x=>Uint8Array.from(atob(x),c=>c.charCodeAt(0));

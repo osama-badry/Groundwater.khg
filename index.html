@@ -1303,7 +1303,15 @@ function navBack(){if($('#side').classList.contains('open')){$('#side').classLis
  while(NAV.length&&NAV[NAV.length-1].d)NAV.pop();if(NAV.length>1){NAV.pop();go(NAV[NAV.length-1].p,false)}else if(cur!=='dash'){NAV=[];go('dash')}uiNav()}
 window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#v='))verifyFromHash()});
 window.addEventListener('popstate',()=>{if(!$('#portal').hidden){if(location.hash!=='#portal')closePortal();return}if(location.hash==='#portal'){openPortal('track');return}if(!BOOTED)return;const atRoot=cur==='dash'&&!drawerOpen()&&!$('#side').classList.contains('open');navBack();if(atRoot){try{history.pushState({n:0},'')}catch(_){}toast('أنت في الصفحة الرئيسية')}});
-function rerender(){const y=window.scrollY;$('#page').innerHTML=VIEWS[cur]();(AFTER[cur]||(()=>{}))();menu();window.scrollTo(0,y)}
+function rerender(){DIRTY=null;BGPEND=0;const y=window.scrollY;$('#page').innerHTML=VIEWS[cur]();(AFTER[cur]||(()=>{}))();menu();window.scrollTo(0,y)}
+/* حماية ما يكتبه المستخدم: التحديثات القادمة من السحابة لا تعيد رسم الصفحة أثناء الكتابة أو قبل الحفظ */
+let DIRTY=null,BGPEND=0,DPEND=0;
+const isField=el=>!!el&&/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)&&!['checkbox','radio','button','submit','file'].includes((el.type||'').toLowerCase());
+const busyIn=sel=>{const a=document.activeElement,box=$(sel);if(!box||(sel==='#modal'&&box.hidden)||(sel==='#drawer'&&!drawerOpen()))return false;if(box&&isField(a)&&box.contains(a))return true;return !!(DIRTY&&DIRTY.box===sel&&(sel!=='#page'||DIRTY.page===cur)&&Date.now()-DIRTY.t<5*60000)};
+document.addEventListener('input',e=>{const t=e.target;if(!isField(t)&&!(t&&t.tagName==='TEXTAREA'))return;if(t.closest('[data-live]')||/^(drq|drfq|vrq|clq|gsearch|rq|wq|q)$/.test(t.id||''))return;const box=t.closest('#modal')?'#modal':t.closest('#drawer')?'#drawer':t.closest('#page')?'#page':null;if(box)DIRTY={box,page:cur,t:Date.now()}},true);
+function bgRender(){if(busyIn('#page')||busyIn('#modal')){BGPEND=1;return}rerender()}
+function bgDrawer(){if(!(drawerOpen()&&openId))return;if(busyIn('#drawer')){DPEND=1;return}renderDrawer()}
+setInterval(()=>{if(BGPEND&&!busyIn('#page')&&!busyIn('#modal'))rerender();if(DPEND&&!busyIn('#drawer')){DPEND=0;if(drawerOpen()&&openId)renderDrawer()}},4000);
 
 /* ---------- dashboard ---------- */
 const VIEWS={},AFTER={};
@@ -2923,7 +2931,7 @@ async function clPull(quiet){if(!clActive()||!navigator.onLine||CL.busy)return;C
   const sf=await clJson('/rest/v1/staff?select=*');let pws=[];if(me().r===0){try{pws=await clJson('/rest/v1/staff_pw?select=id,p')}catch(_){}}mergeStaff(sf||[],pws);
   if(me().r===5){try{const stt=await clRpc('req_states');const mp={};(stt||[]).forEach(x=>mp[x.id]=x);const before=R.length;R=R.filter(r=>{const x=mp[r.id];return !x||(x.stage===4&&x.status==='pending')||pendingKey('r'+r.id)});if(R.length!==before)n+=before-R.length}catch(_){}}
   const mine=(sf||[]).find(s=>s.id===CL.uid);if(mine&&(!mine.active||(mine.role!==0&&mine.exp&&mine.exp<todayISO()))){toast('تم إيقاف حسابك أو انتهت صلاحيته من المطوّر');setTimeout(()=>$('#logoutBtn').click(),1800)}
-  CL.err='';CL.pullAt=Date.now();S.lastSync=Date.now();saveRaw();if(n&&!quiet){toast('☁ تم استلام '+n+' تحديث من السحابة')}if(n||!quiet){if(drawerOpen()&&openId)renderDrawer();rerender()}}
+  CL.err='';CL.pullAt=Date.now();S.lastSync=Date.now();saveRaw();if(n&&!quiet){toast('☁ تم استلام '+n+' تحديث من السحابة')}if(n||!quiet){if(quiet){bgDrawer();bgRender()}else{if(drawerOpen()&&openId)renderDrawer();rerender()}}}
  catch(e){CL.err=e.message||'تعذر الاتصال بالسحابة';if(e.status===401){CL.on=false}}finally{CL.busy=false;pill()}}
 /* ---------- push local → remote (called from flush) ---------- */
 const RHOLD={};
@@ -3207,7 +3215,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.10.27-1433';
+const APP_VER='2026.10.27-1442';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -3217,9 +3225,9 @@ window.addEventListener('appinstalled',()=>{INSTALL_EVT=null;instUI();toast('✓
 function instUI(){document.querySelectorAll('[data-install]').forEach(b=>b.hidden=IS_APP()||!CAN_SW()||!(INSTALL_EVT||isIOS()))}
 async function doInstall(){if(INSTALL_EVT){INSTALL_EVT.prompt();try{await INSTALL_EVT.userChoice}catch(_){}INSTALL_EVT=null;instUI();return}
  const m=$('#modal');m.hidden=false;m.innerHTML=`<div class="mbox" role="dialog" aria-label="تثبيت التطبيق"><div class="mhd"><h3>تثبيت المنظومة على ${isIOS()?'iPhone':'هذا الجهاز'}</h3><button class="ibtn" data-mclose aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="mbd">${isIOS()?'<ol class="clean"><li>اضغط زر <b>المشاركة</b> أسفل Safari.</li><li>اختر <b>إضافة إلى الشاشة الرئيسية</b>.</li><li>اضغط <b>إضافة</b>، وستظهر أيقونة المنظومة على الشاشة الرئيسية.</li></ol>':'<ol class="clean"><li>من قائمة المتصفح (⋮ أو ⋯) اختر <b>تثبيت التطبيق</b> أو <b>Install app</b>.</li><li>في Edge على ويندوز: ⋯ ← التطبيقات ← تثبيت هذا الموقع كتطبيق.</li></ol>'}</div></div>`}
-function updBar(){if(UPD_READY)return;UPD_READY=true;try{saveRaw()}catch(_){}let b=$('#updbar');if(!b){b=document.createElement('div');b.id='updbar';b.className='updforce';document.body.appendChild(b)}
+function updBar(){if(!UPD_READY&&(busyIn('#page')||busyIn('#modal')||busyIn('#drawer'))){if(!updBar._w){updBar._w=1;toast('⟳ يوجد تحديث جديد للمنظومة · سيُطبق تلقائياً بعد حفظ ما تكتبه')}clearTimeout(updBar._t);updBar._t=setTimeout(updBar,5000);return}if(UPD_READY)return;UPD_READY=true;try{saveRaw()}catch(_){}let b=$('#updbar');if(!b){b=document.createElement('div');b.id='updbar';b.className='updforce';document.body.appendChild(b)}
  let n=8;const draw=()=>{b.innerHTML=`<div class="updbox"><img src="${LOGO_S}" alt=""><h3>تحديث إلزامي للمنظومة</h3><p>صدر تحديث جديد مهم. سيتم تطبيقه الآن تلقائياً، وكل بياناتك وتعديلاتك غير المتزامنة محفوظة ولن تُفقد.</p><div class="updbar2"><i style="width:${(8-n)/8*100}%"></i></div><button class="btn pri" data-appupd>تحديث الآن${n>0?' ('+n+')':''}</button></div>`};draw();b.hidden=false;
- const t=setInterval(()=>{n--;if(n<=0){clearInterval(t);applyUpdate()}else draw()},1000)}
+ const t=setInterval(()=>{if(busyIn('#page')||busyIn('#modal')||busyIn('#drawer')){b.hidden=true;return}b.hidden=false;n--;if(n<=0){clearInterval(t);applyUpdate()}else draw()},1000)}
 function applyUpdate(){try{saveRaw();localStorage.setItem('wl-upd',APP_VER)}catch(_){}location.reload()}
 async function checkUpdate(manual){if(!SWREG){if(manual)toast(CAN_SW()?'جارٍ تجهيز التحديث التلقائي…':'التحديث التلقائي يعمل في نسخة التطبيق المثبتة');return}
  try{await SWREG.update()}catch(_){}setTimeout(()=>{if(manual&&!UPD_READY)toast('✓ لديك أحدث نسخة من المنظومة ('+APP_VER+')')},2500)}

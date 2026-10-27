@@ -1,0 +1,150 @@
+# Markaz Ahllan POS — بناء تطبيق أندرويد (APK) ونشره كتحديث تلقائي للعملاء
+# جميع الحقوق محفوظة للمصمم و المطور - م/ أسامة حسن بدري - 01145060007
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CI: 'true'
+      CAPACITOR_TELEMETRY: 'false'
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Unzip app source
+        run: |
+          shopt -s nullglob
+          for z in *.zip; do echo "unzip $z"; unzip -o -q "$z"; done
+          if [ ! -f mobile/package.json ]; then
+            f=$(find . -path '*/mobile/package.json' -not -path '*/node_modules/*' | head -1)
+            if [ -n "$f" ]; then d=$(dirname "$(dirname "$f")"); echo "found in $d"; cp -r "$d"/. . ; fi
+          fi
+          if [ ! -f mobile/package.json ] || [ ! -f scripts/build-mobile.js ]; then
+            echo "::error::Program files not found - upload app-source.zip to the repository root"; exit 1
+          fi
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
+          log-accepted-android-sdk-licenses: false
+
+      - name: Install Capacitor
+        working-directory: mobile
+        timeout-minutes: 8
+        run: npm install --no-audit --no-fund
+
+      - name: Build web layer
+        run: node scripts/build-mobile.js
+
+      - name: Create Android project
+        working-directory: mobile
+        timeout-minutes: 8
+        run: |
+          npx --yes cap telemetry off < /dev/null || true
+          npx --yes cap add android < /dev/null
+          npx --yes cap sync android < /dev/null
+
+      - name: Icon, splash and name
+        working-directory: mobile
+        run: |
+          RES=android/app/src/main/res
+          cp -r res/mipmap-* $RES/
+          for f in $(find $RES -name 'splash.png'); do cp res/splash.png "$f"; done
+          sed -i 's#<color name="ic_launcher_background">.*</color>#<color name="ic_launcher_background">\#FFFFFF</color>#' $RES/values/ic_launcher_background.xml || true
+
+      - name: In-app updates + fixed signing + version
+        working-directory: mobile
+        run: |
+          J=android/app/src/main/java/com/markazahllan/pos
+          mkdir -p $J && cp native/*.java $J/
+          M=android/app/src/main/AndroidManifest.xml
+          grep -q REQUEST_INSTALL_PACKAGES $M || sed -i '0,/<application/s##<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />\n    <application#' $M
+          grep -q InstallReceiver $M || sed -i 's#</application>#    <receiver android:name=".InstallReceiver" android:exported="false" />\n    </application>#' $M
+          V=$(node -p "require('../package.json').version" 2>/dev/null || echo 1.0.0)
+          # ملف البناء اتغير اسمه فالعدّاد بدأ من الأول — 1200 بتضمن إن الرقم أكبر من آخر نسخة قديمة (1067) فالتحديث يوصل للكل
+          CODE=$((1200 + ${{ github.run_number }}))
+          VNAME="$V.${{ github.run_number }}"
+          G=android/app/build.gradle
+          sed -i "s/versionCode [0-9]*/versionCode $CODE/; s/versionName \"[^\"]*\"/versionName \"$VNAME\"/" $G
+          if [ -f ../keystore/markaz.jks ]; then
+            printf '\napply from: "../../../keystore/signing.gradle"\nandroid { signingConfigs { debug { storeFile file("../../../keystore/markaz.jks"); storePassword markazSigning.storePassword; keyAlias markazSigning.keyAlias; keyPassword markazSigning.keyPassword } } }\n' >> $G
+          fi
+          echo "CODE=$CODE" >> $GITHUB_ENV
+          echo "VNAME=$VNAME" >> $GITHUB_ENV
+          grep -n "versionCode\|versionName" $G
+
+      - name: Build APK
+        working-directory: mobile/android
+        timeout-minutes: 20
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --console=plain
+
+      - name: Rename APK
+        run: |
+          mkdir -p out
+          cp mobile/android/app/build/outputs/apk/debug/app-debug.apk out/MarkazAhllanPOS.apk
+
+      - uses: actions/upload-artifact@v4
+        continue-on-error: true   # التطبيق بيتنشر على GitHub Releases — لو مساحة الـ Artifacts خلصت البناء ميقفش
+        with:
+          name: MarkazAhllanPOS-APK
+          path: out/*.apk
+          retention-days: 1
+
+      - name: Fast download server (GitHub Releases)
+        env:
+          GH_TOKEN: ${{ secrets.DOWNLOADS_TOKEN }}
+          DL_REPO: ${{ vars.DOWNLOADS_REPO || format('{0}/markaz-ahllan-downloads', github.repository_owner) }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then echo "::error::DOWNLOADS_TOKEN secret is missing"; exit 1; fi
+          V="$CODE"
+          gh release view pos -R "$DL_REPO" >/dev/null 2>&1 || gh release create pos -R "$DL_REPO" --title "Markaz Ahllan POS" --notes "آخر إصدار — بيتحدث تلقائياً"
+          cp out/MarkazAhllanPOS.apk "out/MarkazAhllanPOS-$V.apk"
+          for i in 1 2 3; do gh release upload pos -R "$DL_REPO" "out/MarkazAhllanPOS-$V.apk" out/MarkazAhllanPOS.apk --clobber && break; sleep 10; done
+          printf '{"code":%s,"name":"%s","apk":"%s","mirror":"%s","at":"%s"}\n' "$V" "$VNAME" "https://github.com/$DL_REPO/releases/download/pos/MarkazAhllanPOS-$V.apk" "https://github.com/$DL_REPO/releases/download/pos/MarkazAhllanPOS.apk" "$(date -u +%FT%TZ)" > out/pos.json
+          gh release upload pos -R "$DL_REPO" out/pos.json --clobber
+          gh release view pos -R "$DL_REPO" --json assets -q '.assets[].name' | grep -E '^MarkazAhllanPOS-[0-9]+\.apk$' | sort -t- -k2 -n | head -n -3 | while read a; do gh release delete-asset pos "$a" -R "$DL_REPO" -y || true; done
+          echo "Published $VNAME on GitHub Releases"
+
+      - name: Website (GitHub Pages — free, no credits)
+        env:
+          GH_TOKEN: ${{ secrets.DOWNLOADS_TOKEN }}
+          DL_REPO: ${{ vars.DOWNLOADS_REPO || format('{0}/markaz-ahllan-downloads', github.repository_owner) }}
+        run: |
+          # الموقع + صفحة إعداد الرسائل + ملف آخر إصدار (احتياطي) على GitHub Pages
+          R="https://x-access-token:${GH_TOKEN}@github.com/${DL_REPO}.git"
+          for i in 1 2 3 4 5; do
+            rm -rf site
+            if ! git clone -q --depth 1 -b gh-pages "$R" site 2>/dev/null; then
+              rm -rf site && mkdir site && git -C site init -q && git -C site checkout -q -b gh-pages && git -C site remote add origin "$R"
+            fi
+            cp -r mobile/www/. site/ && rm -rf site/app && mkdir -p site/app && cp -r mobile/www/. site/app/
+            cp mobile/landing.html site/index.html && cp mobile/sw-root.js site/sw.js
+            mkdir -p site/downloads && touch site/.nojekyll
+            OLD=$(python3 -c "import json;print(json.load(open('site/downloads/pos.json')).get('code',0))" 2>/dev/null || echo 0)
+            if [ "$OLD" -gt "$CODE" ]; then echo "Newer version already on the site ($OLD)"; exit 0; fi
+            cp out/pos.json site/downloads/pos.json
+            git -C site add -A
+            git -C site -c user.name="Markaz Ahllan Bot" -c user.email="actions@users.noreply.github.com" commit -q -m "Markaz Ahllan POS $VNAME" || { echo "nothing to publish"; exit 0; }
+            git -C site push -q origin gh-pages && echo "Website updated" && exit 0
+            sleep $((i*5))
+          done
+          echo "::warning::website not updated (apps still update from GitHub Releases)"

@@ -940,6 +940,10 @@ body.pon{overflow:hidden}
 tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .orgf{grid-template-columns:repeat(4,minmax(0,1fr))}@media (max-width:900px){.orgf{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:520px){.orgf{grid-template-columns:minmax(0,1fr)}}.orgc{border-inline-start:4px solid var(--gold)}
 .rsig{display:flex;justify-content:flex-start;margin:18px 0 8px}.rsig>div{min-width:240px;border:1px solid #D8C690;border-radius:10px;padding:8px 14px;background:#FCF8EC;display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:#3E4E52}.rsig b{color:#0B4A50;font-size:14px;border-bottom:1px solid #E8DBB2;padding-bottom:3px;margin-bottom:2px}
+.gi.gw{align-items:flex-start;border-inline-start:3px solid transparent;border-radius:10px;padding:9px 11px}.gi.gw .gt{flex:1}.gi.gw .gt b{white-space:normal;overflow:visible;line-height:1.45;font-size:14.5px}
+.gi.gw small{white-space:normal;line-height:1.5}.gst{display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px;margin:3px 0 2px;font-size:12.5px;font-weight:800;padding:2px 8px;border-radius:999px;width:fit-content;max-width:100%}.gst em{font-style:normal;font-weight:600}
+.gst-ok{background:var(--ok-soft);color:var(--ok)}.gst-warn{background:var(--warn-soft);color:var(--warn)}.gst-bad{background:var(--bad-soft);color:var(--bad)}.gst-info{background:color-mix(in srgb,var(--s3) 15%,var(--surface));color:var(--s3)}.gst-mut{background:var(--surface2);color:var(--muted)}
+.gi.gw-bad{border-inline-start-color:var(--bad);background:color-mix(in srgb,var(--bad) 7%,transparent)}.gi.gw-bad .gt b{color:var(--bad)}.gi.gw-warn{border-inline-start-color:var(--warn)}.gi.gw-ok{border-inline-start-color:var(--ok)}.gsrc{color:var(--teal);font-weight:700;white-space:nowrap}.gst{white-space:nowrap}.gi.gl .gt b{white-space:normal;line-height:1.45}.gi.gl small{white-space:normal}
 .drcm{font-size:11.5px;font-weight:800;color:#7A5A12;background:linear-gradient(90deg,#F7E7B8,#EFD58E);border:1px solid #D9B65A;border-radius:999px;padding:2px 10px;white-space:nowrap}.drx{font-size:11px;font-weight:700;color:var(--bad);background:var(--bad-soft);border-radius:999px;padding:2px 8px;white-space:nowrap}
 .drsec{font-weight:800;font-size:13.5px;color:var(--teal);margin:12px 0 8px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
 .drform .form{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -1743,13 +1747,16 @@ AFTER.wmap=()=>{const pts=WB.filter(o=>o.la!=null&&MF.wc[o._c]).sort((a,b)=>{con
  geoMap($('#wgmap'),pts,{open:p=>renderWell(WB[p.i])})};
 /* ---------- global search ---------- */
 function wMatch(o,q){const qn=norm(q),dg=q.replace(/\D/g,'');if(!o._n)o._n=norm(o.n+' '+(o.reg||''));if(qn&&qn.split(' ').every(w=>o._n.includes(w)))return true;if((o.lic||'').toLowerCase().includes(q.toLowerCase()))return true;return dg.length>=3&&(String(o.nid||'').replace(/\D/g,'').endsWith(dg)||String(o.lic||'').includes(dg)||String(o.i)===dg)}
+const GST={valid:['ok','✓ ساري الترخيص'],soon:['warn','⏳ ساري · ينتهي قريباً'],expired:['bad','✕ منتهي الترخيص'],viol:['bad','⚠ غير مرخص (مخالف)'],proc:['info','◔ جاري الترخيص'],gov:['mut','حكومي']};
+function gWell(o){const g=GST[o._c]||['mut',WCAT[o._c]?WCAT[o._c].t:''];const d=o._d;const when=o.end?(o._c==='expired'?'منذ '+nf(-d)+' يوم':'حتى '+fD(o.end)+(d!=null&&d<=60?' · متبقٍ '+d+' يوم':'')):'';
+ return `<button class="gi gw gw-${g[0]}" data-well="${o._i}"><span class="gt"><b>${esc(o.n)}</b><span class="gst gst-${g[0]}">${g[1]}${when?'<em> · '+when+'</em>':''}</span><small>${o._c==='expired'&&o.end?'انتهى '+fD(o.end)+' · ':''}ترقيم ${o.i}${o.reg?' · '+esc(o.reg):''}${o.lic?' · رخصة <bdi dir="ltr">'+esc(o.lic)+'</bdi>':''} · <span class="gsrc">${fromSys(o)?'قاعدة البيانات · من منظومة التراخيص (طلب م '+o.rq+')':'قاعدة البيانات'}</span></small></span></button>`}
 function gSearch(q){q=q.trim();const box=$('#gres');if(!q){box.hidden=true;return}
  const rq=pageOK('requests')?R.filter(r=>match(r,q)):[],wq=pageOK('registry')?WB.filter(o=>wMatch(o,q)):[],pq=PAGES.filter(p=>p[0]!=='sep'&&pageOK(p[0])&&norm(p[1]).includes(norm(q))),uq=isDev()?S.users.filter(u=>norm(u.n+' '+u.u).includes(norm(q))):[];
  const sec=(t,c)=>`<span class="gsec gs-${c}">${t}</span>`;
  const it=(attrs,secH,title,sub)=>`<button class="gi" ${attrs}>${secH}<span class="gt"><b>${title}</b><small>${sub}</small></span></button>`;
  let h='';
- if(rq.length)h+=`<div class="gg"><div class="gh">منظومة التراخيص · الطلبات <small>${rq.length}</small></div>${rq.slice(0,5).map(r=>it(`data-open="${r.id}"`,sec('طلب ترخيص','L'),esc(r.name),`#${r.id} · ${esc(r.file||'بدون رقم ملف')} · ${esc(r.city)} · ${esc(stat(r).t)}`)).join('')}${rq.length>5?`<button class="gm" data-gall="req">عرض كل نتائج الطلبات (${rq.length})</button>`:''}</div>`;
- if(wq.length)h+=`<div class="gg"><div class="gh">قاعدة البيانات · سجل الآبار <small>${nf(wq.length)}</small></div>${wq.slice(0,5).map(o=>it(`data-well="${o._i}"`,sec(fromSys(o)?(o.rqm?'بئر · حُدّث من المنظومة':'بئر · من المنظومة'):'بئر · القاعدة الأصلية',fromSys(o)?'X':'D'),esc(o.n),`ترقيم ${o.i} · ${esc(o.reg||'')} · ${WCAT[o._c].t}${o.lic?' · رخصة '+esc(o.lic):''}${fromSys(o)?' · طلب م '+o.rq:''}`)).join('')}${wq.length>5?`<button class="gm" data-gall="well">عرض كل نتائج سجل الآبار (${nf(wq.length)})</button>`:''}</div>`;
+ if(rq.length)h+=`<div class="gg"><div class="gh">منظومة التراخيص · الطلبات <small>${rq.length}</small></div>${rq.slice(0,5).map(r=>{const st=stat(r);return `<button class="gi gw gl ${r.status==='rejected'?'gw-bad':''}" data-open="${r.id}"><span class="gt"><b>${esc(r.name)}</b><span class="gst" style="background:${st.bg};color:${st.c}">${esc(st.t)}</span><small>طلب م ${r.id}${r.file?' · '+esc(r.file):''} · ${esc(r.city)} · ${esc(KL(r.kind))} · <span class="gsrc">منظومة التراخيص</span></small></span></button>`}).join('')}${rq.length>5?`<button class="gm" data-gall="req">عرض كل نتائج الطلبات (${rq.length})</button>`:''}</div>`;
+ if(wq.length)h+=`<div class="gg"><div class="gh">قاعدة البيانات · سجل الآبار <small>${nf(wq.length)}</small></div>${wq.slice(0,6).map(o=>gWell(o)).join('')}${wq.length>5?`<button class="gm" data-gall="well">عرض كل نتائج سجل الآبار (${nf(wq.length)})</button>`:''}</div>`;
  if(uq.length)h+=`<div class="gg"><div class="gh">الإعدادات · المستخدمون</div>${uq.slice(0,3).map(u=>it(`data-go="users"`,sec('مستخدم','S'),esc(u.n),esc(u.u)+' · '+ROLES[u.r])).join('')}</div>`;
  if(pq.length)h+=`<div class="gg"><div class="gh">صفحات</div>${pq.slice(0,4).map(p=>it(`data-go="${p[0]}"`,sec('صفحة','P'),p[1],'انتقال سريع')).join('')}</div>`;
  box.innerHTML=h||`<div class="empty" style="margin:10px">لا توجد نتائج لـ «${esc(q)}» في الطلبات أو سجل الآبار.</div>`;box.hidden=false}
@@ -3215,7 +3222,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.10.27-1442';
+const APP_VER='2026.10.27-1659';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);

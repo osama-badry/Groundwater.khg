@@ -835,7 +835,7 @@ body.pon{overflow:hidden}
 .rejx summary .ico{width:17px;height:17px}.rejx[open] summary{border-bottom:1px solid var(--line)}
 .rejb{display:flex;flex-direction:column;gap:12px;padding:14px}
 
-.camgps{display:flex;align-items:center;gap:6px;max-width:calc(100% - 24px)}.camgps i{width:8px;height:8px;border-radius:50%;flex:none}.gok{background:#37D67A;box-shadow:0 0 0 3px rgb(55 214 122/.3)}.gman{background:#E5BD63}.gbad{background:#FF5D52}.gwait{background:#aaa;animation:gp 1s infinite alternate}
+.camgps{display:flex;align-items:center;gap:6px;max-width:calc(100% - 24px)}.camgps i{width:8px;height:8px;border-radius:50%;flex:none}.gok{background:#37D67A;box-shadow:0 0 0 3px rgb(55 214 122/.3)}.gman{background:#E5BD63}.gbad{background:#FF5D52}.gwait{background:#aaa;animation:gp 1s infinite alternate}.gmid{background:#E5BD63;box-shadow:0 0 0 3px rgb(229 189 99/.3)}
 @keyframes gp{to{opacity:.3}}
 .camgps button{border:0;background:#E5BD63;color:#1B1305;border-radius:999px;padding:3px 10px;font:inherit;font-size:11.5px;font-weight:700;cursor:pointer}
 .camman{position:absolute;top:calc(100px + env(safe-area-inset-top));inset-inline:12px;max-width:440px;background:rgb(10 22 26/.94);border:1px solid rgb(229 189 99/.4);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;z-index:2}
@@ -1289,7 +1289,7 @@ const PAGES=[['sep','منظومة التراخيص','lic'],['inspq','مهام ا
 /* ---------- routing ---------- */
 let cur='dash';
 const MGIC={lic:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',lsec:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',db:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',rep:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/>'};
-function menu(){topUser();const vis=p=>pageOK(p[0])&&!(p[0]==='users'&&!can(8))&&!(p[0]==='reports'&&!can(7))&&!(p[0]==='new'&&!can(0))&&!(p[0]==='wellform'&&!canAddWell())&&!(p[0]==='backup'&&!(isDev()||can(8)))&&!(p[0]==='drill'&&!canDrill());
+function menu(){topUser();if(cur==='inspq'||(typeof me==='function'&&me()&&me().r===5))setTimeout(()=>{try{geoWarm()}catch(_){}},300);const vis=p=>pageOK(p[0])&&!(p[0]==='users'&&!can(8))&&!(p[0]==='reports'&&!can(7))&&!(p[0]==='new'&&!can(0))&&!(p[0]==='wellform'&&!canAddWell())&&!(p[0]==='backup'&&!(isDev()||can(8)))&&!(p[0]==='drill'&&!canDrill());
  const G=[];let g=null;PAGES.forEach(p=>{if(p[0]==='sep'){g={k:p[2],t:p[1],items:[]};G.push(g)}else if(g)g.items.push(p)});
  const mo=S.mopen||(S.mopen={});const cg=(G.find(x=>x.items.some(p=>p[0]===cur))||{}).k;if(menu._c!==cur){menu._c=cur;if(cg)mo[cg]=true}
  const it=p=>`<a href="#${p[0]}" data-go="${p[0]}" class="${cur===p[0]?'on':''}">${ico(p[0])}${p[1]}${p[0]==='requests'?`<span class="cnt">${R.length}</span>`:''}${p[0]==='registry'&&WB.length?`<span class="cnt alertc">${(WC().soon||0)+(WC().expired||0)}</span>`:''}${p[0]==='whatsapp'&&S.outbox.length?`<span class="cnt">${S.outbox.length}</span>`:''}${p[0]==='drills'&&decls().length?`<span class="cnt">${decls().length}</span>`:''}${p[0]==='lcm'&&R.some(r=>postSt(r)==='lic')?`<span class="cnt alertc">${R.filter(r=>postSt(r)==='lic').length}</span>`:''}${p[0]==='vars'&&S.vrs&&Object.values(S.vrs).filter(v=>v.st==='var').length?`<span class="cnt alertc">${Object.values(S.vrs).filter(v=>v.st==='var').length}</span>`:''}${p[0]==='claims'&&S.vrs&&Object.values(S.vrs).filter(v=>v.st==='claim'||v.st==='pay').length?`<span class="cnt alertc">${Object.values(S.vrs).filter(v=>v.st==='claim'||v.st==='pay').length}</span>`:''}</a>`;
@@ -1307,7 +1307,7 @@ function navBack(){if($('#side').classList.contains('open')){$('#side').classLis
  while(NAV.length&&NAV[NAV.length-1].d)NAV.pop();if(NAV.length>1){NAV.pop();go(NAV[NAV.length-1].p,false)}else if(cur!=='dash'){NAV=[];go('dash')}uiNav()}
 window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#v='))verifyFromHash()});
 window.addEventListener('popstate',()=>{if(!$('#portal').hidden){if(location.hash!=='#portal')closePortal();return}if(location.hash==='#portal'){openPortal('track');return}if(!BOOTED)return;const atRoot=cur==='dash'&&!drawerOpen()&&!$('#side').classList.contains('open');navBack();if(atRoot){try{history.pushState({n:0},'')}catch(_){}toast('أنت في الصفحة الرئيسية')}});
-function rerender(){DIRTY=null;BGPEND=0;const y=window.scrollY;$('#page').innerHTML=VIEWS[cur]();(AFTER[cur]||(()=>{}))();menu();window.scrollTo(0,y)}
+function rerender(){DIRTY=null;BGPEND=0;const y=window.scrollY;$('#page').innerHTML=VIEWS[cur]();(AFTER[cur]||(()=>{}))();menu();window.scrollTo(0,y);if(cur==='inspq')try{geoWarm()}catch(_){}}
 /* حماية ما يكتبه المستخدم: التحديثات القادمة من السحابة لا تعيد رسم الصفحة أثناء الكتابة أو قبل الحفظ */
 let DIRTY=null,BGPEND=0,DPEND=0;
 const isField=el=>!!el&&/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)&&!['checkbox','radio','button','submit','file'].includes((el.type||'').toLowerCase());
@@ -2737,7 +2737,7 @@ function wireInsp(ap,r){if(!ap.querySelector('[data-slotin]'))return;ap._ip={};
  const paint=()=>{const m=inspMeta(ap);check();ap.querySelectorAll('.islot').forEach(el=>{const k=el.dataset.slot,p=ap._ip[k],im=el.querySelector('.isimg');if(!p){el.classList.remove('done');return}el.classList.add('done');el.classList.remove('need');el.querySelector('.isst').innerHTML='✓ <bdi dir="ltr">'+p.img.naturalWidth+'×'+p.img.naturalHeight+'</bdi>';
    im.innerHTML=`<img src="${stampCanvas(p.img,Object.assign({},m,{ts:p.ts,slot:slotName(r,k),owner:r.name,rg:r.city}),640).toDataURL('image/jpeg',.7)}" alt="">`})};
  ap._paint=paint;const pl_=ap.querySelector('#ip-place');pl_.addEventListener('input',()=>pl_._man=1);const la_=ap.querySelector('#ip-la');la_.addEventListener('paste',e=>{const g=parseLL((e.clipboardData||window.clipboardData).getData('text'));if(g){e.preventDefault();geoToForm(ap,{la:g.la,lo:g.lo,alt:''})}});ap.querySelectorAll('[data-cam]').forEach(b=>b.onclick=()=>openCam(ap,r,b.dataset.cam));ap.querySelectorAll('[data-ipv]').forEach(b=>b.onclick=()=>ipPreview(ap,r,b.dataset.ipv));
- geoStart(g=>{if(g){geoToForm(ap,g);geoStop()}});
+ geoStart(g=>{if(g)geoToForm(ap,g)},true);
  let tmr=null;ap.querySelectorAll('#ip-la,#ip-lo,#ip-alt,#ip-place,#ip-note,#ip-reg').forEach(i=>i.addEventListener('input',()=>{clearTimeout(tmr);tmr=setTimeout(paint,300)}));ap.querySelector('#ip-pre').addEventListener('change',paint);
  ap.querySelectorAll('[data-slotin]').forEach(fi=>fi.onchange=async()=>{const f=fi.files[0];if(!f)return;const k=fi.dataset.slotin;fi.closest('.islot').querySelector('.isst').textContent='جارٍ التجهيز…';
   try{const p=await readPhoto(f);ap._ip[k]=p;if(p.ex.la&&!ap._gps){ap._gps=1;ap.querySelector('#ip-la').value=p.ex.la.toFixed(6);ap.querySelector('#ip-lo').value=p.ex.lo.toFixed(6)}else if(!p.ex.la&&!ap._warned){ap._warned=1;toast('الصورة لا تحتوي على موقع GPS · تُستخدم إحداثيات الطلب ويمكن تعديلها')}if(p.ex.alt!=null&&!ap.querySelector('#ip-alt').value)ap.querySelector('#ip-alt').value=p.ex.alt}
@@ -2836,7 +2836,21 @@ VIEWS.portal=()=>`<div class="ph"><div><h2>بوابة المواطن</h2><p>بو
 const liveOK=()=>!!(window.isSecureContext&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia);
 const LIVE_MSG='الكاميرا المباشرة وGPS يحتاجان فتح المنظومة من رابط https · تم فتح كاميرا الجهاز العادية';
 const CAM={st:null,ap:null,r:null,slot:null,raf:0,geo:null,wid:null,busy:false,face:'environment'};
-function geoStart(cb){if(!navigator.geolocation||!window.isSecureContext)return cb&&cb(null,'هذا العرض لا يسمح بالوصول للموقع');try{CAM.wid=navigator.geolocation.watchPosition(p=>{CAM.geo={la:p.coords.latitude,lo:p.coords.longitude,alt:p.coords.altitude!=null?Math.round(p.coords.altitude):'',acc:Math.round(p.coords.accuracy||0)};CAM.gerr='';cb&&cb(CAM.geo)},e=>{CAM.gerr=e&&e.code===1?(/policy/i.test(e.message||'')?'الموقع محجوب داخل هذا العرض':'تم رفض إذن الموقع · فعّله من إعدادات المتصفح'):e&&e.code===3?'انتهت مهلة تحديد الموقع · تأكد من تشغيل GPS':'تعذر تحديد الموقع';cb&&cb(null,CAM.gerr)},{enableHighAccuracy:true,maximumAge:3000,timeout:25000})}catch(_){cb&&cb(null,'تعذر تحديد الموقع')}}
+/* GPS: يعمل من قمر الهاتف مباشرة حتى بدون إنترنت أو شبكة · مراقبة مستمرة بلا مهلة + تسخين مسبق */
+const GEO={wid:null,geo:null,err:'',t0:0,subs:new Map(),sid:0,kt:null,tick:null};
+function geoWatch(){if(GEO.wid!=null||!navigator.geolocation||!window.isSecureContext)return;GEO.t0=Date.now();GEO.err='';
+ try{GEO.wid=navigator.geolocation.watchPosition(p=>{const c=p.coords;const g={la:c.latitude,lo:c.longitude,alt:c.altitude!=null?Math.round(c.altitude):'',acc:Math.round(c.accuracy||0),t:Date.now()};GEO.geo=g;GEO.err='';CAM.gerr='';if(!(CAM.geo&&CAM.geo.man))CAM.geo=g;try{localStorage.setItem('wl-fix',JSON.stringify(g))}catch(_){}
+   [...GEO.subs].forEach(([id,o])=>{try{o.cb(g)}catch(_){}if(o.once)GEO.subs.delete(id)});camGpsUpd()},
+  e=>{if(e&&e.code===1){GEO.err=/policy/i.test(e.message||'')?'الموقع محجوب داخل هذا العرض':'تم رفض إذن الموقع · فعّله من إعدادات المتصفح';CAM.gerr=GEO.err;[...GEO.subs].forEach(([,o])=>{try{o.cb(null,GEO.err)}catch(_){}});geoHalt()}
+   else if(e&&e.code===3){try{navigator.geolocation.clearWatch(GEO.wid)}catch(_){}GEO.wid=null;setTimeout(geoWatch,500)}
+   camGpsUpd()},{enableHighAccuracy:true,maximumAge:0,timeout:180000})}catch(_){GEO.err='تعذر تشغيل GPS'}
+ clearInterval(GEO.tick);GEO.tick=setInterval(camGpsUpd,1000)}
+function geoHalt(){try{if(GEO.wid!=null)navigator.geolocation.clearWatch(GEO.wid)}catch(_){}GEO.wid=null;clearInterval(GEO.tick);GEO.tick=null}
+function geoStart(cb,once){if(!navigator.geolocation||!window.isSecureContext){cb&&cb(null,'هذا العرض لا يسمح بالوصول للموقع');return 0}clearTimeout(GEO.kt);const id=++GEO.sid;if(cb)GEO.subs.set(id,{cb,once});geoWatch();
+ if(GEO.geo&&Date.now()-GEO.geo.t<60000){if(!(CAM.geo&&CAM.geo.man))CAM.geo=GEO.geo;try{cb&&cb(GEO.geo)}catch(_){}if(once)GEO.subs.delete(id)}else if(GEO.err){cb&&cb(null,GEO.err)}return id}
+/* إيقاف الاشتراك مع إبقاء GPS دافئاً 5 دقائق لالتقاط فوري عند فتح الكاميرا التالية */
+function geoStop(id){if(id)GEO.subs.delete(id);else GEO.subs.clear();clearTimeout(GEO.kt);GEO.kt=setTimeout(()=>{if(!GEO.subs.size)geoHalt()},5*60000)}
+const geoWarm=()=>{if(typeof canInspect==='function'&&canInspect()&&window.isSecureContext){geoWatch();geoStop(-1)}};
 const RGC={};let RGT=0;async function revGeo(la,lo){const k=la.toFixed(4)+','+lo.toFixed(4);if(RGC[k]!=null)return RGC[k];let s='';
  try{const wait=1100-(Date.now()-RGT);if(wait>0)await new Promise(r_=>setTimeout(r_,wait));RGT=Date.now();const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),5000);const j=await (await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${la}&lon=${lo}&zoom=18&addressdetails=1&accept-language=en`,{signal:ac.signal})).json();clearTimeout(tm);const a=j.address||{};
   const parts=[a.house_number&&a.road?a.road+' '+a.house_number:(a.road||a.pedestrian||a.footway||a.track),a.neighbourhood||a.quarter||a.hamlet,a.suburb||a.village||a.city_district,a.city||a.town||a.municipality||a.county,a.state||a.province||a.region,a.postcode,a.country];const seen=new Set();s=parts.filter(x_=>x_&&!seen.has(x_)&&seen.add(x_)).join(', ')}catch(_){}
@@ -2845,10 +2859,9 @@ const RGC={};let RGT=0;async function revGeo(la,lo){const k=la.toFixed(4)+','+lo
 function parseLL(t){t=String(t||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));const dms=[...t.matchAll(/(\d{1,3})\s*[°º]\s*(\d{1,2})\s*['′]\s*([\d.]+)\s*["″]?\s*([NSEWشقجغ])?/gi)];
  if(dms.length>=2){const v=dms.slice(0,2).map(m=>{let x=+m[1]+m[2]/60+m[3]/3600;if(/[SWجغ]/i.test(m[4]||''))x=-x;return x});return {la:v[0],lo:v[1]}}
  const n=(t.match(/-?\d{1,3}\.\d{3,}/g)||[]).map(Number);if(n.length>=2){let [a,b]=n;if(a>b&&a>28&&b<28)[a,b]=[b,a];return {la:a,lo:b}}return null}
-function geoStop(){try{if(CAM.wid!=null)navigator.geolocation.clearWatch(CAM.wid)}catch(_){}CAM.wid=null}
 function geoToForm(ap,g){if(!g||!ap)return;const s=(id,v)=>{const e=ap.querySelector('#'+id);if(e&&v!==''&&v!=null){e.value=v}};s('ip-la',g.la.toFixed(6));s('ip-lo',g.lo.toFixed(6));if(g.alt!==''&&g.alt!=null)s('ip-alt',g.alt);ap._gps=1;ap._paint&&ap._paint();
  const pl=ap.querySelector('#ip-place');if(pl&&!pl._man){revGeo(g.la,g.lo).then(a=>{if(a&&!pl._man){pl.value=a;ap._paint&&ap._paint()}})}}
-function camGpsTxt(){const g=CAM.geo;if(g&&!g.man)return `<i class="gok"></i>GPS مباشر ± ${g.acc} م`;if(g&&g.man)return `<i class="gman"></i>إحداثيات يدوية <button data-camgeo>تعديل</button>`;if(CAM.gerr)return `<i class="gbad"></i>${CAM.gerr} <button data-camgeo>إدخال يدوي</button>`;return '<i class="gwait"></i>جارٍ تحديد الموقع… <button data-camgeo>يدوي</button>'}
+function camGpsTxt(){const g=CAM.geo;const off=navigator.onLine?'':' · بدون إنترنت';if(g&&!g.man)return g.acc>50?`<i class="gmid"></i>GPS ± ${g.acc} م · جارٍ تحسين الدقة${off}`:`<i class="gok"></i>GPS من الهاتف ± ${g.acc} م${off}`;if(g&&g.man)return `<i class="gman"></i>إحداثيات يدوية <button data-camgeo>تعديل</button>`;if(CAM.gerr)return `<i class="gbad"></i>${CAM.gerr} <button data-camgeo>إدخال يدوي</button>`;const sec=GEO.t0?Math.round((Date.now()-GEO.t0)/1000):0;const mm=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');return `<i class="gwait"></i>جارٍ التقاط إشارة الأقمار الصناعية (GPS) ${mm}${sec>20?' · قف في مكان مكشوف للسماء'+(navigator.onLine?'':' · بدون إنترنت قد يستغرق حتى دقيقتين'):''} <button data-camgeo>يدوي</button>`}
 function camGpsUpd(){const e=$('#cam-gps');if(e)e.innerHTML=camGpsTxt()}
 function camMeta(){const ap=CAM.ap,r=CAM.r,m=inspMeta(ap);if(CAM.geo){m.la=CAM.geo.la;m.lo=CAM.geo.lo;if(m.alt==='')m.alt=CAM.geo.alt}return Object.assign(m,{ts:new Date().toISOString(),slot:slotName(r,CAM.slot),owner:r.name,rg:r.city,pre:false})}
 function camHTML(){const r=CAM.r,S_=ISLOTS(r),ap=CAM.ap;return `<div class="camw"><canvas id="cam-cv"></canvas><video id="cam-v" playsinline muted autoplay></video>
@@ -2863,7 +2876,7 @@ async function openCam(ap,r,slot){CAM.ap=ap;CAM.r=r;CAM.slot=slot;const el=$('#c
  const v=$('#cam-v');v.srcObject=CAM.st;try{await v.play()}catch(_){}
  CAM.gerr='';if(CAM.geo&&!CAM.geo.man)CAM.geo=null;let lastRG=0;geoStart((g,err)=>{camGpsUpd();if(g){const now=Date.now();if(now-lastRG>8000){lastRG=now;geoToForm(ap,g)}else{const s=(id,v)=>{const e=ap.querySelector('#'+id);if(e)e.value=v};s('ip-la',g.la.toFixed(6));s('ip-lo',g.lo.toFixed(6));if(g.alt!=='')s('ip-alt',g.alt)}}else if(!ap.querySelector('#ip-la').value){setTimeout(()=>{const m_=$('#cam-man');if(m_&&!CAM.geo)m_.hidden=false},400)}});
  try{await Promise.all(['500','700'].map(w=>document.fonts.load(w+' 20px Cairo')));await document.fonts.ready}catch(_){}logoImg();camLoop()}
-function camFallback(ap,slot){const i=ap.querySelector(`[data-slotin="${slot}"]`);if(!i)return;i.setAttribute('capture','environment');geoStart(g=>{if(g)geoToForm(ap,g)});i.click();setTimeout(()=>i.removeAttribute('capture'),1000)}
+function camFallback(ap,slot){const i=ap.querySelector(`[data-slotin="${slot}"]`);if(!i)return;i.setAttribute('capture','environment');geoStart(g=>{if(g)geoToForm(ap,g)},true);i.click();setTimeout(()=>i.removeAttribute('capture'),1000)}
 function camLoop(){const v=$('#cam-v'),cv=$('#cam-cv');if(!v||!cv||$('#cam').hidden)return;const vw=v.videoWidth,vh=v.videoHeight;
  if(vw){const box=cv.parentElement.getBoundingClientRect(),s=Math.min(box.width/vw,box.height/vh),k=Math.min(1,1280/Math.max(vw,vh));const W=Math.round(vw*k),H=Math.round(vh*k);if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;cv.style.width=Math.round(vw*s)+'px';cv.style.height=Math.round(vh*s)+'px'}
   const x=cv.getContext('2d');x.drawImage(v,0,0,W,H);drawStamp(x,W,H,camMeta())}
@@ -3222,7 +3235,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.10.27-1659';
+const APP_VER='2026.10.28-1415';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);

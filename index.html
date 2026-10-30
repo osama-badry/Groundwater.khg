@@ -3016,6 +3016,8 @@ async function clPushOp(op){const k=op.key;
   const ws=[...Object.values(S.wmod||{}),...(S.wadd||[])];if([0,1,3].includes(me().r))for(let i=0;i<ws.length;i+=300)await clWellResult(await clRpc('save_wells',{rows:ws.slice(i,i+300).map(w=>{const o=WB.find(x=>x.i==w.i)||w;return {i:w.i,base:o._cu||null,data:strip(o)}})}));return}
  if(/^w\d+$/.test(k)){const i=+k.slice(1);const o=WB.find(x=>x.i==i);if(o)await clWellResult(await clRpc('save_wells',{rows:[{i,base:o._cu||null,data:strip(o)}]}));return}
  if(k.startsWith('p:')){const r=me().r;const keys=r===0?['tpl','cities','rep','ra','org']:r===1?['tpl','cities','rep','org','ra']:r===2?['cities']:[];S.stSnap=S.stSnap||{};for(const kk of keys){const d=kk==='tpl'?S.tpl:kk==='cities'?S.cities:kk==='rep'?S.rep:kk==='org'?S.org:S.ra;if(d==null)continue;const js=JSON.stringify(d);if(S.stSnap[kk]===js)continue;await clRpc('save_state',{k:kk,d});S.stSnap[kk]=js}return}
+ if(k.startsWith('bulkw:')){const is=(S.bulk||{})[k]||[];if([0,1,3].includes(me().r))for(let i=0;i<is.length;i+=80){const rows=is.slice(i,i+80).map(x=>WB.find(o=>o.i==x)).filter(Boolean).map(o=>({i:o.i,base:o._cu||null,data:strip(o)}));if(rows.length)await clWellResult(await clRpc('save_wells',{rows}))}if(S.bulk)delete S.bulk[k];return}
+ if(k.startsWith('bulk:')){const ids=(S.bulk||{})[k]||[];for(let i=0;i<ids.length;i+=60){const rows=rowsForReq(ids.slice(i,i+60));if(rows.length)await clReqResult(await clRpc('save_requests',{rows}))}if(S.bulk)delete S.bulk[k];return}
  if(k.startsWith('wc:')){const i=k.slice(3);const c=wcs()[i];if(c)await clRpc('save_well_contacts',{rows:[{i:+i,data:c}]});return}
  if(k.startsWith('v:')){const v=vrs()[k.slice(2)];if(v)await clRpc('save_variations',{rows:[{rid:v.rid,data:v}]});return}
  if(k.startsWith('dr:')){const d=decls().find(x=>x.code===k.slice(3));if(d&&canDrill())await clRpc('save_declarations',{rows:[{code:d.code,well_i:d.i,data:d}]});return}
@@ -3287,7 +3289,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.10.30-0635';
+const APP_VER='2026.10.30-0817';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -3518,6 +3520,30 @@ function saveReqEdit(rid){if(!canEditReq())return toast('تعديل بيانات
  hAdd(r,hDiff(_hb,hSnap(r,Object.keys(RHF)),k=>RHF[k]||k));r.log.push({d:todayISO(),t:'تعديل بيانات الطلب: '+ch.join(' · '),u:me().n,ts:Date.now()});persist(r);syncPulse();$('#modal').hidden=true;$('#modal').innerHTML='';toast('✓ تم حفظ التعديلات');if(drawerOpen())renderDrawer();rerender()}
 
 /* ---------- global events ---------- */
+/* ---- إنهاء الطلبات المنتهية معاينتها حسب ملف البيانات المستوردة (مرة واحدة) ---- */
+const MIG_LEG={'القطاع':1,'ادارة الدراسات':1};
+const migCands=()=>R.filter(r=>MIG_LEG[r.legacy]&&r.stage===5&&r.status!=='closed'&&r.status!=='rejected');
+function migClose1(quiet){if(me().r!==0)return 0;const L=migCands();if(!L.length)return 0;const T=todayISO(),U=me().n,ts=Date.now();S.mods=S.mods||{};
+ L.forEach(r=>{r.log=r.log||[];r.log.push({d:T,t:'اعتماد انتهاء المعاينة حسب ملف البيانات المستوردة (الموقف بالملف: '+r.legacy+')',u:U,ts});r.log.push({d:T,t:'إنهاء الطلب على المنظومة وتسليم المستندات لقسم التراخيص · إنهاء جماعي لكل المراحل للطلبات المنتهية معاينتها',u:U,ts:ts+1});r.status='closed';r.sub='';r.mig='file';r.sat=T;if(r._new){const i=S.added.findIndex(a=>a.id===r.id);if(i>=0)S.added[i]=r}else S.mods[r.id]=strip(r)});
+ (S.bulk=S.bulk||{})['bulk:close1']=L.map(r=>r.id);enqueue('bulk:close1','إنهاء '+L.length+' طلب منتهية معاينتها','طلب');save._q=1;save();syncPulse();
+ if(!quiet)toast('✓ تم إنهاء جميع المراحل لـ '+L.length+' طلب منتهية معاينتها حسب الملف · وتحويلها لقسم التراخيص');try{rerender()}catch(_){}return L.length}
+/* ---- استكمال باقي المراحل (اللجنة العليا + قاعدة البيانات) للطلبات المنتهية من الملف (مرة واحدة) ---- */
+const migCands2=()=>R.filter(r=>r.mig==='file'&&r.status==='closed'&&['lic','cm'].includes(postSt(r)));
+function migClose2(){if(me().r!==0)return 0;const L=migCands2();if(!L.length)return 0;const T=todayISO(),U=me().n;let ts=Date.now();const NOTE='اعتماد جماعي من البيانات المستوردة · تاريخ ورقم قرار اللجنة الفعلي يُستكمل';
+ S.mods=S.mods||{};S.wmod=S.wmod||{};S.wadd=S.wadd||[];const wIds=new Set();let nLink=0,nNew=0;
+ L.forEach(r=>{if(!r.cmsub){r.cmsub={date:T,no:'',nt:'إنهاء جماعي من البيانات المستوردة',by:U,at:ts};r.log.push({d:T,t:'تم الإنهاء للعرض على اللجنة العليا · إنهاء جماعي من البيانات المستوردة',u:U,ts:ts++})}
+  const cm={date:T,mno:'',dec:'موافقة',dno:'',q:'',ar:'',cond:NOTE,by:U,at:ts,bulk:1};r.cm=cm;r.log.push({d:T,t:'قرار اللجنة العليا: موافقة · '+NOTE,u:U,ts:ts++});
+  r.wds=cmDrafts(r,cm);delete r.wd;
+  r.wds.forEach((d,k)=>{const mt=cmMatches(d).filter(x=>x.d!=null);let rec,txt;
+   if(mt.length){rec=mt[0].w;const b=hSnap(rec);if(!(rec._c==='valid'||rec._c==='soon')){rec.ls=d.ls;if(d.com&&!rec.com)rec.com=d.com}rec.rq=r.id;rec.rqtc=r.tc;rec.rqd=T;rec.rqm=1;hAdd(rec,hDiff(b,hSnap(rec),wLabel));rec._n=null;rec._c=wcat(rec);S.wmod[rec.i]=strip(rec);nLink++;txt='ربط بالبئر القائم ترقيم '+rec.i+' (على بعد '+mt[0].d+' م)'+(rec._c==='valid'||rec._c==='soon'?' · ترخيصه ساري فلم يتغير موقفه':' · تحديث موقف الترخيص')}
+   else{rec=Object.assign({},d,{rq:r.id,rqtc:r.tc,rqd:T});if(!rec.i||WB.some(x=>x.i==rec.i))rec.i=nextWellI();rec._i=WB.length;rec._c=wcat(rec);WB.push(rec);S.wadd.push(strip(rec));nNew++;txt='تسجيل بئر جديد بقاعدة البيانات · ترقيم '+rec.i}
+   d.wi=rec.i;delete d.hold;wIds.add(rec.i);r.log.push({d:T,t:'استكمال قسم الدراسات (إنهاء جماعي)'+(r.wds.length>1?' · بئر '+(k+1)+' من '+r.wds.length:'')+': '+txt,u:U,ts:ts++})});
+  r.wis=r.wds.map(d=>d.wi);r.wi=r.wis[0];r.post='done';if(r._new){const i=S.added.findIndex(a=>a.id===r.id);if(i>=0)S.added[i]=r}else S.mods[r.id]=strip(r)});
+ if(typeof WC==='function'&&WC._c)WC._c=null;
+ S.bulk=S.bulk||{};S.bulk['bulk:close2']=L.map(r=>r.id);S.bulk['bulkw:close2']=[...wIds];
+ enqueue('bulkw:close2','تحديث '+wIds.size+' بئر بقاعدة البيانات','بئر');enqueue('bulk:close2','استكمال '+L.length+' طلب حتى التسجيل بقاعدة البيانات','طلب');save._q=1;save();syncPulse();
+ toast('✓ تم استكمال كل المراحل لـ '+L.length+' طلب · ربط '+nLink+' ببئر قائم · تسجيل '+nNew+' بئر جديد');try{rerender()}catch(_){}return L.length}
+const migAll=()=>{try{migClose1(1)}catch(e){console.error(e)}try{migClose2()}catch(e){console.error(e)}};
 /* ================= المرحلة الثالثة: سجل التعديلات والتراجع · تنبيه الأجهزة الجديدة · الدخول بالبصمة ================= */
 /* ---- سجل التعديلات على مستوى الحقل ---- */
 const RHF={kind:'نوع الترخيص',use:'الغرض',land:'نوع الأرض',city:'المنطقة',cat:'فئة الأرض',nw:'عدد الآبار',nwm:'طريقة حساب عدد الآبار',area:'المساحة'};
@@ -3526,7 +3552,8 @@ const hSnap=(o,keys)=>{const s={};(keys||Object.keys(o).filter(k=>!k.startsWith(
 function hDiff(a,b,labels){const ks=[...new Set([...Object.keys(a),...Object.keys(b)])].filter(k=>!k.startsWith('_')&&k!=='hist'&&k!=='log');const out=[];
  ks.forEach(k=>{const x=a[k],y=b[k];const ex=x==null||x===''||x===false,ey=y==null||y===''||y===false;if(ex&&ey)return;if(JSON.stringify(x)===JSON.stringify(y))return;out.push({k,l:labels(k),o:hClone(x),n:hClone(y)})});return out}
 function hAdd(o,f,rv){if(!f.length)return;(o.hist=o.hist||[]).push(Object.assign({at:new Date().toISOString(),u:me().n,f},rv?{rv}:{}));if(o.hist.length>40)o.hist=o.hist.slice(-40)}
-const wLabel=k=>{const c=(typeof WELL_COLS!=='undefined'&&WELL_COLS.find(c=>c[0]===k))||WMAP.find(c=>c[0]===k);return c?c[1]:k};
+const WLX={rq:'مرتبط بطلب المنظومة رقم',rqtc:'رقم متابعة الطلب',rqd:'تاريخ الربط بالمنظومة',rqm:'محدّث من المنظومة',ls:'موقفه من الترخيص',com:'تاريخ اللجنة العليا'};
+const wLabel=k=>{if(WLX[k])return WLX[k];const c=(typeof WELL_COLS!=='undefined'&&WELL_COLS.find(c=>c[0]===k))||WMAP.find(c=>c[0]===k);return c?c[1]:k};
 function hVal(k,v){if(v==null||v==='')return '—';if(k==='area'&&typeof v==='object')return areaTxt(v);if(k==='nwm')return v?'يدوي':'تلقائي';if(k==='kind')return KL(v);if(/^(end|st0|f0|com|ren|vd|rmd)$/.test(k)&&/^\d{4}-\d{2}-\d{2}$/.test(String(v)))return fD(v);if(typeof v==='object')return JSON.stringify(v);return String(v)}
 function histCard(o,type){const H=o.hist||[];if(!H.length)return '';const id=type==='r'?o.id:o.i;const ed=type==='r'?canEditReq():can(9);
  return `<details class="card hist"><summary><h3>سجل التعديلات <small>${H.length} تعديل · كل حقل بقيمته قبل وبعد${ed?' · يمكن التراجع عن أي تعديل':''}</small></h3></summary><div class="hlist">${H.map((e,ei)=>({e,ei})).reverse().map(({e,ei})=>`<div class="he ${e.rv?'rv':''}"><div class="hm"><b>${esc(e.u||'')}</b><span>${fD(e.at.slice(0,10))} · ${new Date(e.at).toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'})}</span>${e.rv?'<em>تراجع</em>':''}</div>
@@ -3589,7 +3616,7 @@ function p3Click(t){let el;
 const MNAMES=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const ymTxt=ym=>MNAMES[+ym.slice(5,7)-1]+' '+ym.slice(0,4);
 const ymAdd=(ym,n)=>{const d=new Date(Date.UTC(+ym.slice(0,4),+ym.slice(5,7)-1+n,1));return d.toISOString().slice(0,7)};
-const closeD=r=>{if(r.status!=='closed')return null;const l=(r.log||[]).filter(x=>/^إنهاء الطلب/.test(x.t||''));return (l.length?l[l.length-1]:(r.log||[])[r.log.length-1]||{}).d||null};
+const closeD=r=>{if(r.status!=='closed'||r.mig)return null;const l=(r.log||[]).filter(x=>/^إنهاء الطلب/.test(x.t||''));return (l.length?l[l.length-1]:(r.log||[])[r.log.length-1]||{}).d||null};
 const rejD=r=>{if(r.status!=='rejected')return null;const l=(r.log||[]).filter(x=>/رفض/.test(x.t||''));return (l.length?l[l.length-1]:(r.log||[])[r.log.length-1]||{}).d||null};
 const dDiff=(a,b)=>Math.round((new Date(b+'T00:00')-new Date(a+'T00:00'))/864e5);
 function gmStats(ym){const inM=d=>!!d&&String(d).slice(0,7)===ym;
@@ -3907,13 +3934,13 @@ $('#loginForm').onsubmit=async e=>{e.preventDefault();if(!window.crypto||!crypto
    if(!raw){lerr(cs==='off'?'اسم المستخدم أو كلمة المرور غير صحيحة، أو يلزم اتصال بالإنترنت لأول دخول بهذا الحساب على هذا الجهاز.':'تعذر فتح البيانات لهذا الحساب. اطلب من المطوّر إعادة تعيين كلمة المرور.');return}
    btn.textContent='جارٍ فتح البيانات…';if(!BOOTED)await boot(raw);if(mine)mergeStaff([mine],[]);const u=S.users.find(x=>x.u.toLowerCase()===un);const m=allowed(u);if(m){clClear();return lerr(m)}
    if(cs==='ok'&&mine&&!mine.kw){wrapObj(pwu).then(w=>clRpc('set_staff_kw',{p_kw:w})).catch(()=>{})}
-   BIO_PW=pwu;enter(u);toast('مرحباً '+u.n+(cs==='ok'?' · ☁ متصل بالسحابة':''));if(clActive()){clRpc('touch_staff').catch(()=>{});lgLog();setTimeout(async()=>{await clPull(false);flush()},300)}}
+   BIO_PW=pwu;enter(u);toast('مرحباً '+u.n+(cs==='ok'?' · ☁ متصل بالسحابة':''));if(clActive()){clRpc('touch_staff').catch(()=>{});lgLog();setTimeout(async()=>{await clPull(false);migAll();flush()},300)}else if(u.r===0)setTimeout(()=>{migAll();},600)}
   catch(err){lerr('تعذر فتح البيانات على هذا المتصفح. استخدم متصفحاً حديثاً.')}
   finally{BIO_TRY=0;btn.disabled=false;btn.textContent='دخول إلى المنظومة'}};
 bioUI();let BIO_AV=false;bioAvail().then(v=>{BIO_AV=v;if(!v){const b=$('#lbio');if(b)b.hidden=true}});
 document.documentElement.dir='rtl';document.documentElement.lang='ar';try{$('#appverL').textContent='الإصدار '+APP_VER;$('#appverS').innerHTML=verTxt()}catch(_){}document.body.classList.add('locked');
 (async()=>{let k=null,un=null;try{k=sessionStorage.getItem('wl-k');un=sessionStorage.getItem('wl-u')}catch(_){}
-  if(k){try{await boot(b64(k));const u=S.users.find(x=>x.u===un);if(!allowed(u)){clLoad((un||'').toLowerCase());enter(u);if(CL.ref){clRefresh().then(async ok=>{if(ok){CL.on=true;await clPull(true);flush()}})}return}}catch(_){}}
+  if(k){try{await boot(b64(k));const u=S.users.find(x=>x.u===un);if(!allowed(u)){clLoad((un||'').toLowerCase());enter(u);if(CL.ref){clRefresh().then(async ok=>{if(ok){CL.on=true;await clPull(true)}migAll();flush()})}else setTimeout(()=>{migAll();},600);return}}catch(_){}}
   showLogin();try{const a=localStorage.getItem('wl-dev-act');if(a)$('#lu').value=a}catch(_){}if(location.hash==='#portal')openPortal('track');else if(!trackFromHash())verifyFromHash()})();
 </script>
 </body></html>

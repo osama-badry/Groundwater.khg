@@ -999,6 +999,7 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .a4f{margin-top:auto;border-top:0.8pt solid #DDE4E3;padding-top:3px;display:flex;flex-direction:column;align-items:center;font-size:0.627em;color:#6B7A7D;line-height:1.45;text-align:center;font-family:"Cairo",sans-serif}
 @media (max-width:860px){.prwrap{justify-content:flex-start}.prwrap .a4{zoom:.45}}
 [hidden]{display:none!important}
+.bkx summary{color:var(--warn)!important}.bkx{margin-top:8px}
 .hist summary{list-style:none;cursor:pointer}.hist summary::-webkit-details-marker{display:none}.hist summary h3{margin:0}.hist summary h3:after{content:"▾";margin-inline-start:auto;color:var(--muted)}.hist[open] summary h3:after{content:"▴"}
 .hlist{display:flex;flex-direction:column;gap:8px;margin-top:10px}.he{border:1px solid var(--line);border-radius:10px;padding:8px 10px}.he.rv{border-style:dashed;background:var(--surface2)}.hm{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-size:12.5px;margin-bottom:4px}.hm span{color:var(--muted)}.hm em{font-style:normal;font-size:11px;background:var(--warn-soft);color:var(--warn);border-radius:99px;padding:1px 8px;font-weight:700}
 .hf{display:grid;grid-template-columns:minmax(90px,150px) minmax(0,1fr) auto minmax(0,1fr) auto;gap:8px;align-items:center;font-size:13px;padding:3px 0;border-top:1px dotted var(--line)}.hf:first-of-type{border-top:0}.hfl{color:var(--muted);font-weight:700}.ho{color:var(--bad);text-decoration:line-through;overflow-wrap:anywhere}.hn{color:var(--ok);font-weight:700;overflow-wrap:anywhere}.ha{color:var(--muted)}
@@ -1522,7 +1523,7 @@ function renderDrawer(){const r=R.find(x=>x.id==openId);if(!r)return;
   </div>`;
   wireAP($('#drawer'),r);const dw=$('#drawer');wireArea(dw,'d');phHydrate(dw);
   dw.querySelector('[data-areaedit]').onclick=()=>{const w=dw.querySelector('#d-wrap');w.hidden=!w.hidden;w.style.display=w.hidden?'':'grid'};
-  dw.querySelector('[data-areasave]').onclick=()=>{const a=readArea(dw,'d');if(!a)return toast('أدخل المساحة');if(a.err)return toast(a.err);hAdd(r,hDiff({area:r.area},{area:a},k=>RHF[k]));r.area=a;r.log.push({d:todayISO(),t:'تسجيل المساحة: '+areaTxt(a)+(r.cat==='استثمار / شركات'&&!r.nwm?' · عدد الآبار المحسوب تلقائياً: '+autoNW(r):''),u:me().n,ts:Date.now()});persist(r);syncPulse();toast('تم حفظ المساحة');renderDrawer()};
+  dw.querySelector('[data-areasave]').onclick=()=>{const a=readArea(dw,'d');if(!a)return toast('أدخل المساحة');if(a.err)return toast(a.err);const _cb=catOf(r);hAdd(r,hDiff({area:r.area,cat:r.cat},{area:a,cat:r.cat},k=>RHF[k]));r.area=a;if(reqCatAuto(r)){hAdd(r,[{k:'cat',l:RHF.cat,o:_cb,n:r.cat}]);r.log.push({d:todayISO(),t:'تعديل فئة الأرض تلقائياً حسب المساحة: '+_cb+' ← '+r.cat,u:me().n,ts:Date.now()})}r.log.push({d:todayISO(),t:'تسجيل المساحة: '+areaTxt(a)+(r.cat==='استثمار / شركات'&&!r.nwm?' · عدد الآبار المحسوب تلقائياً: '+autoNW(r):''),u:me().n,ts:Date.now()});persist(r);syncPulse();toast('تم حفظ المساحة');renderDrawer()};
 }
 /* action panel per stage */
 function suggestFile(){const y=new Date().getFullYear();const m=Math.max(0,...R.map(r=>{const x=(r.file||'').replace(/\s/g,'').match(new RegExp(y+'-+(\\d+)$'));return x?+x[1]:0}));return 'KHG-'+y+'-'+(m+1)}
@@ -1531,7 +1532,7 @@ function actionPanel(r){
   if(r.status==='closed')return `<div class="note ok">تم إنهاء الطلب على المنظومة${r.sysno?' برقم '+esc(r.sysno):''} وتسليم المستندات لقسم التراخيص.</div>`+postPanel(r);
   if(r.status==='rejected')return `<div class="ap" style="--c:var(--bad)"><div class="aph">الطلب مرفوض في مرحلة «${(STAGES[r.stage-1]||STAGES[0]).t}»</div><div class="apb"><div class="note bad">السبب: ${esc(r.reason||'—')}</div>${canRejectAny()?'<button class="btn" data-act="reopen">إعادة فتح الطلب بعد الاستكمال (يعود لنفس المرحلة)</button>':''}</div></div>`;
   const s=r.stage,c=sc(s),T=todayISO();
-  if(s===4){if(!canInspect())return `<div class="ap" style="--c:${c}"><div class="aph">الإجراء المطلوب · ${STAGES[3].t}</div><div class="apb"><div class="note warn">رفع المعاينة الميدانية وصورها مسؤولية <b>مهندس التفتيش</b>. ${canPhotoEdit()?'بعد الرفع يمكنك استبدال الصور أو تنزيلها بالدقة الكاملة من ملف الطلب.':''}</div>${rejBox(r)}</div></div>`}
+  if(s===4){if(!canInspect())return `<div class="ap" style="--c:${c}"><div class="aph">الإجراء المطلوب · ${STAGES[3].t}</div><div class="apb"><div class="note warn">رفع المعاينة الميدانية وصورها مسؤولية <b>مهندس التفتيش</b>. ${canPhotoEdit()?'بعد الرفع يمكنك استبدال الصور أو تنزيلها بالدقة الكاملة من ملف الطلب.':''}</div>${rejBox(r)}${backBox(r)}</div></div>`}
   else if(!can(s)){return `<div class="ap" style="--c:${c}"><div class="aph">الإجراء المطلوب · ${STAGES[s-1].t}</div><div class="apb"><div class="note warn">${lvOf(me())!=='full'&&!lvOk(lvOf(me()),s)?`مستوى وصول حسابك «${LV[lvOf(me())]}» لا يسمح بتنفيذ هذا الإجراء. يحدده المطوّر من صفحة المستخدمين.`:`دور «${ROLES[me().r]}» صلاحيته في منظومة التراخيص: ${ACCN[ra().lic]}. تنفيذ الإجراءات يحتاج «إضافة وتعديل».`}</div></div></div>`}
   let b='';
   if(s===1)b=`${r.status==='accepted'?'<div class="note">تم فحص المستندات سابقاً وقُبلت. حدّد موعد المطابقة لإخطار العميل.</div>':''}
@@ -1548,8 +1549,14 @@ function actionPanel(r){
    <div class="fld span2"><label for="rp-pw">مصدر الطاقة</label><select class="inp" id="rp-pw" style="width:100%"><option>طاقة شمسية</option><option>ديزل</option><option>كهرباء</option></select></div>
    <div class="fld span2"><label for="rp-nt">ملاحظات المعاين</label><textarea class="inp" id="rp-nt"></textarea></div></div>${waBox('report',r,{})}<button class="btn pri" data-act="report">حفظ التقرير والانتقال للإنهاء</button>`;
   else b=`<div class="form" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="fld"><label for="ap-sys">رقم الطلب على المنظومة</label><input class="inp" id="ap-sys" placeholder="رقم المنظومة الحكومية"></div><div class="fld"><label for="ap-date">تاريخ التسليم</label><input class="inp" type="date" id="ap-date" value="${T}"></div><div class="fld span2"><label for="ap-to">المستلم بقسم التراخيص</label><input class="inp" id="ap-to" placeholder="اسم الموظف المستلم"></div></div>${waBox('close',r,{date:T})}<button class="btn gold" data-act="close">إنهاء الطلب وتسليم المستندات</button>`;
-  return `<div class="ap" style="--c:${c}"><div class="aph">الإجراء المطلوب · ${STAGES[s-1].t}</div><div class="apb">${b}${s>1?rejBox(r):''}</div></div>`;
+  return `<div class="ap" style="--c:${c}"><div class="aph">الإجراء المطلوب · ${STAGES[s-1].t}</div><div class="apb">${b}${s>1?rejBox(r)+backBox(r):''}</div></div>`;
 }
+function backBox(r){if(!canRejectAny()||!(r.stage>1)||r.status==='closed'||r.status==='rejected')return '';const opts=STAGES.filter(x=>x.n<r.stage).reverse();
+ return `<details class="rejx bkx"><summary><svg class="ico" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg> إرجاع الطلب لمرحلة سابقة</summary>
+ <div class="rejb"><div class="note">الطلب الآن في مرحلة «${STAGES[r.stage-1].t}». اختر المرحلة التي يعود إليها، وتُسجَّل العملية في سجل الإجراءات باسمك.</div>
+  <div class="fld"><label for="bk-stage">إرجاع إلى مرحلة</label><select class="inp" id="bk-stage" style="width:100%">${opts.map(x=>`<option value="${x.n}">${x.n}. ${x.t}</option>`).join('')}</select></div>
+  <div class="fld"><label for="bk-reason">سبب الإرجاع <span style="color:var(--bad)">*</span></label><textarea class="inp" id="bk-reason" placeholder="مثال: خطأ في اعتماد المطابقة · مستند ناقص يحتاج مراجعة"></textarea></div>
+  <button class="btn" data-act="back" style="border-color:var(--warn);color:var(--warn)">تأكيد إرجاع الطلب</button></div></details>`}
 const canRejectAny=()=>{const u=me();return [0,1,2].includes(u.r)&&lvOf(u)!=='view'};
 function rejBox(r){if(!canRejectAny())return '';return `<details class="rejx"><summary><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 8l8 8M16 8l-8 8"/></svg> رفض الطلب في مرحلة «${STAGES[r.stage-1].t}»</summary>
  <div class="rejb"><div class="fld"><label for="rj-reason">سبب الرفض <span style="color:var(--bad)">*</span></label><textarea class="inp" id="rj-reason" placeholder="اكتب السبب بوضوح ليصل للعميل"></textarea><div class="qr">${['المستندات المقدمة غير مطابقة للأصول','وجود تعارض مع آبار قائمة داخل حدود الأرض','الإحداثيات المقدمة لا تطابق الطبيعة','عدم حضور العميل في الموعد المحدد','نتيجة المعاينة غير مطابقة'].map(t=>`<button type="button" data-rjq="${t}">${t}</button>`).join('')}</div></div>
@@ -1579,6 +1586,7 @@ function act(a,r,ap){
   if(a==='report'&&!ap._ipok){if(!canInspect())return toast('رفع المعاينة لمهندس التفتيش');if(r.kind!=='جديد'&&!v('rp-msn')){ap.querySelector('#rp-msn').focus();return toast('الرقم المسلسل للعداد إلزامي')}if(ap._busy)return;ap._busy=1;const bt=ap.querySelector('[data-act="report"]'),bl=bt.textContent;bt.disabled=true;bt.textContent='جارٍ ختم الصور وحفظها بالدقة الكاملة…';
     inspCommit(ap,r).then(out=>{ap._busy=0;bt.disabled=false;bt.textContent=bl;if(out){ap._ipok=out;act(a,r,ap)}}).catch(()=>{ap._busy=0;bt.disabled=false;bt.textContent=bl;toast('تعذر حفظ صور المعاينة')});return}
   if(a==='accept'){const fl=v('ap-file').replace(/\s+/g,'');if(!fl){ap.querySelector('#ap-file').focus();return toast('رقم الملف الورقي إلزامي للانتقال للمطابقة')}if(R.some(x=>x!==r&&(x.file||'').replace(/\s/g,'').toUpperCase()===fl.toUpperCase()))return toast('رقم الملف '+fl+' مستخدم في طلب آخر');const d=v('ap-date');if(!d)return toast('اختر موعد المطابقة من التقويم');if(!ap._geo){ap.querySelector('#ap-cfile').closest('.upl').scrollIntoView({block:'center'});return toast('رفع ملف الإحداثيات إلزامي قبل نقل الطلب للمطابقة')}if(ap._conf.length&&!(ap.querySelector('#ap-ack')||{}).checked){ap.querySelector('.conf').scrollIntoView({block:'center'});return toast('يوجد '+ap._conf.length+' بئر متعارض · راجعها وأكد الاطلاع أولاً')}applyGeo(r,ap._geo,ap._conf);log('رفع ملف الإحداثيات ('+ap._geo.file+') وتوقيع البئر'+(r.poly?' وحدود الأرض':'')+' على الخريطة');if(ap._conf.length)log('تنبيه تعارض: '+ap._conf.filter(c=>c.inside).length+' بئر داخل حدود الأرض و'+ap._conf.filter(c=>!c.inside).length+' بئر على بعد أقل من '+NEAR+' م · تمت المراجعة والموافقة بواسطة '+U);r.file=fl;r.stage=2;r.status='pending';r.appt=d;r.sub='';if(vrCreate(r,1))log('إرسال نسخة من الطلب لقسم المتغيرات المكانية');log('قبول المستندات وتسجيل رقم الملف الورقي '+fl+' وتحديد موعد المطابقة '+fD(d,true));send('accept',r,{date:d});msg='تم القبول وإرسال موعد المطابقة للعميل'}
+  else if(a==='back'){if(!canRejectAny())return toast('إرجاع الطلب متاح لمهندس المنظومة والأدمن');const to=+v('bk-stage'),rs=v('bk-reason');if(!(to>=1&&to<r.stage))return toast('اختر المرحلة');if(!rs){ap.querySelector('#bk-reason').focus();return toast('اكتب سبب الإرجاع')}const fr=STAGES[r.stage-1].t;r.stage=to;r.status='pending';r.sub='';if(to<=3)r.idate=null;if(to<=2)r.appt=to===2?r.appt:null;log('إرجاع الطلب من مرحلة «'+fr+'» إلى مرحلة «'+STAGES[to-1].t+'»: '+rs);msg='أُعيد الطلب لمرحلة «'+STAGES[to-1].t+'»'}
   else if(a==='reject_any'){if(!canRejectAny())return toast('الرفض متاح لمهندس المنظومة والأدمن');const rs=v('rj-reason');if(!rs){ap.querySelector('#rj-reason').focus();return toast('اكتب سبب الرفض أولاً')}const st=STAGES[r.stage-1].t;r.status='rejected';r.reason=rs;log('رفض الطلب في مرحلة «'+st+'»: '+rs);send('reject',r,{reason:rs});msg='تم رفض الطلب في مرحلة «'+st+'» وإخطار العميل'}
   else if(a==='reject'){const rs=v('ap-reason');if(!rs)return toast('اكتب سبب الرفض أولاً');r.status='rejected';r.reason=rs;log('رفض المستندات: '+rs);send('reject',r,{reason:rs});msg='تم الرفض وإخطار العميل بالسبب'}
   else if(a==='match_ok'){r.stage=3;r.status='pending';r.appt=null;r.sub='';log('اعتماد مطابقة الملفات');send('match_ok',r,{});msg='تم اعتماد المطابقة'}
@@ -1589,7 +1597,7 @@ function act(a,r,ap){
   else if(a==='close'){const d=v('ap-date')||T;r.status='closed';r.sysno=v('ap-sys');log('إنهاء الطلب على المنظومة'+(r.sysno?' برقم '+r.sysno:'')+' وتسليم المستندات لقسم التراخيص'+(v('ap-to')?' (المستلم: '+v('ap-to')+')':''));send('close',r,{date:d});msg='تم إنهاء الطلب وتسليمه لقسم التراخيص'}
   else if(a==='reopen'){r.status='pending';r.stage=r.stage||1;if(r.rep&&r.rep.res==='غير مطابق'){r.stage=3}log('إعادة فتح الطلب');msg='أُعيد فتح الطلب'}
   if(r.stage+'|'+r.status!==st0)r.sat=T;
-  persist(r);syncPulse();toast((a==='s5'||a==='reopen'?'':'<span style="color:var(--wa)">●</span> ')+msg);
+  persist(r);syncPulse();toast((a==='s5'||a==='reopen'||a==='back'?'':'<span style="color:var(--wa)">●</span> ')+msg);
   if(me().r===5&&a==='report'){RHOLD[r.id]=r;R=R.filter(x=>x!==r);closeDetail();toast('✓ تم رفع المعاينة وانتقل الطلب للإنهاء · أُزيل من قائمة مهامك');if(cur!=='inspq')go('inspq');else rerender();return}
   if(openId===r.id)renderDrawer();if(cur==='mobile'&&MS.id===r.id)renderPhone();rerender();
 }
@@ -1627,7 +1635,7 @@ const allCities=()=>[...new Set([...R.map(r=>r.city),...(S.cities||[])])].filter
 function addCity(c){c=(c||'').trim().replace(/\s+/g,' ');if(!c)return false;if(allCities().some(x=>norm(x)===norm(c)))return false;(S.cities=S.cities||[]).push(c);save();const dl=$('#cities');if(dl)dl.insertAdjacentHTML('beforeend',`<option value="${esc(c)}">`);return true}
 function decodeNID(n){if(!/^[23]\d{13}$/.test(n))return null;const y=(n[0]==='2'?1900:2000)+ +n.slice(1,3),m=+n.slice(3,5),d=+n.slice(5,7);const dt=new Date(y,m-1,d);if(dt.getMonth()!==m-1||m<1)return null;return{y,m,d,g:GOV[n.slice(7,9)]||'كود محافظة غير معروف',s:+n[12]%2?'ذكر':'أنثى'}}
 AFTER.new=()=>{wireArea($('#nf'),'n');
-  const nwc=()=>{const a=readArea($('#nf'),'n');const t={cat:$('#n-cat').value,area:a&&!a.err?a:null};const v=autoNW(t);if(!$('#n-nw')._man)$('#n-nw').value=v;$('#n-nwh').textContent=$('#n-nw')._man?'معدّل يدوياً':t.cat==='استثمار / شركات'?(t.area?'تلقائي: بئر لكل '+WPF+' فدان ('+(t.area.m2/FED).toFixed(1)+' فدان)':'أدخل المساحة ليُحسب تلقائياً'):'بئر واحد'};
+  const nwc=()=>{const a=readArea($('#nf'),'n');if(a&&!a.err&&a.m2>0&&$('#n-cat').value!=='حكومي'){const c=catByFed(a.m2/FED);if($('#n-cat').value!==c){$('#n-cat').value=c;toast('الفئة: '+c+' (حسب المساحة '+(a.m2/FED).toFixed(2)+' فدان)')}}const t={cat:$('#n-cat').value,area:a&&!a.err?a:null};const v=autoNW(t);if(!$('#n-nw')._man)$('#n-nw').value=v;$('#n-nwh').textContent=$('#n-nw')._man?'معدّل يدوياً':t.cat==='استثمار / شركات'?(t.area?'تلقائي: بئر لكل '+WPF+' فدان ('+(t.area.m2/FED).toFixed(1)+' فدان)':'أدخل المساحة ليُحسب تلقائياً'):'بئر واحد'};
   $('#n-cat').onchange=nwc;$('#nf').addEventListener('input',e=>{if(e.target.closest('#n-wrap'))nwc()});$('#nf').addEventListener('change',e=>{if(e.target.closest('#n-wrap'))nwc()});$('#n-nw').oninput=()=>{$('#n-nw')._man=1;nwc()};
   if(NP){$('#n-name').value=NP.n;$('#n-city').value=NP.reg||'';$('#n-kind').value='تجديد ترخيص';if(NP.ar){$('#n-f').value=NP.ar;$('#n-f').dispatchEvent(new Event('input'))}$('#nf').insertAdjacentHTML('afterbegin','<div class="note ok" style="margin-bottom:12px">طلب تجديد ترخيص لبئر من سجل الآبار. أكمل الرقم القومي والهاتف ثم احفظ.</div>');NP=null}
   $('#n-use').onchange=e=>{const o=e.target.value==='other';$('#n-other-w').hidden=!o;if(o)$('#n-other').focus()};
@@ -1649,7 +1657,7 @@ AFTER.new=()=>{wireArea($('#nf'),'n');
       const v=ch.value;dbm={at:new Date().toISOString(),by:me().n,items:DL.map(x=>({i:x.w.i,d:x.d,nid:x.byNid,xy:x.byXY})),dec:v.startsWith('link:')?'link':v};if(dbm.dec==='link')dbm.wi=WB[+v.slice(5)].i;if(dbm.dec==='reject'){dbm.reason=($('#n-dbrs').value||'').trim();if(!dbm.reason){$('#n-dbrs').focus();return toast('اكتب سبب الرفض')}}}
     const r={_new:1,id:+$('#n-id').value,date:todayISO(),name,nid:n.slice(0,4)+'•••••••'+n.slice(-3),nidk:n.slice(0,3)+n.slice(-4),nidok:true,info:{y:x.y,g:x.g,s:x.s},file:'',kind:$('#n-kind').value,use,land:$('#n-land').value,cat:$('#n-cat').value,nwm:!!$('#n-nw')._man,nw:+$('#n-nw').value||1,city,phone:p.slice(0,3)+'•••••'+p.slice(-3),ph:p,phok:true,stage:1,sub:'',legacy:'',status:'pending',coords,area,badc:coords.some(c=>!c[2]),dup:false,multi:R.filter(q=>q.nidk===n.slice(0,3)+n.slice(-4)).length+1,tc:genTC(),log:[{d:todayISO(),t:'تسجيل الطلب ووروده للمنظومة',u:me().n,ts:Date.now()}]};
     if(dbm){r.dbm=dbm;if(dbm.wi!=null)r.dbw=dbm.wi;r.log.push({d:todayISO(),t:dbmDecLog(r),u:me().n,ts:Date.now()});if(dbm.dec==='reject'){r.status='rejected';r.reason=dbm.reason;r.log.push({d:todayISO(),t:'رفض الطلب عند التسجيل لتطابق الإحداثيات: '+dbm.reason,u:me().n,ts:Date.now()})}}
-    R.push(r);S.added.push(r);if(dbm&&dbm.dec==='reject'){if($('#n-wa').checked)send('reject',r,{reason:dbm.reason});enqueue('r'+r.id,'طلب مرفوض: '+r.name,'طلب');save._q=1;save();syncPulse();toast('تم تسجيل الطلب رقم '+r.id+' ورفضه لتطابق الإحداثيات');go('requests');openDetail(r.id);return}
+    reqCatAuto(r);R.push(r);S.added.push(r);if(dbm&&dbm.dec==='reject'){if($('#n-wa').checked)send('reject',r,{reason:dbm.reason});enqueue('r'+r.id,'طلب مرفوض: '+r.name,'طلب');save._q=1;save();syncPulse();toast('تم تسجيل الطلب رقم '+r.id+' ورفضه لتطابق الإحداثيات');go('requests');openDetail(r.id);return}
     if($('#n-wa').checked){waPush(r,'new','السيد/ '+name+'\nتم استلام طلبكم ('+KL(r.kind)+') برقم مسلسل '+r.id+' بتاريخ '+fD(r.date,true)+'، والطلب الآن في مرحلة فحص المستندات.\nرقم المتابعة: '+r.tc+'\nتابعوا الطلب من هنا: '+trackURL(r.tc)+'\n(يُطلب آخر 4 أرقام من الرقم القومي)')}
     enqueue('r'+r.id,'طلب جديد: '+r.name,'طلب');save._q=1;save();syncPulse();toast('تم حفظ الطلب رقم '+r.id);go('requests');openDetail(r.id);setTimeout(()=>rcShow(r.id),250)};
 };
@@ -2587,6 +2595,7 @@ function wfSave(){const o=wfCollect(),e=wfCheck(o);if(e.length){toast('أكمل:
  const nid=o._nid;delete o._nid;if(nid){o.nid=nid.slice(0,4)+'•••••••'+nid.slice(-3);if(nid.length===14)o.nf=nid}
  if(o.la!=null){o.la=+o.la.toFixed(6);o.lo=+o.lo.toFixed(6)}else{delete o.la;delete o.lo}
  Object.keys(o).forEach(k=>{if(o[k]==null||o[k]==='')delete o[k]});
+ {const t=wellOwnByAr(o);if(t&&o.own!==t){const m='تم تصنيف البئر «'+t+'» حسب المساحة '+o.ar+' فدان';setTimeout(()=>toast(m),2600);o.own=t}}
  if(WF.mode==='draft'){const dr=DRAFTS(R.find(x=>x.id==WF.rid)||{})[WF.k||0]||{};if(!o.nid&&dr.nid)o.nid=dr.nid;o.i=+($('#wf-i')||{}).value||dr.i;return cmFinish(o)}
  let rec;if(WF.mode==='edit'){rec=WB[WF.idx];const keep={i:rec.i,_i:rec._i,nid:rec.nid,nf:rec.nf,hist:rec.hist};const _hb=hSnap(rec);Object.keys(rec).forEach(k=>{if(!k.startsWith('_'))delete rec[k]});Object.assign(rec,o,{i:keep.i});if(!o.nid&&keep.nid)rec.nid=keep.nid;if(!o.nf&&keep.nf)rec.nf=keep.nf;if(keep.hist)rec.hist=keep.hist;hAdd(rec,hDiff(_hb,hSnap(rec),wLabel));(S.wmod=S.wmod||{})[rec.i]=strip(rec)}
  else{rec=Object.assign({i:+$('#wf-i').value},o);rec._i=WB.length;WB.push(rec);(S.wadd=S.wadd||[]).push(strip(rec))}
@@ -3289,7 +3298,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.10.30-0817';
+const APP_VER='2026.10.30-1503';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -3515,7 +3524,7 @@ function saveReqEdit(rid){if(!canEditReq())return toast('تعديل بيانات
  const auto=$('#re-nwa').checked,nw=Math.max(1,parseInt(g('re-nw'))||1);
  const nv={kind:g('re-kind'),use,land:g('re-land'),city,cat:g('re-cat')};const ch=[];const _hb=hSnap(r,Object.keys(RHF));const L={kind:'نوع الترخيص',use:'الغرض',land:'نوع الأرض',city:'المنطقة',cat:'فئة الأرض'};
  Object.keys(nv).forEach(k=>{if((k==='cat'?catOf(r):(r[k]||''))!==nv[k]){ch.push(L[k]+': '+(k==='kind'?KL(r[k]||'')+' ← '+KL(nv[k]):(r[k]||'—')+' ← '+nv[k]));r[k]=nv[k]}});
- const oldN=nwOf(r);if(auto){r.nwm=false;delete r.nw}else{r.nwm=true;r.nw=nw}const newN=nwOf(r);if(oldN!==newN||(!auto&&ch.length===0))ch.push('عدد الآبار: '+oldN+' ← '+newN+(auto?' (تلقائي)':' (يدوي)'));
+ {const c0=catOf(r);if(reqCatAuto(r))ch.push('فئة الأرض حسب المساحة: '+c0+' ← '+catOf(r))}const oldN=nwOf(r);if(auto){r.nwm=false;delete r.nw}else{r.nwm=true;r.nw=nw}const newN=nwOf(r);if(oldN!==newN||(!auto&&ch.length===0))ch.push('عدد الآبار: '+oldN+' ← '+newN+(auto?' (تلقائي)':' (يدوي)'));
  if(!ch.length){$('#modal').hidden=true;return toast('لا توجد تعديلات')}addCity(city);
  hAdd(r,hDiff(_hb,hSnap(r,Object.keys(RHF)),k=>RHF[k]||k));r.log.push({d:todayISO(),t:'تعديل بيانات الطلب: '+ch.join(' · '),u:me().n,ts:Date.now()});persist(r);syncPulse();$('#modal').hidden=true;$('#modal').innerHTML='';toast('✓ تم حفظ التعديلات');if(drawerOpen())renderDrawer();rerender()}
 
@@ -3543,7 +3552,16 @@ function migClose2(){if(me().r!==0)return 0;const L=migCands2();if(!L.length)ret
  S.bulk=S.bulk||{};S.bulk['bulk:close2']=L.map(r=>r.id);S.bulk['bulkw:close2']=[...wIds];
  enqueue('bulkw:close2','تحديث '+wIds.size+' بئر بقاعدة البيانات','بئر');enqueue('bulk:close2','استكمال '+L.length+' طلب حتى التسجيل بقاعدة البيانات','طلب');save._q=1;save();syncPulse();
  toast('✓ تم استكمال كل المراحل لـ '+L.length+' طلب · ربط '+nLink+' ببئر قائم · تسجيل '+nNew+' بئر جديد');try{rerender()}catch(_){}return L.length}
-const migAll=()=>{try{migClose1(1)}catch(e){console.error(e)}try{migClose2()}catch(e){console.error(e)}};
+/* ---- التصنيف بالمساحة: أهالي/أفراد 0.1 – 34.99 فدان · استثمار/شركات 35 فدان فأكثر (عدا الحكومي والمراقبة) ---- */
+const CAT_LIM=35;
+const catByFed=f=>f>=CAT_LIM?'استثمار / شركات':'أهالي / أفراد';
+function reqCatAuto(r){if(!r||!r.area||!(r.area.m2>0)||catOf(r)==='حكومي')return false;const c=catByFed(r.area.m2/FED);if(catOf(r)===c)return false;r.cat=c;return true}
+const wellOwnByAr=o=>{if(!o||o.pur==='المراقبة'||o.own==='حكومي'||!(+o.ar>0))return null;return +o.ar>=CAT_LIM?'شركات':'أهالي'};
+function migCat1(){if(me().r!==0)return 0;const L=WB.filter(o=>{const t=wellOwnByAr(o);return t&&(o.own==='أهالي'||o.own==='شركات')&&o.own!==t});if(!L.length)return 0;S.wmod=S.wmod||{};
+ L.forEach(o=>{const b=hSnap(o);o.own=wellOwnByAr(o);hAdd(o,hDiff(b,hSnap(o),wLabel));o._n=null;o._c=wcat(o);S.wmod[o.i]=strip(o)});
+ S.bulk=S.bulk||{};S.bulk['bulkw:cat1']=L.map(o=>o.i);enqueue('bulkw:cat1','تصحيح تصنيف '+L.length+' بئر حسب المساحة','بئر');save._q=1;save();syncPulse();
+ setTimeout(()=>toast('✓ تم تصحيح تصنيف '+L.length+' بئر حسب المساحة (أقل من 35 فدان أهالي · 35 فأكثر شركات)'),3500);return L.length}
+const migAll=()=>{try{migCat1()}catch(e){console.error(e)}try{migClose1(1)}catch(e){console.error(e)}try{migClose2()}catch(e){console.error(e)}};
 /* ================= المرحلة الثالثة: سجل التعديلات والتراجع · تنبيه الأجهزة الجديدة · الدخول بالبصمة ================= */
 /* ---- سجل التعديلات على مستوى الحقل ---- */
 const RHF={kind:'نوع الترخيص',use:'الغرض',land:'نوع الأرض',city:'المنطقة',cat:'فئة الأرض',nw:'عدد الآبار',nwm:'طريقة حساب عدد الآبار',area:'المساحة'};

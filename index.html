@@ -999,6 +999,8 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .a4f{margin-top:auto;border-top:0.8pt solid #DDE4E3;padding-top:3px;display:flex;flex-direction:column;align-items:center;font-size:0.627em;color:#6B7A7D;line-height:1.45;text-align:center;font-family:"Cairo",sans-serif}
 @media (max-width:860px){.prwrap{justify-content:flex-start}.prwrap .a4{zoom:.45}}
 [hidden]{display:none!important}
+.gnotice{margin:10px 20px 0;padding:10px 14px;border-radius:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;font-size:14px;border:1px solid var(--line);background:var(--teal-soft,#e6f2f2)}.gnotice b{white-space:nowrap}.gnotice.warn{background:var(--warn-soft);border-color:var(--warn)}.gnotice.bad{background:var(--bad-soft);border-color:var(--bad)}
+#maint{position:fixed;inset:0;z-index:300;background:rgb(6 22 26/.94);display:grid;place-items:center;padding:20px}.mtbox{background:var(--surface);border-radius:18px;padding:28px 24px;max-width:420px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}.mtbox h2{margin:0}.mtbox p{margin:0;color:var(--muted)}.mtbox small{color:var(--muted);font-size:11px}
 .bkx summary{color:var(--warn)!important}.bkx{margin-top:8px}
 .hist summary{list-style:none;cursor:pointer}.hist summary::-webkit-details-marker{display:none}.hist summary h3{margin:0}.hist summary h3:after{content:"▾";margin-inline-start:auto;color:var(--muted)}.hist[open] summary h3:after{content:"▴"}
 .hlist{display:flex;flex-direction:column;gap:8px;margin-top:10px}.he{border:1px solid var(--line);border-radius:10px;padding:8px 10px}.he.rv{border-style:dashed;background:var(--surface2)}.hm{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-size:12.5px;margin-bottom:4px}.hm span{color:var(--muted)}.hm em{font-style:normal;font-size:11px;background:var(--warn-soft);color:var(--warn);border-radius:99px;padding:1px 8px;font-weight:700}
@@ -3007,7 +3009,7 @@ async function clPull(quiet){if(!clActive()||!navigator.onLine||CL.busy)return;C
   if(me().r===0||ra().lsec!=='none'||ra().db!=='none'){try{const wl2=await clPage('well_contacts',c.wc,'i,data,updated_at');wl2.forEach(row=>{if(pendingKey('wc:'+row.i))return;wcs()[row.i]=row.data});if(wl2.length){c.wc=wl2[wl2.length-1].updated_at;n+=wl2.length}}catch(_){}}
   try{n+=await lgPull()}catch(_){}
   try{vrToastNew()}catch(_){}
-  const st=await clJson('/rest/v1/app_state?select=key,data,updated_at');S.stSnap=S.stSnap||{};(st||[]).forEach(s=>{S.stSnap[s.key]=JSON.stringify(s.data);if(s.key==='tpl')S.tpl=s.data;else if(s.key==='cities')S.cities=s.data;else if(s.key==='rep')S.rep=s.data;else if(s.key==='ra')S.ra=s.data;else if(s.key==='org')S.org=s.data});
+  const st=await clJson('/rest/v1/app_state?select=key,data,updated_at');S.stSnap=S.stSnap||{};(st||[]).forEach(s=>{S.stSnap[s.key]=JSON.stringify(s.data);if(s.key==='tpl')S.tpl=s.data;else if(s.key==='cities')S.cities=s.data;else if(s.key==='rep')S.rep=s.data;else if(s.key==='ra')S.ra=s.data;else if(s.key==='org')S.org=s.data;else if(s.key==='notice')S.notice=s.data});if(!(st||[]).some(s=>s.key==='notice'))S.notice=null;try{noticeUI()}catch(_){}touchV();
   const sf=await clJson('/rest/v1/staff?select=*');let pws=[];if(me().r===0){try{pws=await clJson('/rest/v1/staff_pw?select=id,p')}catch(_){}}mergeStaff(sf||[],pws);
   if(me().r===5){try{const stt=await clRpc('req_states');const mp={};(stt||[]).forEach(x=>mp[x.id]=x);const before=R.length;R=R.filter(r=>{const x=mp[r.id];return !x||(x.stage===4&&x.status==='pending')||pendingKey('r'+r.id)});if(R.length!==before)n+=before-R.length}catch(_){}}
   const mine=(sf||[]).find(s=>s.id===CL.uid);if(mine&&(!mine.active||(mine.role!==0&&mine.exp&&mine.exp<todayISO()))){toast('تم إيقاف حسابك أو انتهت صلاحيته من المطوّر');setTimeout(()=>$('#logoutBtn').click(),1800)}
@@ -3298,7 +3300,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.10.30-1503';
+const APP_VER='2026.10.30-1647';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -3562,6 +3564,14 @@ function migCat1(){if(me().r!==0)return 0;const L=WB.filter(o=>{const t=wellOwnB
  S.bulk=S.bulk||{};S.bulk['bulkw:cat1']=L.map(o=>o.i);enqueue('bulkw:cat1','تصحيح تصنيف '+L.length+' بئر حسب المساحة','بئر');save._q=1;save();syncPulse();
  setTimeout(()=>toast('✓ تم تصحيح تصنيف '+L.length+' بئر حسب المساحة (أقل من 35 فدان أهالي · 35 فأكثر شركات)'),3500);return L.length}
 const migAll=()=>{try{migCat1()}catch(e){console.error(e)}try{migClose1(1)}catch(e){console.error(e)}try{migClose2()}catch(e){console.error(e)}};
+/* ---- ربط لوحة المطوّر الخارجية: الإصدار والجهاز · الملخص · رسالة عامة ووضع الصيانة ---- */
+let TCH=0;function touchV(force){if(!clActive()||(!force&&Date.now()-TCH<6e5))return;TCH=Date.now();clRpc('touch_staff_v',{p_ver:APP_VER,p_dev:(DEVT()==='pc'?'كمبيوتر':'موبايل')+' · '+uaShort()+' · '+DEVID}).catch(()=>{clRpc('touch_staff').catch(()=>{})})}
+function devSum(){if(me().r!==0||!clActive())return;const st={};R.forEach(r=>{const k=stageOf(r);st[k]=(st[k]||0)+1});const ps={};R.forEach(r=>{const k=postSt(r);if(k)ps[k]=(ps[k]||0)+1});const wc={};WB.forEach(o=>{wc[o._c]=(wc[o._c]||0)+1});const oc={};WB.forEach(o=>{const k=ownCat(o);oc[k]=(oc[k]||0)+1});
+ const d={at:new Date().toISOString(),ver:APP_VER,req:R.length,st,ps,over:R.filter(slaOver).length,wells:WB.length,wc,oc,decl:decls().length,vrs:Object.keys(S.vrs||{}).length,users:S.users.length};
+ const js=JSON.stringify(Object.assign({},d,{at:0}));if(S._sumJs===js&&Date.now()-(S._sumAt||0)<36e5)return;S._sumJs=js;S._sumAt=Date.now();clRpc('save_state',{k:'sum',d}).catch(()=>{})}
+function noticeUI(){const n=S.notice;let b=$('#gnotice');const on=n&&n.t&&(!n.until||n.until>=todayISO());
+ if(on){if(!b){b=document.createElement('div');b.id='gnotice';const pg=$('#page');pg.parentNode.insertBefore(b,pg)}b.className='gnotice '+(n.lv||'info');b.innerHTML=`<b>📢 رسالة من المطوّر</b><span>${esc(n.t)}</span>`}else if(b)b.remove();
+ let m=$('#maint');const mt=n&&n.maint&&me()&&me().r!==0;if(mt){if(!m){m=document.createElement('div');m.id='maint';document.body.appendChild(m)}m.innerHTML=`<div class="mtbox"><div style="font-size:42px">🛠</div><h2>المنظومة تحت الصيانة</h2><p>${esc(n.mmsg||'جارٍ تحديث المنظومة · برجاء المحاولة بعد قليل')}</p><button class="btn" onclick="location.reload()">إعادة المحاولة</button><small>${SIG}</small></div>`}else if(m)m.remove()}
 /* ================= المرحلة الثالثة: سجل التعديلات والتراجع · تنبيه الأجهزة الجديدة · الدخول بالبصمة ================= */
 /* ---- سجل التعديلات على مستوى الحقل ---- */
 const RHF={kind:'نوع الترخيص',use:'الغرض',land:'نوع الأرض',city:'المنطقة',cat:'فئة الأرض',nw:'عدد الآبار',nwm:'طريقة حساب عدد الآبار',area:'المساحة'};
@@ -3934,7 +3944,7 @@ async function sha(x){const h=await crypto.subtle.digest('SHA-256',new TextEncod
 async function openData(raw){const k=await crypto.subtle.importKey('raw',raw,'AES-GCM',false,['decrypt']);const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(ENC.iv)},k,b64(ENC.ct));const ds=new Blob([pt]).stream().pipeThrough(new DecompressionStream('gzip'));return JSON.parse(await new Response(ds).text())}
 async function boot(raw){const p=await openData(raw);KRAW=raw;RAW=p.req;WREG=p.reg;PUSERS=p.users;init();accInit();roleInit();repInit();inspInit();initReg();BOOTED=true}
 function allowed(u){if(!u)return 'هذا الحساب لم يعد موجوداً. تواصل مع المطوّر.';if(!u.on)return 'هذا الحساب موقوف. تواصل مع المطوّر لإعادة تفعيله.';if(u.exp&&u.exp<todayISO())return 'انتهت مدة صلاحية الحساب في '+fD(u.exp)+'. تواصل مع المطوّر للتجديد.';return ''}
-function enter(u){(S.auth=S.auth||[]).unshift({ts:Date.now(),u:u.n,t:'تسجيل دخول',dev:(devs().find(d=>d.self)||{}).n||''});S.auth=S.auth.slice(0,200);setTimeout(()=>pill(),50);setTimeout(()=>autoBackup(true),1500);S.cur=u.u;u.last=fD(todayISO())+' · '+nowT();saveRaw();setTimeout(()=>{pill();flush()},800);try{sessionStorage.setItem('wl-k',ub64(KRAW));sessionStorage.setItem('wl-u',u.u)}catch(_){}if(u.r===5)R=R.filter(r=>r.stage===4&&r.status==='pending');$('#login').hidden=true;document.body.classList.remove('locked');UE=null;NAV=[];go(firstPage());const h=(location.hash||'').slice(1);if(h&&h!=='dash'&&PAGES.some(x=>x[0]===h))go(h)}
+function enter(u){setTimeout(()=>{try{noticeUI()}catch(_){}},400);(S.auth=S.auth||[]).unshift({ts:Date.now(),u:u.n,t:'تسجيل دخول',dev:(devs().find(d=>d.self)||{}).n||''});S.auth=S.auth.slice(0,200);setTimeout(()=>pill(),50);setTimeout(()=>autoBackup(true),1500);S.cur=u.u;u.last=fD(todayISO())+' · '+nowT();saveRaw();setTimeout(()=>{pill();flush()},800);try{sessionStorage.setItem('wl-k',ub64(KRAW));sessionStorage.setItem('wl-u',u.u)}catch(_){}if(u.r===5)R=R.filter(r=>r.stage===4&&r.status==='pending');$('#login').hidden=true;document.body.classList.remove('locked');UE=null;NAV=[];go(firstPage());const h=(location.hash||'').slice(1);if(h&&h!=='dash'&&PAGES.some(x=>x[0]===h))go(h)}
 $('#sTheme').onclick=()=>$('#themeBtn').click();$('#sOut').onclick=()=>$('#logoutBtn').click();
 $('#logoutBtn').onclick=()=>{try{sessionStorage.removeItem('wl-k');sessionStorage.removeItem('wl-u')}catch(_){}if(!(S.q||[]).length)clClear();location.reload()};
 $('#lpEye').onclick=()=>{const i=$('#lp');i.type=i.type==='password'?'text':'password'};
@@ -3952,13 +3962,13 @@ $('#loginForm').onsubmit=async e=>{e.preventDefault();if(!window.crypto||!crypto
    if(!raw){lerr(cs==='off'?'اسم المستخدم أو كلمة المرور غير صحيحة، أو يلزم اتصال بالإنترنت لأول دخول بهذا الحساب على هذا الجهاز.':'تعذر فتح البيانات لهذا الحساب. اطلب من المطوّر إعادة تعيين كلمة المرور.');return}
    btn.textContent='جارٍ فتح البيانات…';if(!BOOTED)await boot(raw);if(mine)mergeStaff([mine],[]);const u=S.users.find(x=>x.u.toLowerCase()===un);const m=allowed(u);if(m){clClear();return lerr(m)}
    if(cs==='ok'&&mine&&!mine.kw){wrapObj(pwu).then(w=>clRpc('set_staff_kw',{p_kw:w})).catch(()=>{})}
-   BIO_PW=pwu;enter(u);toast('مرحباً '+u.n+(cs==='ok'?' · ☁ متصل بالسحابة':''));if(clActive()){clRpc('touch_staff').catch(()=>{});lgLog();setTimeout(async()=>{await clPull(false);migAll();flush()},300)}else if(u.r===0)setTimeout(()=>{migAll();},600)}
+   BIO_PW=pwu;enter(u);toast('مرحباً '+u.n+(cs==='ok'?' · ☁ متصل بالسحابة':''));if(clActive()){touchV(true);lgLog();setTimeout(async()=>{await clPull(false);migAll();flush();setTimeout(()=>{try{devSum()}catch(_){}},4000)},300)}else if(u.r===0)setTimeout(()=>{migAll();},600)}
   catch(err){lerr('تعذر فتح البيانات على هذا المتصفح. استخدم متصفحاً حديثاً.')}
   finally{BIO_TRY=0;btn.disabled=false;btn.textContent='دخول إلى المنظومة'}};
 bioUI();let BIO_AV=false;bioAvail().then(v=>{BIO_AV=v;if(!v){const b=$('#lbio');if(b)b.hidden=true}});
 document.documentElement.dir='rtl';document.documentElement.lang='ar';try{$('#appverL').textContent='الإصدار '+APP_VER;$('#appverS').innerHTML=verTxt()}catch(_){}document.body.classList.add('locked');
 (async()=>{let k=null,un=null;try{k=sessionStorage.getItem('wl-k');un=sessionStorage.getItem('wl-u')}catch(_){}
-  if(k){try{await boot(b64(k));const u=S.users.find(x=>x.u===un);if(!allowed(u)){clLoad((un||'').toLowerCase());enter(u);if(CL.ref){clRefresh().then(async ok=>{if(ok){CL.on=true;await clPull(true)}migAll();flush()})}else setTimeout(()=>{migAll();},600);return}}catch(_){}}
+  if(k){try{await boot(b64(k));const u=S.users.find(x=>x.u===un);if(!allowed(u)){clLoad((un||'').toLowerCase());enter(u);if(CL.ref){clRefresh().then(async ok=>{if(ok){CL.on=true;await clPull(true);touchV(true)}migAll();flush();setTimeout(()=>{try{devSum()}catch(_){}},4000)})}else setTimeout(()=>{migAll();},600);return}}catch(_){}}
   showLogin();try{const a=localStorage.getItem('wl-dev-act');if(a)$('#lu').value=a}catch(_){}if(location.hash==='#portal')openPortal('track');else if(!trackFromHash())verifyFromHash()})();
 </script>
 </body></html>

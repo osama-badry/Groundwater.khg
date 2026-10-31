@@ -999,6 +999,13 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .a4f{margin-top:auto;border-top:0.8pt solid #DDE4E3;padding-top:3px;display:flex;flex-direction:column;align-items:center;font-size:0.627em;color:#6B7A7D;line-height:1.45;text-align:center;font-family:"Cairo",sans-serif}
 @media (max-width:860px){.prwrap{justify-content:flex-start}.prwrap .a4{zoom:.45}}
 [hidden]{display:none!important}
+#devgate{position:fixed;inset:0;z-index:310;background:radial-gradient(circle at 30% 10%,#0B4A50,#06171b 75%);display:grid;place-items:center;padding:18px;overflow:auto}
+.dgbox{background:var(--surface);border-radius:20px;padding:24px 20px;width:min(420px,100%);display:flex;flex-direction:column;gap:12px;align-items:stretch;text-align:center;box-shadow:0 20px 60px #0007}
+.dgic{font-size:44px;line-height:1}.dgbox h2{margin:0;font-size:21px}.dgbox p{margin:0;color:var(--muted);font-size:14px;line-height:1.75}
+.dgcode{border:2px dashed var(--gold);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px;background:color-mix(in srgb,var(--gold) 8%,var(--surface))}.dgcode span{font-size:12.5px;color:var(--muted)}.dgcode b{font-size:30px;letter-spacing:3px;font-weight:800;color:var(--teal)}.dgcode small{font-size:12px;color:var(--muted)}
+.dgst{text-align:start;margin:0;padding-inline-start:20px;font-size:13.5px;line-height:1.8}
+.dgw{display:flex;gap:8px;align-items:center;justify-content:center;font-size:12.5px;color:var(--muted)}.dgw i{width:9px;height:9px;border-radius:50%;background:var(--warn);animation:dgp 1.2s infinite}@keyframes dgp{50%{opacity:.25}}
+.dgmsg{font-size:13px;font-weight:700;color:var(--warn)}.dgsig{color:var(--muted);font-size:10.5px}
 .gnotice{margin:10px 20px 0;padding:10px 14px;border-radius:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;font-size:14px;border:1px solid var(--line);background:var(--teal-soft,#e6f2f2)}.gnotice b{white-space:nowrap}.gnotice.warn{background:var(--warn-soft);border-color:var(--warn)}.gnotice.bad{background:var(--bad-soft);border-color:var(--bad)}
 #maint{position:fixed;inset:0;z-index:300;background:rgb(6 22 26/.94);display:grid;place-items:center;padding:20px}.mtbox{background:var(--surface);border-radius:18px;padding:28px 24px;max-width:420px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}.mtbox h2{margin:0}.mtbox p{margin:0;color:var(--muted)}.mtbox small{color:var(--muted);font-size:11px}
 .bkx summary{color:var(--warn)!important}.bkx{margin-top:8px}
@@ -1957,7 +1964,7 @@ VIEWS.users=()=>{try{repMig()}catch(_){}
   <div class="card"><span class="muted">موقوفة</span><b style="color:var(--bad)">${stop}</b><em>${expd} منتهية المدة</em></div>
   <div class="card"><span class="muted">تنتهي خلال 7 أيام</span><b style="color:var(--warn)">${soon}</b><em>تحتاج تجديد</em></div>
  </div>
- ${lgCard()}
+ ${dvCard()}${lgCard()}
  ${e?editUser(e,dev):''}
  <div class="tw"><table class="utab"><thead><tr><th>المستخدم</th><th>اسم الدخول</th>${dev?'<th>كلمة المرور</th><th>كود التفعيل</th>':''}<th>الدور</th><th>مستوى الوصول</th><th>الحالة</th><th>مدة ترخيص البرنامج</th><th>آخر دخول</th>${dev?'<th>إيقاف / تشغيل</th>':''}<th></th></tr></thead><tbody>
  ${S.users.map((u,i)=>{const st=uStatus(u),rm=remain(u);return `<tr style="cursor:default"><td class="nm"><span style="display:flex;align-items:center;gap:10px"><span class="av" style="width:32px;height:32px;font-size:12px;background:${u.r===0?'var(--gold)':'var(--teal)'}">${esc(u.n.replace('م/ ','').trim()[0]||'؟')}</span><span>${esc(u.n)}${u.u===S.cur?' <span class="tag k-new">أنت</span>':''}${u.ex?' <span class="tag">مثال</span>':''}</span></span></td>
@@ -2609,7 +2616,22 @@ AFTER.wellform=()=>{if(!$('#wform'))return;wireArea($('#wform'),'wa');$('#wform'
 
 VIEWS.monitor=()=>{W.tab='mon';return VIEWS.registry()};AFTER.monitor=()=>AFTER.registry();
 /* ---------- offline-first sync & linked devices ---------- */
-const DEVID=(()=>{try{let d=localStorage.getItem('wl-devid');if(!d){d='D'+Math.random().toString(36).slice(2,8).toUpperCase();localStorage.setItem('wl-devid',d)}return d}catch(_){return 'DLOCAL'}})();
+/* كود الجهاز الثابت: لا يتغير بمسح بيانات المتصفح أو إعادة التثبيت أو ضبط المصنع
+   ويندوز (المثبّت EXE): من معرّف الجهاز في ويندوز · غيره: بصمة مكونات الجهاز (الموديل، الشاشة، المعالج، الذاكرة، كارت الشاشة) */
+const DEVOLD=(()=>{try{return localStorage.getItem('wl-devid')||''}catch(_){return ''}})();
+const DEVPREV=(()=>{try{return localStorage.getItem('wl-devid2')||''}catch(_){return ''}})();
+let DEVID=(location.protocol==='file:'&&window.__DEVFIX)||(()=>{try{return localStorage.getItem('wl-devid2')||DEVOLD||'DLOCAL'}catch(_){return DEVOLD||'DLOCAL'}})();
+(()=>{const m=(location.hash||'').match(/^#mid=([a-f0-9]{16,64})$/i);if(m){try{localStorage.setItem('wl-mid',m[1].toLowerCase())}catch(_){}try{history.replaceState(null,'',location.pathname+location.search)}catch(_){}}})();
+const B32='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+async function devHash(s,p){const h=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('wells-khg|'+s)));let o=p;for(let i=0;i<6;i++)o+=B32[h[i]%32];return o}
+async function devFP(){const n=navigator,sc=screen,mob=/Android|iPhone|iPad|Mobile/i.test(n.userAgent);const P=[];
+ try{if(n.userAgentData&&n.userAgentData.getHighEntropyValues){const v=await n.userAgentData.getHighEntropyValues(['model','platform','architecture','bitness']);P.push('m:'+(v.model||''),'p:'+(v.platform||''),'a:'+(v.architecture||'')+(v.bitness||''),'mb:'+(n.userAgentData.mobile?1:0))}else{const u=n.userAgent;P.push('os:'+(/iPhone/.test(u)?'iPhone':/iPad/.test(u)?'iPad':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows':/Mac/.test(u)?'Mac':'Other'))}}catch(_){}
+ P.push('c:'+(n.hardwareConcurrency||0),'r:'+(n.deviceMemory||0),'t:'+(n.maxTouchPoints||0),'cd:'+(sc.colorDepth||0));
+ if(mob){const a=[Math.round(sc.width*(devicePixelRatio||1)),Math.round(sc.height*(devicePixelRatio||1))].sort((x,y)=>x-y);P.push('s:'+a.join('x'))}
+ try{const c=document.createElement('canvas'),g=c.getContext('webgl')||c.getContext('experimental-webgl');if(g){const e=g.getExtension('WEBGL_debug_renderer_info');P.push('g:'+(e?g.getParameter(e.UNMASKED_VENDOR_WEBGL)+'|'+g.getParameter(e.UNMASKED_RENDERER_WEBGL):g.getParameter(g.RENDERER)))}}catch(_){}
+ return P.join(';')}
+const DEVP=(async()=>{if(location.protocol==='file:'&&window.__DEVFIX)return DEVID;try{let mid='';try{mid=localStorage.getItem('wl-mid')||''}catch(_){}
+  const code=mid?await devHash('mid:'+mid,'W'):await devHash(await devFP(),'F');DEVID=code;try{localStorage.setItem('wl-devid2',code)}catch(_){}return code}catch(_){return DEVID}})();
 const DEVT=()=>/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)||innerWidth<700?'mobile':'pc';
 let SIMOFF=false,SCO=false,PAIR=null;
 const isOnline=()=>navigator.onLine!==false&&!SIMOFF;
@@ -2659,6 +2681,7 @@ function notifs(){const T=todayISO(),T1=addDays(T,1),out=[];
   if(s7.length)out.push({lv:'bad',ic:'⏳',t:`${s7.length} رخصة تنتهي خلال 7 أيام`,s:s7.slice(0,3).map(o=>o.n+' ('+o._d+' يوم)').join('، '),a:'data-wtab="soon"'});
   else if(s60.length)out.push({lv:'warn',ic:'⏳',t:`${s60.length} رخصة تنتهي خلال 60 يوماً`,s:'أقربها بعد '+Math.min(...s60.map(o=>o._d))+' يوم',a:'data-wtab="soon"'});}
  {const cl=R.filter(r=>r.status==='closed');const ncm=cl.filter(r=>postSt(r)==='cm').length,nok=cl.filter(r=>postSt(r)==='cmok');if(canComplete()&&nok.length){const nm=nok.filter(r=>draftMatches(r)).length;out.push({lv:'warn',ic:'🗂',t:`${nok.length} طلب (${nok.reduce((a,r)=>a+pendDrafts(r).length,0)} بئر) وافقت عليه اللجنة العليا بانتظار استكمال البيانات`,s:nm?`⚠ منها ${nm} تتطابق إحداثياتها مع آبار قائمة`:'قسم الدراسات · قاعدة البيانات',a:'data-cmtab="cmok" data-go="cmte"'})}if(canCommittee()&&ncm)out.push({lv:'info',ic:'🏛',t:`${ncm} ملف معروض على اللجنة العليا بانتظار تأكيد القرار`,s:'قسم الدراسات · أكّد الموافقة أو الرفض للتحويل لقاعدة البيانات',a:'data-cmtab="cm" data-go="cmte"'});{const nl=cl.filter(r=>postSt(r)==='lic').length;if(canSubmitCm()&&nl)out.push({lv:'warn',ic:'📤',t:`${nl} طلب مُسلّم بانتظار الإنهاء للعرض على اللجنة العليا`,s:'قسم التراخيص · العرض على اللجنة العليا',a:'data-cmtab="lic" data-go="lcm"'})}{const nh=cl.filter(r=>DRAFTS(r).some(d=>d.hold&&d.wi==null)).length;if(canComplete()&&nh)out.push({lv:'warn',ic:'⏸',t:`${nh} طلب معلّق للمراجعة بسبب تطابق الإحداثيات`,s:'المحوّل من التراخيص · وافقت اللجنة',a:'data-cmtab="cmok" data-go="cmte"'})}}
+ if(me().r===0&&(S.dvreq||[]).length)out.push({lv:'bad',ic:'🔐',t:`${S.dvreq.length} جهاز ينتظر التفعيل`,s:S.dvreq.slice(0,3).map(x=>(x.dev_name||'')+' · '+x.dev_id).join('، '),a:'data-go="users"'});
  if(me().r===0&&(S.lgev||[]).length)out.push({lv:'bad',ic:'🔐',t:`${S.lgev.length} دخول من جهاز جديد`,s:S.lgev.slice(0,3).map(x=>x.username+' · '+(x.dev_name||'')).join('، '),a:'data-go="users"'});
  if(BIO_PW&&BIO_AV&&DEVT()==='mobile'&&!bioGet())out.push({lv:'info',ic:'👆',t:'فعّل الدخول بالبصمة على هذا الموبايل',s:'بدل كتابة كلمة المرور كل مرة',a:'data-go="mobile"'});
  {const lm=mrepDue();if(lm)out.push({lv:'info',ic:'📊',t:'التقرير الشهري لشهر '+ymTxt(lm)+' جاهز',s:'اضغط للتحميل Excel · يتولد من بيانات المنظومة على هذا الجهاز',a:`data-mrep="${lm}"`})}
@@ -3008,8 +3031,9 @@ async function clPull(quiet){if(!clActive()||!navigator.onLine||CL.busy)return;C
   if(vrAccess()){try{const vl=await clPage('variations',c.v,'rid,data,updated_at');vl.forEach(row=>{if(pendingKey('v:'+row.rid))return;vrs()[row.rid]=row.data});if(vl.length){c.v=vl[vl.length-1].updated_at;n+=vl.length}}catch(_){}}else{try{const f=await clRpc('vr_feed');if(f){if(JSON.stringify(f)!==JSON.stringify(S.vfeed))n++;S.vfeed=f}}catch(_){}}
   if(me().r===0||ra().lsec!=='none'||ra().db!=='none'){try{const wl2=await clPage('well_contacts',c.wc,'i,data,updated_at');wl2.forEach(row=>{if(pendingKey('wc:'+row.i))return;wcs()[row.i]=row.data});if(wl2.length){c.wc=wl2[wl2.length-1].updated_at;n+=wl2.length}}catch(_){}}
   try{n+=await lgPull()}catch(_){}
+  try{n+=await dvPull()}catch(_){}
   try{vrToastNew()}catch(_){}
-  const st=await clJson('/rest/v1/app_state?select=key,data,updated_at');S.stSnap=S.stSnap||{};(st||[]).forEach(s=>{S.stSnap[s.key]=JSON.stringify(s.data);if(s.key==='tpl')S.tpl=s.data;else if(s.key==='cities')S.cities=s.data;else if(s.key==='rep')S.rep=s.data;else if(s.key==='ra')S.ra=s.data;else if(s.key==='org')S.org=s.data;else if(s.key==='notice')S.notice=s.data});if(!(st||[]).some(s=>s.key==='notice'))S.notice=null;try{noticeUI()}catch(_){}touchV();
+  const st=await clJson('/rest/v1/app_state?select=key,data,updated_at');S.stSnap=S.stSnap||{};(st||[]).forEach(s=>{S.stSnap[s.key]=JSON.stringify(s.data);if(s.key==='tpl')S.tpl=s.data;else if(s.key==='cities')S.cities=s.data;else if(s.key==='rep')S.rep=s.data;else if(s.key==='ra')S.ra=s.data;else if(s.key==='org')S.org=s.data;else if(s.key==='notice')S.notice=s.data});if(!(st||[]).some(s=>s.key==='notice'))S.notice=null;try{noticeUI()}catch(_){}touchV();dvRecheck();
   const sf=await clJson('/rest/v1/staff?select=*');let pws=[];if(me().r===0){try{pws=await clJson('/rest/v1/staff_pw?select=id,p')}catch(_){}}mergeStaff(sf||[],pws);
   if(me().r===5){try{const stt=await clRpc('req_states');const mp={};(stt||[]).forEach(x=>mp[x.id]=x);const before=R.length;R=R.filter(r=>{const x=mp[r.id];return !x||(x.stage===4&&x.status==='pending')||pendingKey('r'+r.id)});if(R.length!==before)n+=before-R.length}catch(_){}}
   const mine=(sf||[]).find(s=>s.id===CL.uid);if(mine&&(!mine.active||(mine.role!==0&&mine.exp&&mine.exp<todayISO()))){toast('تم إيقاف حسابك أو انتهت صلاحيته من المطوّر');setTimeout(()=>$('#logoutBtn').click(),1800)}
@@ -3300,7 +3324,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.10.30-1647';
+const APP_VER='2026.10.31-1711';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -3572,6 +3596,35 @@ function devSum(){if(me().r!==0||!clActive())return;const st={};R.forEach(r=>{co
 function noticeUI(){const n=S.notice;let b=$('#gnotice');const on=n&&n.t&&(!n.until||n.until>=todayISO());
  if(on){if(!b){b=document.createElement('div');b.id='gnotice';const pg=$('#page');pg.parentNode.insertBefore(b,pg)}b.className='gnotice '+(n.lv||'info');b.innerHTML=`<b>📢 رسالة من المطوّر</b><span>${esc(n.t)}</span>`}else if(b)b.remove();
  let m=$('#maint');const mt=n&&n.maint&&me()&&me().r!==0;if(mt){if(!m){m=document.createElement('div');m.id='maint';document.body.appendChild(m)}m.innerHTML=`<div class="mtbox"><div style="font-size:42px">🛠</div><h2>المنظومة تحت الصيانة</h2><p>${esc(n.mmsg||'جارٍ تحديث المنظومة · برجاء المحاولة بعد قليل')}</p><button class="btn" onclick="location.reload()">إعادة المحاولة</button><small>${SIG}</small></div>`}else if(m)m.remove()}
+/* ---- تفعيل الأجهزة: كل جهاز جديد يحتاج موافقة المطوّر (كود الجهاز يُرسل واتساب) ---- */
+const DEV_WA='01145060007';const DEV_PANEL='https://osama-badry.github.io/Groundwater.khg/dev.html';
+const dvKey=u=>'wl-devok-'+String(u||'').toLowerCase();
+const dvLocalOk=u=>{try{return localStorage.getItem(dvKey(u))===DEVID}catch(_){return false}};
+const dvSetLocal=(u,ok)=>{try{ok?localStorage.setItem(dvKey(u),DEVID):localStorage.removeItem(dvKey(u))}catch(_){}};
+const dvName=()=>(DEVT()==='pc'?'كمبيوتر':'موبايل')+' · '+uaShort();
+async function dvCheck(u){if(!u||u.r===0)return 'ok';await DEVP;try{const old=(DEVPREV&&DEVPREV!==DEVID?DEVPREV:'')||(DEVOLD!==DEVID?DEVOLD:'');const args={p_dev:DEVID,p_name:dvName(),p_ua:navigator.userAgent.slice(0,300)};let st;try{st=await clRpc('dev_check',Object.assign({p_old:old},args))}catch(e){if(e&&(e.status===404||/Could not find|PGRST202|does not exist/i.test(String(e.message))))st=await clRpc('dev_check',args);else throw e}if(st==='ok')dvSetLocal(u.u,1);else dvSetLocal(u.u,0);return st||'ok'}
+ catch(e){const m=String(e&&e.message||'');if(e&&e.status===404||/does not exist|Could not find|PGRST202/i.test(m))return 'ok';return dvLocalOk(u.u)?'ok':'err'}}
+/* شاشة التفعيل: ترجع Promise تنتهي فقط عند الموافقة */
+function dvGateUI(u,st){return new Promise(res=>{let g=$('#devgate');if(!g){g=document.createElement('div');g.id='devgate';document.body.appendChild(g)}
+ const txt=`طلب تفعيل جهاز · منظومة تراخيص الآبار\nالاسم: ${u.n}\nاسم الدخول: ${u.u}\nكود الجهاز: ${DEVID}\nالجهاز: ${dvName()}\n\nللتفعيل من لوحة المطوّر:\n${DEV_PANEL}#act=${DEVID}`;
+ const wa='https://wa.me/'+waNum(DEV_WA)+'?text='+encodeURIComponent(txt);
+ const draw=(s,msg)=>{g.innerHTML=`<div class="dgbox"><div class="dgic">${s==='blocked'?'⛔':'🔐'}</div><h2>${s==='blocked'?'هذا الجهاز موقوف':'تفعيل هذا الجهاز'}</h2>
+  <p>${s==='blocked'?`مرحباً ${esc(u.n)}، تم إيقاف استخدام المنظومة من هذا الجهاز بواسطة المطوّر. للاستفسار تواصل مع المطوّر.`:`مرحباً ${esc(u.n)}، هذا أول دخول لحسابك من هذا الجهاز. لحماية بيانات الإدارة، يحتاج كل جهاز جديد تفعيلاً من المطوّر قبل استخدام المنظومة.`}</p>
+  <div class="dgcode"><span>كود الجهاز</span><b dir="ltr">${DEVID}</b><small>${esc(dvName())}</small></div>
+  ${s==='blocked'?'':`<ol class="dgst"><li>اضغط «إرسال طلب التفعيل» لإرسال الكود للمطوّر على واتساب</li><li>انتظر حتى يفعّل المطوّر الجهاز — ستدخل المنظومة تلقائياً</li></ol>`}
+  <a class="wa-send" href="${wa}" target="_blank" rel="noopener" style="justify-content:center;padding:11px"><svg class="ico" viewBox="0 0 24 24"><path d="M20 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20l1.2-4.3A8.5 8.5 0 1 1 20 11.5Z"/></svg>${s==='blocked'?'تواصل مع المطوّر واتساب':'إرسال طلب التفعيل للمطوّر واتساب'}</a>
+  ${s==='blocked'?'':`<button class="btn pri" data-dgchk style="width:100%;justify-content:center">تم التفعيل؟ ادخل الآن</button><div class="dgw"><i></i>في انتظار موافقة المطوّر · يتم التحقق تلقائياً</div>`}
+  ${msg?`<div class="dgmsg">${esc(msg)}</div>`:''}<button class="btn ghost" data-dgback>رجوع لتسجيل الدخول</button><small class="dgsig">${SIG}</small></div>`;
+  const c=g.querySelector('[data-dgchk]');if(c)c.onclick=()=>chk(true);g.querySelector('[data-dgback]').onclick=()=>{clClear();location.reload()}};
+ let t=null;const chk=async manual=>{const s=await dvCheck(u);if(s==='ok'){clearInterval(t);g.remove();document.body.classList.remove('pon');toast('✓ تم تفعيل الجهاز');res('ok');return}draw(s,manual?(s==='err'?'تعذر الاتصال · تأكد من الإنترنت':'لسه ماتفعّلش · اتأكد إنك بعت الكود للمطوّر'):'');if(s==='blocked')clearInterval(t)};
+ draw(st,st==='err'?'تعذر التحقق من الجهاز · تأكد من الاتصال بالإنترنت':'');document.body.classList.add('pon');if(st!=='blocked')t=setInterval(()=>chk(false),12000)})}
+let DVT=0;async function dvRecheck(){const u=me();if(!u||u.r===0||!clActive()||Date.now()-DVT<3e5)return;DVT=Date.now();const s=await dvCheck(u);if(s==='blocked'||s==='pending'){toast(s==='blocked'?'⛔ تم إيقاف هذا الجهاز من المطوّر':'🔐 هذا الجهاز يحتاج إعادة تفعيل من المطوّر');setTimeout(()=>{try{sessionStorage.removeItem('wl-k')}catch(_){}location.reload()},2500)}}
+/* المطوّر داخل المنظومة: طلبات التفعيل المعلقة */
+async function dvPull(){if(me().r!==0||!clActive())return 0;try{const a=await clJson('/rest/v1/devices?select=*&status=eq.pending&order=req_at.desc&limit=100');const p=JSON.stringify(S.dvreq||[]);S.dvreq=a||[];return p!==JSON.stringify(S.dvreq)?1:0}catch(_){return 0}}
+function dvCard(){const L=S.dvreq||[];if(me().r!==0||!L.length)return '';const nm=id=>{const x=S.users.find(s=>s._id===id);return x?x.n:''};
+ return `<div class="card lgc" style="border-color:var(--warn)"><h3>🔐 أجهزة تنتظر التفعيل <small>${L.length} طلب · راجع الكود المرسل لك على واتساب قبل التفعيل</small></h3><div class="tw"><table><thead><tr><th>الجهاز</th><th>كود الجهاز</th><th>الطلب</th><th></th></tr></thead><tbody>${L.map(x=>`<tr style="cursor:default"><td>${esc(nm(x.uid)||'')}<div class="sub">${esc(x.dev_name||'')}</div></td><td class="num"><b>${esc(x.dev_id)}</b></td><td>${fD(String(x.req_at).slice(0,10))}</td><td style="white-space:nowrap"><button class="btn sm pri" data-dvset="${x.uid}|${x.dev_id}|ok">تفعيل</button> <button class="btn sm ghost" data-dvset="${x.uid}|${x.dev_id}|blocked">رفض</button></td></tr>`).join('')}</tbody></table></div></div>`}
+async function dvSet(arg){const [uid,dev,st]=arg.split('|');try{await clRpc('dev_set',{p_uid:uid,p_dev:dev,p_status:st});S.dvreq=(S.dvreq||[]).filter(x=>!(x.uid===uid&&x.dev_id===dev));saveRaw();toast(st==='ok'?'✓ تم تفعيل الجهاز '+dev:'تم رفض الجهاز '+dev);rerender()}catch(e){toast('تعذر: '+(e.message||''))}}
+
 /* ================= المرحلة الثالثة: سجل التعديلات والتراجع · تنبيه الأجهزة الجديدة · الدخول بالبصمة ================= */
 /* ---- سجل التعديلات على مستوى الحقل ---- */
 const RHF={kind:'نوع الترخيص',use:'الغرض',land:'نوع الأرض',city:'المنطقة',cat:'فئة الأرض',nw:'عدد الآبار',nwm:'طريقة حساب عدد الآبار',area:'المساحة'};
@@ -3594,7 +3647,7 @@ function hRevert(arg,el){const [type,id,ei,fi]=arg.split('|');const o=type==='r'
  else{o._n=null;o._c=wcat(o);(S.wmod=S.wmod||{})[o.i]=strip(o);enqueue('w'+o.i,'بئر: '+o.n,'بئر');save._q=1;save();syncPulse();toast('✓ تم التراجع عن تعديل «'+f.l+'»');renderWell(o)}}
 /* ---- تنبيه الدخول من جهاز جديد ---- */
 const uaShort=()=>{const u=navigator.userAgent;const os=/Android/i.test(u)?'Android':/iPhone|iPad/i.test(u)?'iPhone':/Windows/i.test(u)?'Windows':/Mac OS/i.test(u)?'Mac':/Linux/i.test(u)?'Linux':'جهاز';const br=/Edg\//.test(u)?'Edge':/OPR\//.test(u)?'Opera':/SamsungBrowser/.test(u)?'Samsung':/Firefox\//.test(u)?'Firefox':/Chrome\//.test(u)?'Chrome':/Safari\//.test(u)?'Safari':'متصفح';return os+' · '+br};
-function lgLog(){if(!clActive())return;clRpc('log_login',{p_dev:DEVID,p_name:(DEVT()==='pc'?'كمبيوتر':'موبايل')+' · '+uaShort(),p_ua:navigator.userAgent.slice(0,300)}).catch(()=>{})}
+function lgLog(){if(!clActive())return;DEVP.then(()=>clRpc('log_login',{p_dev:DEVID,p_name:(DEVT()==='pc'?'كمبيوتر':'موبايل')+' · '+uaShort(),p_ua:navigator.userAgent.slice(0,300)})).catch(()=>{})}
 async function lgPull(){if(me().r!==0||!clActive())return 0;try{const a=await clJson('/rest/v1/login_events?select=id,username,dev_id,dev_name,at&new_dev=eq.true&seen=eq.false&order=at.desc&limit=50');const prev=JSON.stringify(S.lgev||[]);S.lgev=a||[];return prev!==JSON.stringify(S.lgev)?1:0}catch(_){return 0}}
 function lgCard(){const L=S.lgev||[];if(me().r!==0||!L.length)return '';const nm=u=>{const x=S.users.find(s=>s.u.toLowerCase()===String(u).toLowerCase());return x?x.n:u};
  return `<div class="card lgc"><h3>🔐 دخول من أجهزة جديدة <small>${L.length} تنبيه لم يُراجع · لو جهاز مش معروف أوقف الحساب أو غيّر كلمة المرور فوراً</small></h3><div class="tw"><table><thead><tr><th>المستخدم</th><th>الجهاز</th><th>كود الجهاز</th><th>الوقت</th></tr></thead><tbody>${L.map(x=>`<tr style="cursor:default"><td class="nm"><b>${esc(nm(x.username))}</b><span class="sub num">${esc(x.username)}</span></td><td>${esc(x.dev_name||'')}</td><td class="num">${esc(x.dev_id||'')}</td><td>${fD(String(x.at).slice(0,10))} · ${new Date(x.at).toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'})}</td></tr>`).join('')}</tbody></table></div>
@@ -3807,6 +3860,7 @@ function p1Click(t){let el;
 document.addEventListener('click',e=>{
   const t=e.target;let el;
   if(p1Click(t))return;if(p2Click(t))return;if(p3Click(t))return;
+  if(el=t.closest('[data-dvset]')){dvSet(el.dataset.dvset);return}
   if(el=t.closest('[data-wamark]')){const m=S.outbox.find(x=>waId(x)===el.dataset.wamark);if(m){m.st='sent';m.sat=nowT();saveRaw()}const wb=$('#wabar');if(wb&&wb.contains(el))wb.hidden=true;setTimeout(()=>{if(drawerOpen())renderDrawer();if(cur==='whatsapp')rerender()},400);return}
   if(el=t.closest('[data-mg]')){const k=el.dataset.mg;S.mopen=S.mopen||{};S.mopen[k]=!S.mopen[k];saveRaw();menu();return}
   if(vrClick(t))return;if(el=t.closest('[data-drsel]')){DR.sel=+el.dataset.drsel;rerender();setTimeout(()=>{const f=$('.drform')||$('#page .note.bad');if(f)f.scrollIntoView({behavior:'smooth',block:'start'})},60);return}
@@ -3961,6 +4015,8 @@ $('#loginForm').onsubmit=async e=>{e.preventDefault();if(!window.crypto||!crypto
    else if(cs==='off'&&clLoad(un)){/* offline: cloud session kept for later sync */}
    if(!raw){lerr(cs==='off'?'اسم المستخدم أو كلمة المرور غير صحيحة، أو يلزم اتصال بالإنترنت لأول دخول بهذا الحساب على هذا الجهاز.':'تعذر فتح البيانات لهذا الحساب. اطلب من المطوّر إعادة تعيين كلمة المرور.');return}
    btn.textContent='جارٍ فتح البيانات…';if(!BOOTED)await boot(raw);if(mine)mergeStaff([mine],[]);const u=S.users.find(x=>x.u.toLowerCase()===un);const m=allowed(u);if(m){clClear();return lerr(m)}
+   if(cs==='ok'&&u.r!==0){btn.textContent='جارٍ التحقق من الجهاز…';const g=await dvCheck(u);if(g!=='ok')await dvGateUI(u,g)}
+   else if(cs!=='ok'&&u.r!==0&&!dvLocalOk(u.u)&&!(S.auth||[]).some(a=>a.u===u.n)){clClear();return lerr('هذا جهاز جديد ويحتاج تفعيل من المطوّر · اتصل بالإنترنت وسجّل الدخول مرة أخرى.')}
    if(cs==='ok'&&mine&&!mine.kw){wrapObj(pwu).then(w=>clRpc('set_staff_kw',{p_kw:w})).catch(()=>{})}
    BIO_PW=pwu;enter(u);toast('مرحباً '+u.n+(cs==='ok'?' · ☁ متصل بالسحابة':''));if(clActive()){touchV(true);lgLog();setTimeout(async()=>{await clPull(false);migAll();flush();setTimeout(()=>{try{devSum()}catch(_){}},4000)},300)}else if(u.r===0)setTimeout(()=>{migAll();},600)}
   catch(err){lerr('تعذر فتح البيانات على هذا المتصفح. استخدم متصفحاً حديثاً.')}

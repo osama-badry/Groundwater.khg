@@ -3360,7 +3360,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.01-0423';
+const APP_VER='2026.11.01-0537';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -3623,7 +3623,18 @@ function migCat1(){if(me().r!==0)return 0;const L=WB.filter(o=>{const t=wellOwnB
  L.forEach(o=>{const b=hSnap(o);o.own=wellOwnByAr(o);hAdd(o,hDiff(b,hSnap(o),wLabel));o._n=null;o._c=wcat(o);S.wmod[o.i]=strip(o)});
  S.bulk=S.bulk||{};S.bulk['bulkw:cat1']=L.map(o=>o.i);enqueue('bulkw:cat1','تصحيح تصنيف '+L.length+' بئر حسب المساحة','بئر');save._q=1;save();syncPulse();
  setTimeout(()=>toast('✓ تم تصحيح تصنيف '+L.length+' بئر حسب المساحة (أقل من 35 فدان أهالي · 35 فأكثر شركات)'),3500);return L.length}
-const migAll=()=>{try{migCat1()}catch(e){console.error(e)}try{migClose1(1)}catch(e){console.error(e)}try{migClose2()}catch(e){console.error(e)}};
+/* ---- رفض الطلبات القديمة بدون رقم ملف ورقي (حتى 9 أغسطس 2026) · مرة واحدة ---- */
+const REJ_TO='2026-08-09',REJ_TXT='عدم وجود رقم ملف ورقي للطلب (طلب مُسجّل حتى 9 أغسطس 2026)';
+const migRejCands=()=>R.filter(r=>!r._new&&r.date&&r.date<=REJ_TO&&!(r.file||'').trim()&&r.status!=='rejected'&&r.status!=='closed'&&!MIG_LEG[r.legacy]&&r.stage===1);
+function migRej1(){if(me().r!==0)return 0;const L=migRejCands();if(!L.length)return 0;const T=todayISO(),U=me().n;let ts=Date.now();S.mods=S.mods||{};
+ L.forEach(r=>{const st=STAGES[r.stage-1]?STAGES[r.stage-1].t:'';r.status='rejected';r.reason=REJ_TXT;r.sub='';r.mig2='nofile';r.sat=T;(r.log=r.log||[]).push({d:T,t:'رفض الطلب في مرحلة «'+st+'»: '+REJ_TXT+' · رفض جماعي بقرار المطوّر',u:U,ts:ts++});S.mods[r.id]=strip(r)});
+ S.bulk=S.bulk||{};S.bulk['bulk:rej1']=L.map(r=>r.id);enqueue('bulk:rej1','رفض '+L.length+' طلب بدون رقم ملف','طلب');save._q=1;save();syncPulse();
+ setTimeout(()=>toast('✓ تم رفض '+L.length+' طلب في فحص المستندات بدون رقم ملف ورقي (حتى 9 أغسطس 2026)'),5000);try{rerender()}catch(_){}return L.length}
+/* تصحيح: الرفض لمرحلة فحص المستندات فقط · إرجاع الباقي لحالته */
+function migRej2(){if(me().r!==0)return 0;const L=R.filter(r=>r.mig2==='nofile'&&r.stage>1&&r.status==='rejected');if(!L.length)return 0;const T=todayISO(),U=me().n;let ts=Date.now();S.mods=S.mods||{};
+ L.forEach(r=>{r.status='pending';delete r.reason;delete r.mig2;r.sat=T;(r.log=r.log||[]).push({d:T,t:'إلغاء الرفض وإرجاع الطلب لحالته في مرحلة «'+STAGES[r.stage-1].t+'» · الرفض الجماعي يخص مرحلة فحص المستندات فقط',u:U,ts:ts++});if(r._new){const i=S.added.findIndex(a=>a.id===r.id);if(i>=0)S.added[i]=r}else S.mods[r.id]=strip(r)});
+ S.bulk=S.bulk||{};S.bulk['bulk:rej2']=L.map(r=>r.id);enqueue('bulk:rej2','إرجاع '+L.length+' طلب لحالته','طلب');save._q=1;save();syncPulse();setTimeout(()=>toast('✓ تم إرجاع '+L.length+' طلب لحالته (المطابقة / المعاينة / التقرير)'),6500);try{rerender()}catch(_){}return L.length}
+const migAll=()=>{try{migCat1()}catch(e){console.error(e)}try{migClose1(1)}catch(e){console.error(e)}try{migClose2()}catch(e){console.error(e)}try{migRej1()}catch(e){console.error(e)}try{migRej2()}catch(e){console.error(e)}};
 /* ---- ربط لوحة المطوّر الخارجية: الإصدار والجهاز · الملخص · رسالة عامة ووضع الصيانة ---- */
 let TCH=0;function touchV(force){if(!clActive()||(!force&&Date.now()-TCH<6e5))return;TCH=Date.now();clRpc('touch_staff_v',{p_ver:APP_VER,p_dev:(DEVT()==='pc'?'كمبيوتر':'موبايل')+' · '+uaShort()+' · '+DEVID}).catch(()=>{clRpc('touch_staff').catch(()=>{})})}
 function devSum(){if(me().r!==0||!clActive())return;const st={};R.forEach(r=>{const k=stageOf(r);st[k]=(st[k]||0)+1});const ps={};R.forEach(r=>{const k=postSt(r);if(k)ps[k]=(ps[k]||0)+1});const wc={};WB.forEach(o=>{wc[o._c]=(wc[o._c]||0)+1});const oc={};WB.forEach(o=>{const k=ownCat(o);oc[k]=(oc[k]||0)+1});

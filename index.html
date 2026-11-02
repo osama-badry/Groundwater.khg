@@ -999,6 +999,9 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .a4f{margin-top:auto;border-top:0.8pt solid #DDE4E3;padding-top:3px;display:flex;flex-direction:column;align-items:center;font-size:0.627em;color:#6B7A7D;line-height:1.45;text-align:center;font-family:"Cairo",sans-serif}
 @media (max-width:860px){.prwrap{justify-content:flex-start}.prwrap .a4{zoom:.45}}
 [hidden]{display:none!important}
+.fcf .form{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.fcf textarea{min-height:70px}
+.fcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}.fci{border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;background:var(--surface)}
+.fcth{aspect-ratio:4/3;background:#111;display:grid;place-items:center}.fcth img{width:100%;height:100%;object-fit:cover}.fcm{padding:8px 10px;display:flex;flex-direction:column;gap:1px}.fcm b{font-size:13.5px}.fcm small{font-size:12px;color:var(--muted)}.fca{display:flex;gap:6px;padding:0 10px 10px;flex-wrap:wrap}.fca .btn.wa{background:#25d366;border-color:#25d366;color:#fff;gap:5px;display:inline-flex;flex-direction:row;align-items:center;white-space:nowrap}.fca .btn.wa:hover{background:#1ebe5a}
 #confgate{position:fixed;inset:0;z-index:300;background:rgb(30 4 4/.72);display:grid;place-items:center;padding:14px;animation:cfin .2s ease-out}@keyframes cfin{from{opacity:0}}
 .cfbox{background:var(--surface);border-radius:20px;width:min(720px,100%);max-height:calc(100vh - 28px);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px #000a;border-top:6px solid var(--bad);animation:cfpop .28s cubic-bezier(.2,1.4,.4,1)}@keyframes cfpop{from{transform:scale(.92)}}
 .cfbox.warn{border-top-color:var(--warn)}
@@ -1321,6 +1324,7 @@ function stageOf(r){return r.status==='closed'?7:r.status==='rejected'?0:r.stage
 function toast(t){const e=$('#toast');e.innerHTML=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2800)}
 function fill(key,r,x={}){return TPL()[key].b.replace(/\{الاسم\}/g,r.name.split(/ عنها| عنهم|\//)[0].trim()).replace(/\{رقم_الملف\}/g,x.file||r.file||('م-'+r.id)).replace(/\{التاريخ\}/g,x.date?fD(x.date,true):'….').replace(/\{السبب\}/g,x.reason||'….').replace(/\{([^{}]+)\}/g,(m,k)=>x.v&&x.v[k]!=null?x.v[k]:m)}
 const I={
+ fcam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
  gm:'<path d="M3 21h18M5 21V10l7-6 7 6v11"/><path d="M9 21v-6h6v6"/>',
  rnw:'<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5M12 7v5l3 2"/>',
  prefs:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
@@ -1349,7 +1353,7 @@ const I={
  audit:'<path d="M9 5h10M9 12h10M9 19h10M4.5 5l.5.5 1-1M4.5 12l.5.5 1-1M4.5 19l.5.5 1-1"/>',
  mobile:'<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/>'};
 const ico=k=>`<svg class="ico" viewBox="0 0 24 24">${I[k]}</svg>`;
-const PAGES=[['sep','منظومة التراخيص','lic'],['gm','لوحة الإدارة العليا'],['inspq','مهام المعاينة'],['dash','لوحة المتابعة'],['requests','الطلبات'],['new','طلب جديد'],['map','خريطة الطلبات'],['cal','التقويم والمواعيد'],['whatsapp','إشعارات واتساب'],['portal','بوابة المواطن'],['sep','قسم التراخيص','lsec'],['drill','طلب إقرار حفر'],['drills','سجل إقرارات الحفر'],['lcm','العرض على اللجنة العليا'],['vars','المتغيرات المكانية'],['claims','المطالبات المالية'],['rnw','تذكيرات تجديد الرخص'],['sep','قاعدة البيانات','db'],['registry','سجل الآبار والتراخيص'],['cmte','المحوّل من التراخيص'],['wellform','إضافة بئر'],['wmap','خريطة قاعدة الآبار'],['monitor','آبار المراقبة'],['sep','التقارير','rep'],['reports','التقارير'],['sep','الإعدادات','set'],['prefs','إعدادات المنظومة'],['users','المستخدمون والصلاحيات'],['backup','النسخ الاحتياطي'],['audit','سجل العمليات'],['system','البنية والمزامنة'],['mobile','تطبيق الموبايل']];
+const PAGES=[['sep','منظومة التراخيص','lic'],['gm','لوحة الإدارة العليا'],['inspq','مهام المعاينة'],['fcam','الكاميرا الميدانية'],['dash','لوحة المتابعة'],['requests','الطلبات'],['new','طلب جديد'],['map','خريطة الطلبات'],['cal','التقويم والمواعيد'],['whatsapp','إشعارات واتساب'],['portal','بوابة المواطن'],['sep','قسم التراخيص','lsec'],['drill','طلب إقرار حفر'],['drills','سجل إقرارات الحفر'],['lcm','العرض على اللجنة العليا'],['vars','المتغيرات المكانية'],['claims','المطالبات المالية'],['rnw','تذكيرات تجديد الرخص'],['sep','قاعدة البيانات','db'],['registry','سجل الآبار والتراخيص'],['cmte','المحوّل من التراخيص'],['wellform','إضافة بئر'],['wmap','خريطة قاعدة الآبار'],['monitor','آبار المراقبة'],['sep','التقارير','rep'],['reports','التقارير'],['sep','الإعدادات','set'],['prefs','إعدادات المنظومة'],['users','المستخدمون والصلاحيات'],['backup','النسخ الاحتياطي'],['audit','سجل العمليات'],['system','البنية والمزامنة'],['mobile','تطبيق الموبايل']];
 
 /* ---------- routing ---------- */
 let cur='dash';
@@ -2678,7 +2682,7 @@ function stFull(){if(stFull._d)return;stFull._d=1;try{const a=snaps();if(a.lengt
 function devs(){if(!S.devs){S.devs=[{id:'PC-LIC',n:'كمبيوتر مكتب التراخيص',t:'pc',u:'مهندس منظومة',last:Date.now()-36e5*2,ex:1},{id:'PC-STD',n:'كمبيوتر قسم الدراسات',t:'pc',u:'قسم الدراسات',last:Date.now()-864e5,ex:1},{id:'MB-FLD',n:'هاتف مهندس المعاينة',t:'mobile',u:'مهندس منظومة',last:Date.now()-36e5*5,ex:1}]}
  let me_=S.devs.find(d=>d.id===DEVID);if(!me_){me_={id:DEVID,n:DEVT()==='pc'?'هذا الكمبيوتر':'هذا الهاتف',t:DEVT(),u:'',last:0};S.devs.unshift(me_)}me_.u=me().n;me_.self=1;return S.devs}
 function enqueue(key,label,kind){if(!BOOTED)return;S.q=S.q||[];const i=S.q.findIndex(o=>o.key===key);const prev=i>=0?S.q.splice(i,1)[0]:null;S.q.push({id:DEVID+'-'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),key,label,kind,ts:Date.now(),n:prev?prev.n+1:1,by:me().n})}
-const PLBL={gm:'لوحة الإدارة العليا',prefs:'إعدادات المنظومة',rnw:'تذكيرات تجديد الرخص',dash:'لوحة المتابعة',whatsapp:'قوالب واتساب',users:'المستخدمون والصلاحيات',backup:'إعدادات النسخ الاحتياطي',reports:'تخصيص التقارير',registry:'سجل الآبار',new:'الطلبات'};
+const PLBL={fcam:'الكاميرا الميدانية',gm:'لوحة الإدارة العليا',prefs:'إعدادات المنظومة',rnw:'تذكيرات تجديد الرخص',dash:'لوحة المتابعة',whatsapp:'قوالب واتساب',users:'المستخدمون والصلاحيات',backup:'إعدادات النسخ الاحتياطي',reports:'تخصيص التقارير',registry:'سجل الآبار',new:'الطلبات'};
 function pill(k,tot){const e=$('#sync');const ob=$('#offbar');if(!e)return;const q=(S.q||[]).length;const n=devs().length;
  e.classList.remove('busy','off');if(!isOnline()){e.classList.add('off');e.lastElementChild.textContent='بدون إنترنت · '+q+' في الانتظار'}else if(k!=null){e.classList.add('busy');e.lastElementChild.textContent='جارٍ المزامنة '+k+'/'+tot}else e.lastElementChild.textContent=!clActive()?(q?q+' محفوظ على الجهاز':'محلي · غير متصل بالسحابة'):CL.err?'خطأ في المزامنة · '+q:q?q+' في الانتظار':'☁ متزامن مع السحابة';
  if(ob){ob.hidden=isOnline();ob.innerHTML=`<svg class="ico" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 4.2-2.5M10.7 5.1A15 15 0 0 1 22 8.8M5 12.9a10 10 0 0 1 3.5-2.1M16.8 11a10 10 0 0 1 2.2 1.9M8.5 16.4a5 5 0 0 1 7 0M12 20h.01M3 3l18 18"/></svg><span><b>تعمل بدون إنترنت</b> · كل التغييرات محفوظة على الجهاز (${q} في الانتظار) وستُزامن تلقائياً فور عودة الاتصال</span><button class="btn sm" data-sync>التفاصيل</button>`}
@@ -2788,7 +2792,7 @@ const autoNW=r=>r.cat==='استثمار / شركات'&&fedOf(r)>0?Math.max(1,Mat
 const nwOf=r=>r.nwm&&+r.nw>0?+r.nw:autoNW(r);
 const ISLOTS=r=>{const b=ISLOT1(r),n=Math.min(nwOf(r),20);if(n<=1)return b;const out=[];for(let i=1;i<=n;i++)b.forEach(([k,t,d])=>{if(k==='irr'&&i>1)return;out.push([k==='irr'?k:k+i,k==='irr'?t:t+' '+i,d])});return out};
 const ISLOT1=r=>r.kind==='جديد'?[['pt','نقطة البئر','الموقع المقترح لحفر البئر على الطبيعة']]:[['well','البئر','صورة واضحة لرأس البئر وموقعه'],['irr','الري الحديث','شبكة الري الحديث بالأرض (تنقيط / رش / محوري)'],['meter','العداد','عداد قياس التصرف مركباً على البئر'],['serial','الرقم المسلسل للعداد','صورة مقربة يُقرأ فيها الرقم المسلسل بوضوح']];
-const slotName=(r,k)=>(ISLOTS(r).find(s=>s[0]===k)||[,k&&k!=='extra'?k:'صورة إضافية'])[1];
+const slotName=(r,k)=>k==='free'?fcLbl():(ISLOTS(r).find(s=>s[0]===k)||[,k&&k!=='extra'?k:'صورة إضافية'])[1];
 const PHURL={},PH_BLANK='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 3"><rect width="4" height="3" fill="#8a9a9a" opacity=".25"/></svg>');
 async function phHydrate(root){const L=[...(root||document).querySelectorAll('img[data-ph]')];for(const im of L){const hk=im.dataset.ph;if(PHURL[hk]){im.src=PHURL[hk];continue}let b=null;try{b=await pGet(hk+':t')}catch(_){}if(!b&&typeof clActive==='function'&&clActive())b=await clPhoto(hk,'t');if(b){PHURL[hk]=URL.createObjectURL(b);document.querySelectorAll(`img[data-ph="${hk}"]`).forEach(x=>x.src=PHURL[hk])}}}
 const canInspect=()=>{const u=me();return (u.r===0||u.r===1||u.r===5)&&lvOk(lvOf(u),4)};
@@ -2822,7 +2826,7 @@ function drawStamp(x,W,H,m){
   x.fillStyle='rgba(28,30,30,.58)';x.fillRect(0,oy,W,oh);
   x.font=`700 ${fs*0.92}px ${F}`;const bh=fs*2.6,bw=Math.max(fs*9,x.measureText('منظومة تراخيص الآبار').width+bh+fs*0.4),bx=W-bw-pad*0.4,by=oy-bh-fs*0.4;x.fillStyle='rgba(28,30,30,.72)';x.beginPath();x.roundRect?x.roundRect(bx,by,bw,bh,fs*0.4):x.rect(bx,by,bw,bh);x.fill();
   const li=logoImg();if(li.complete&&li.naturalWidth)x.drawImage(li,bx+fs*0.35,by+fs*0.3,bh-fs*0.6,bh-fs*0.6);
-  x.fillStyle='#fff';x.direction='rtl';x.textAlign='right';x.font=`700 ${fs*0.92}px ${F}`;x.fillText('منظومة تراخيص الآبار',bx+bw-fs*0.4,by+fs*1.15);x.font=`500 ${fs*0.7}px ${F}`;x.fillStyle='#E5BD63';x.fillText(m.slot?'معاينة · '+m.slot:'الخارجة · الوادي الجديد',bx+bw-fs*0.4,by+fs*2.1);
+  x.fillStyle='#fff';x.direction='rtl';x.textAlign='right';x.font=`700 ${fs*0.92}px ${F}`;x.fillText('منظومة تراخيص الآبار',bx+bw-fs*0.4,by+fs*1.15);x.font=`500 ${fs*0.7}px ${F}`;x.fillStyle='#E5BD63';x.fillText(m.slot?(m.free?m.slot:'معاينة · '+m.slot):'الخارجة · الوادي الجديد',bx+bw-fs*0.4,by+fs*2.1);
   x.direction='ltr';x.textAlign='left';x.fillStyle='#fff';let y=oy+pad+fs*0.3;
   x.font=`500 ${fs*1.08}px ${F}`;{const mw=W-pad*2,ws=String(m.place||(isFinite(m.la)&&isFinite(m.lo)?(+m.la).toFixed(5)+'°N, '+(+m.lo).toFixed(5)+'°E':'جارٍ تحديد الموقع…')).split(/\s+/),L=[''];ws.forEach(w_=>{const t_=L[L.length-1]?L[L.length-1]+' '+w_:w_;if(x.measureText(t_).width>mw&&L[L.length-1]&&L.length<2)L.push(w_);else L[L.length-1]=t_});x.fillText(L[0],pad,y,mw);y+=lh;if(L[1])x.fillText(L[1],pad,y,mw);y+=lh*1.15}
   const c2=W*0.52;x.font=`500 ${fs*0.95}px ${F}`;x.fillText('Latitude',pad,y);x.fillText('Longitude',c2,y);y+=lh;x.font=`600 ${fs*1.12}px ${F}`;x.fillText(toDMSs(m.la,'N','S'),pad,y);x.fillText(toDMSs(m.lo,'E','W'),c2,y);y+=lh*1.15;
@@ -2999,8 +3003,8 @@ function geoToForm(ap,g,rg=true){if(!g||!ap)return;const s=(id,v)=>{const e=ap.q
  const pl=ap.querySelector('#ip-place');if(pl&&!pl._man&&rg){revGeo(g.la,g.lo).then(a=>{if(a&&!pl._man){pl.value=a;ap._paint&&ap._paint()}})}}
 function camGpsTxt(){const g=CAM.geo;const off=navigator.onLine?'':' · بدون إنترنت';if(g&&!g.man)return g.old?`<i class="gmid"></i>آخر موقع معروف ± ${g.acc} م · جارٍ التحديث من GPS${off}`:g.acc>100?`<i class="gmid"></i>موقع تقريبي ± ${g.acc} م · جارٍ تحسين الدقة من GPS${off}`:g.acc>50?`<i class="gmid"></i>GPS ± ${g.acc} م · جارٍ تحسين الدقة${off}`:`<i class="gok"></i>GPS من الهاتف ± ${g.acc} م${off}`;if(g&&g.man)return `<i class="gman"></i>إحداثيات يدوية <button data-camgeo>تعديل</button>`;if(CAM.gerr)return `<i class="gbad"></i>${CAM.gerr} <button data-camgeo>إدخال يدوي</button>`;const sec=GEO.t0?Math.round((Date.now()-GEO.t0)/1000):0;const mm=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');return `<i class="gwait"></i>جارٍ تحديد الموقع ${mm}${GEO.warn?' · '+GEO.warn:sec>20?' · قف بجوار شباك أو في مكان مفتوح':''} ${sec>15?'<button data-geodiag>تشخيص</button>':''}<button data-camgeo>يدوي</button>`}
 function camGpsUpd(){const e=$('#cam-gps');if(e)e.innerHTML=camGpsTxt()}
-function camMeta(){const ap=CAM.ap,r=CAM.r,m=inspMeta(ap);if(CAM.geo){m.la=CAM.geo.la;m.lo=CAM.geo.lo;if(m.alt==='')m.alt=CAM.geo.alt}return Object.assign(m,{ts:new Date().toISOString(),slot:slotName(r,CAM.slot),owner:r.name,rg:r.city,pre:false})}
-function camHTML(){const r=CAM.r,S_=ISLOTS(r),ap=CAM.ap;return `<div class="camw"><canvas id="cam-cv"></canvas><video id="cam-v" playsinline muted autoplay></video>
+function camMeta(){const ap=CAM.ap,r=CAM.r,m=inspMeta(ap);if(CAM.geo){m.la=CAM.geo.la;m.lo=CAM.geo.lo;if(m.alt==='')m.alt=CAM.geo.alt}return Object.assign(m,{ts:new Date().toISOString(),slot:slotName(r,CAM.slot),free:!!CAM.free,owner:r.name,rg:r.city,pre:false})}
+function camHTML(){const r=CAM.r,S_=CAM.free?[['free',fcLbl()]]:ISLOTS(r),ap=CAM.ap;return `<div class="camw"><canvas id="cam-cv"></canvas><video id="cam-v" playsinline muted autoplay></video>
  <div class="camhd"><button class="camx" data-camx aria-label="إغلاق الكاميرا"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button><div class="camsl">${S_.map(([k,t])=>`<button data-camslot="${k}" class="${k===CAM.slot?'on':''} ${ap._ip[k]?'ok':''}">${ap._ip[k]?'✓ ':''}${t}</button>`).join('')}</div></div>
  <div class="camgps" id="cam-gps">${camGpsTxt()}</div>
  <div class="camman" id="cam-man" hidden><b>إحداثيات الموقع</b><input id="cm-ll" dir="ltr" inputmode="decimal" placeholder="25.339438, 30.558633"><small>اكتب خط العرض وخط الطول، أو الصق رابط خرائط جوجل أو إحداثيات GPS Map Camera</small><div><button data-cmok>تطبيق</button><button data-cmx>إلغاء</button></div></div>
@@ -3019,11 +3023,15 @@ function camLoop(){const v=$('#cam-v'),cv=$('#cam-cv');if(!v||!cv||$('#cam').hid
  CAM.raf=setTimeout(()=>requestAnimationFrame(camLoop),66)}
 async function camShot(){if(CAM.busy)return;const v=$('#cam-v');if(!v||!v.videoWidth)return;CAM.busy=true;const ap=CAM.ap,r=CAM.r,k=CAM.slot;
  const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);const w=$('.camw');w.classList.add('flash');setTimeout(()=>w.classList.remove('flash'),180);
+ if(CAM.free){try{const m=camMeta();drawStamp(c.getContext('2d'),c.width,c.height,m);await fcSaveShot(c,m);phoneCopy(c,m,fcLbl());CAM.nfc=(CAM.nfc||0)+1;toast('✓ تم حفظ الصورة '+CAM.nfc+' · يمكنك التصوير مرة أخرى أو الإغلاق')}catch(_){toast('تعذر حفظ الصورة')}CAM.busy=false;return}
  const bl=await cBlob(c,0.95);const f=new File([bl],'inspection-'+k+'.jpg',{type:'image/jpeg',lastModified:Date.now()});const p=await readPhoto(f);p.ts=new Date().toISOString();if(CAM.geo){p.ex={la:CAM.geo.la,lo:CAM.geo.lo,alt:CAM.geo.alt}}
- ap._ip[k]=p;ap._paint&&ap._paint();CAM.busy=false;
+ ap._ip[k]=p;ap._paint&&ap._paint();CAM.busy=false;{const m=camMeta();m.slot=slotName(r,k);drawStamp(c.getContext('2d'),c.width,c.height,m);phoneCopy(c,m,'معاينة '+slotName(r,k))}
  const nx=ISLOTS(r).find(s=>!ap._ip[s[0]]);if(nx){CAM.slot=nx[0];camRefresh();toast('✓ تم تصوير «'+slotName(r,k)+'» · التالي: '+nx[1])}else{closeCam();toast('✓ تم تصوير كل صور المعاينة · راجعها ثم احفظ التقرير')}}
 function camRefresh(){const hd=$('.camsl'),h=$('#cam-hint');if(!hd)return;const ap=CAM.ap,r=CAM.r;hd.innerHTML=ISLOTS(r).map(([k,t])=>`<button data-camslot="${k}" class="${k===CAM.slot?'on':''} ${ap._ip[k]?'ok':''}">${ap._ip[k]?'✓ ':''}${t}</button>`).join('');h.innerHTML='صوّر: <b>'+esc(slotName(r,CAM.slot))+'</b>'}
-function closeCam(){clearTimeout(CAM.raf);try{CAM.st&&CAM.st.getTracks().forEach(t=>t.stop())}catch(_){}CAM.st=null;geoStop();const el=$('#cam');el.hidden=true;el.innerHTML='';if($('#portal').hidden)document.body.classList.remove('pon')}
+/* نسخة تلقائية من الصورة المختومة على الهاتف (مجلد التنزيلات / المعرض) */
+const phCopyOn=()=>{try{return localStorage.getItem('wl-phcopy')!=='0'}catch(_){return true}};
+async function phoneCopy(c,m,lbl){if(!phCopyOn())return;try{const b=await cBlob(c,0.92);const nm=('منظومة الآبار - '+(lbl||'صورة')+(m.owner?' - '+m.owner:'')+' - '+(d=>{const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+' '+z(d.getHours())+'-'+z(d.getMinutes())+'-'+z(d.getSeconds())})(new Date(m.ts||Date.now()))+'.jpg').replace(/[\\/:*?"<>|]/g,'-');const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=nm;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),8000)}catch(_){}}
+function closeCam(){if(CAM.free){CAM.free=false;CAM.nfc=0;setTimeout(()=>{if(cur==='fcam')rerender()},50)}clearTimeout(CAM.raf);try{CAM.st&&CAM.st.getTracks().forEach(t=>t.stop())}catch(_){}CAM.st=null;geoStop();const el=$('#cam');el.hidden=true;el.innerHTML='';if($('#portal').hidden)document.body.classList.remove('pon')}
 async function camFlip(){CAM.face=CAM.face==='environment'?'user':'environment';const ap=CAM.ap,r=CAM.r,s=CAM.slot;try{CAM.st&&CAM.st.getTracks().forEach(t=>t.stop())}catch(_){}clearTimeout(CAM.raf);geoStop();openCam(ap,r,s)}
 function ipPreview(ap,r,k){const p=ap._ip[k];if(!p)return;const m=$('#modal');m.hidden=false;const img=stampCanvas(p.img,Object.assign({},inspMeta(ap),{ts:p.ts,slot:slotName(r,k),owner:r.name,rg:r.city}),1600).toDataURL('image/jpeg',.85);
  m.innerHTML=`<div class="mbox lbx" role="dialog" aria-label="معاينة الصورة"><div class="mhd"><h3>${esc(slotName(r,k))} · معاينة قبل الحفظ</h3><button class="ibtn" data-mclose aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="mbd"><img src="${img}" alt="" style="width:100%;border-radius:10px"><div class="muted" style="font-size:12.5px">الدقة الأصلية <bdi dir="ltr">${p.img.naturalWidth}×${p.img.naturalHeight}</bdi> · تُحفظ بالختم بالدقة الكاملة عند حفظ التقرير</div></div></div>`}
@@ -3377,7 +3385,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.02-0308';
+const APP_VER='2026.11.02-0458';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -3704,6 +3712,50 @@ async function permPrime(force){if(!window.isSecureContext||typeof canInspect!==
    try{const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});st.getTracks().forEach(t=>t.stop())}catch(_){}
    const [g2,c2]=await Promise.all([permState('geolocation'),permState('camera')]);if(g2==='granted'){geoWatch();geoStop(-1)}if(g2==='granted'&&c2==='granted'){o.remove();toast('✓ تم تفعيل الموقع الدقيق والكاميرا')}else draw(g2,c2)}};
  draw(g,c)}
+/* ================= الكاميرا الميدانية: تصوير حر بنفس ختم المعاينة ================= */
+const FC_T=[['insp_c','معاينة ميدانية · مواطن'],['insp_s','معاينة ميدانية · شركة / استثمار'],['viol_c','رصد مخالفة · مواطن'],['viol_s','رصد مخالفة · شركة'],['follow','متابعة بئر قائم'],['meter','قراءة عداد / تصرف'],['patrol','مرور تفتيشي دوري'],['gov','بئر حكومي / مراقبة'],['other','أخرى']];
+const FC={type:'insp_c',owner:'',reg:'',ref:'',note:'',other:''};
+const fcLbl=()=>FC.type==='other'?(FC.other||'تصوير ميداني'):(FC_T.find(t=>t[0]===FC.type)||[])[1]||'تصوير ميداني';
+const fcList=()=>S.fc||(S.fc=[]);
+VIEWS.fcam=()=>{const L=fcList();return `<div class="ph"><div><h2>الكاميرا الميدانية</h2><p>تصوير أي موقع بنفس ختم صور المعاينة: الإحداثيات من GPS الهاتف، والعنوان، والتاريخ والوقت، ونوع التصوير وملاحظاتك أسفل الصورة · الصور تُحفظ مشفّرة على هذا الجهاز ويمكن تنزيلها أو مشاركتها.</p></div></div>
+ <div class="card fcf" id="fcf"><h3>بيانات التصوير <small>تظهر على الصورة</small></h3><div class="form">
+  <div class="fld"><label for="fc-type">نوع التصوير</label><select class="inp" id="fc-type" style="width:100%">${FC_T.map(t=>`<option value="${t[0]}" ${FC.type===t[0]?'selected':''}>${t[1]}</option>`).join('')}</select></div>
+  <div class="fld" id="fc-ow" ${FC.type==='other'?'':'hidden'}><label for="fc-other">اكتب نوع التصوير</label><input class="inp" id="fc-other" value="${esc(FC.other)}" placeholder="مثال: معاينة خط مياه"></div>
+  <div class="fld"><label for="fc-owner">صاحب الشأن (مواطن / شركة / جهة)</label><input class="inp" id="fc-owner" value="${esc(FC.owner)}" placeholder="الاسم كما يظهر على الصورة"></div>
+  <div class="fld"><label for="fc-reg">المنطقة</label><input class="inp" id="fc-reg" list="cities" value="${esc(FC.reg)}" placeholder="مثال: الخارجة"></div>
+  <div class="fld"><label for="fc-ref">رقم البئر / الطلب / المحضر (اختياري)</label><input class="inp num" id="fc-ref" dir="ltr" value="${esc(FC.ref)}"></div>
+  <div class="fld span4"><label for="fc-note">الملاحظات (تُكتب أسفل الصورة)</label><textarea class="inp" id="fc-note" maxlength="140" placeholder="مثال: بئر غير مرخص يعمل بالطاقة الشمسية · تم تحرير محضر">${esc(FC.note)}</textarea><small class="muted" id="fc-cnt">${FC.note.length}/140</small></div>
+  <input type="hidden" id="ip-la"><input type="hidden" id="ip-lo"><input type="hidden" id="ip-alt"><input type="hidden" id="ip-place"><input type="hidden" id="ip-note"><input type="hidden" id="ip-reg"><input type="checkbox" id="ip-pre" hidden><input type="file" accept="image/*" data-slotin="free" hidden>
+ </div><div class="filters" style="margin-top:10px"><button class="btn pri" data-fcopen style="font-size:15px;padding:10px 18px">📷 فتح الكاميرا</button><span class="muted" style="font-size:12.5px">يمكنك التقاط أكثر من صورة متتالية بنفس البيانات</span><label class="ack" style="margin:0;margin-inline-start:auto"><input type="checkbox" data-phcopy ${phCopyOn()?'checked':''}> حفظ نسخة تلقائياً على الهاتف (معرض الصور / التنزيلات) · للكاميرا والمعاينة</label></div></div>
+ <div class="card"><h3>صور هذا الجهاز <small>${L.length} صورة · الأحدث أولاً</small>${L.length?`<button class="btn sm ghost" data-fcall style="margin-inline-start:auto">تنزيل الكل</button>`:''}</h3>
+ ${L.length?`<div class="fcg">${L.map(p=>`<div class="fci" data-fcid="${p.id}"><div class="fcth"><img alt="" data-fcimg="${p.id}"></div><div class="fcm"><b>${esc(p.lbl)}</b><small>${esc(p.owner||'')}${p.reg?' · '+esc(p.reg):''}</small><small class="num" dir="ltr">${p.la!=null?(+p.la).toFixed(5)+', '+(+p.lo).toFixed(5):'بدون إحداثيات'}</small><small>${fD(p.ts.slice(0,10))} · ${new Date(p.ts).toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'})}</small></div><div class="fca"><button class="btn sm" data-fcdl="${p.id}">تنزيل</button><button class="btn sm wa" data-fcwa="${p.id}"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.5-.3z"/></svg> واتساب</button><button class="btn sm ghost" data-fcdel="${p.id}">حذف</button></div></div>`).join('')}</div>`:'<div class="empty">لا توجد صور بعد · املأ البيانات واضغط «فتح الكاميرا»</div>'}</div>`};
+AFTER.fcam=()=>{const f=$('#fcf');if(!f)return;const sync=()=>{FC.type=$('#fc-type').value;FC.other=($('#fc-other')||{}).value||'';FC.owner=$('#fc-owner').value.trim();FC.reg=$('#fc-reg').value.trim();FC.ref=$('#fc-ref').value.trim();FC.note=$('#fc-note').value;$('#fc-cnt').textContent=FC.note.length+'/140';$('#fc-ow').hidden=FC.type!=='other';$('#ip-note').value=fcNote();$('#ip-reg').value=FC.reg};
+ f.addEventListener('input',sync);{const pc=f.parentNode.querySelector('[data-phcopy]');if(pc)pc.onchange=()=>{try{localStorage.setItem('wl-phcopy',pc.checked?'1':'0')}catch(_){}toast(pc.checked?'✓ سيتم حفظ نسخة من كل صورة على الهاتف':'تم إيقاف الحفظ التلقائي على الهاتف')}}f.addEventListener('change',sync);sync();
+ const fi=f.querySelector('[data-slotin="free"]');if(fi)fi.onchange=async()=>{const fl=fi.files[0];if(!fl)return;try{const ph=await readPhoto(fl);const m=Object.assign(inspMeta(f),{ts:new Date().toISOString(),slot:fcLbl(),free:true,owner:FC.owner,rg:FC.reg,pre:false});if(GEO.geo){m.la=GEO.geo.la;m.lo=GEO.geo.lo;if(m.alt==='')m.alt=GEO.geo.alt}const c=stampCanvas(ph.img,m,4096);await fcSaveShot(c,m);phoneCopy(c,m,fcLbl());toast('✓ تم حفظ الصورة');rerender()}catch(_){toast('تعذر حفظ الصورة')}fi.value=''};
+ document.querySelectorAll('[data-fcimg]').forEach(async im=>{try{const b=await pGet('fc:'+im.dataset.fcimg+':t');if(b)im.src=URL.createObjectURL(b)}catch(_){}})};
+const fcNote=()=>[FC.ref?'('+FC.ref+')':'',FC.note.trim()].filter(Boolean).join(' ');
+function fcOpen(){const ap=$('#fcf');if(!ap)return;ap._ip={};CAM.free=true;$('#ip-note').value=fcNote();$('#ip-reg').value=FC.reg;
+ const r={id:0,name:FC.owner,city:FC.reg,coords:[],kind:'',nw:1};openCam(ap,r,'free')}
+async function fcSaveShot(c,meta){const id=Date.now().toString(36)+Math.random().toString(36).slice(2,5);const full=await cBlob(c,0.92);
+ const t=document.createElement('canvas');const k=360/Math.max(c.width,c.height);t.width=Math.round(c.width*k);t.height=Math.round(c.height*k);t.getContext('2d').drawImage(c,0,0,t.width,t.height);const th=await cBlob(t,0.8);
+ await pPut('fc:'+id,full);await pPut('fc:'+id+':t',th);
+ fcList().unshift({id,ts:meta.ts,lbl:fcLbl(),owner:FC.owner,reg:FC.reg,ref:FC.ref,note:FC.note,la:isFinite(meta.la)?meta.la:null,lo:isFinite(meta.lo)?meta.lo:null,by:me().n});if(fcList().length>200)fcList().splice(200).forEach(p=>{});saveRaw();return id}
+const fcName=p=>('تصوير ميداني - '+p.lbl+(p.owner?' - '+p.owner:'')+' - '+(d=>{const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+' '+z(d.getHours())+'-'+z(d.getMinutes())})(new Date(p.ts))+'.jpg').replace(/[\\/:*?"<>|]/g,'-');
+async function fcDl(id){const p=fcList().find(x=>x.id===id);const b=await pGet('fc:'+id);if(!p||!b)return toast('الصورة غير موجودة على هذا الجهاز');saveFile(fcName(p),b)}
+async function fcShare(id){const p=fcList().find(x=>x.id===id);const b=await pGet('fc:'+id);if(!p||!b)return;const f=new File([b],fcName(p),{type:'image/jpeg'});try{if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:p.lbl,text:[p.lbl,p.owner,p.reg,p.note].filter(Boolean).join(' · ')});else saveFile(f.name,b)}catch(_){}}
+const fcCap=p=>['📷 '+p.lbl,p.owner?'صاحب الشأن: '+p.owner:'',p.reg?'المنطقة: '+p.reg:'',p.ref?'رقم: '+p.ref:'',p.la!=null?'الموقع: https://maps.google.com/?q='+(+p.la).toFixed(6)+','+(+p.lo).toFixed(6):'',p.note?'ملاحظات: '+p.note:'','التاريخ: '+fD(p.ts.slice(0,10))+' · '+new Date(p.ts).toLocaleTimeString('ar-EG-u-nu-latn',{hour:'2-digit',minute:'2-digit'}),'— منظومة تراخيص الآبار بالخارجة'].filter(Boolean).join('\n');
+async function fcWa(id){const p=fcList().find(x=>x.id===id);const b=await pGet('fc:'+id);if(!p||!b)return toast('الصورة غير موجودة على هذا الجهاز');const f=new File([b],fcName(p),{type:'image/jpeg'});const cap=fcCap(p);
+ try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text:cap});return}}catch(e){if(e&&e.name==='AbortError')return}
+ await saveFile(f.name,b);toast('تم تنزيل الصورة · أرفقها في محادثة واتساب');setTimeout(()=>window.open('https://wa.me/?text='+encodeURIComponent(cap),'_blank'),600)}
+function fcClick(t){let el;
+ if(el=t.closest('[data-fcwa]')){fcWa(el.dataset.fcwa);return true}
+ if(t.closest('[data-fcopen]')){fcOpen();return true}
+ if(el=t.closest('[data-fcdl]')){fcDl(el.dataset.fcdl);return true}
+ if(el=t.closest('[data-fcsh]')){fcShare(el.dataset.fcsh);return true}
+ if(el=t.closest('[data-fcdel]')){if(!el.dataset.sure){el.dataset.sure=1;el.textContent='تأكيد الحذف';el.classList.add('bad');return true}S.fc=fcList().filter(x=>x.id!==el.dataset.fcdel);saveRaw();rerender();return true}
+ if(t.closest('[data-fcall]')){(async()=>{for(const p of fcList()){await fcDl(p.id);await new Promise(r_=>setTimeout(r_,400))}})();return true}
+ return false}
+
 /* ================= المرحلة الثالثة: سجل التعديلات والتراجع · تنبيه الأجهزة الجديدة · الدخول بالبصمة ================= */
 /* ---- سجل التعديلات على مستوى الحقل ---- */
 const RHF={kind:'نوع الترخيص',use:'الغرض',land:'نوع الأرض',city:'المنطقة',cat:'فئة الأرض',nw:'عدد الآبار',nwm:'طريقة حساب عدد الآبار',area:'المساحة'};
@@ -3938,7 +3990,7 @@ function p1Click(t){let el;
 
 document.addEventListener('click',e=>{
   const t=e.target;let el;
-  if(p1Click(t))return;if(p2Click(t))return;if(p3Click(t))return;
+  if(fcClick(t))return;if(p1Click(t))return;if(p2Click(t))return;if(p3Click(t))return;
   if(el=t.closest('[data-dvset]')){dvSet(el.dataset.dvset);return}
   if(t.closest('[data-geodiag]')){geoDiag();return}
   if(el=t.closest('[data-wamark]')){const m=S.outbox.find(x=>waId(x)===el.dataset.wamark);if(m){m.st='sent';m.sat=nowT();saveRaw()}const wb=$('#wabar');if(wb&&wb.contains(el))wb.hidden=true;setTimeout(()=>{if(drawerOpen())renderDrawer();if(cur==='whatsapp')rerender()},400);return}

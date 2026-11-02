@@ -1252,7 +1252,7 @@ const ORG='الإدارة العامة للمياه الجوفية بالخار�
 const KEY='wells-proto-v1';
 let S={mods:{},added:[],tpl:null,users:null,outbox:[],perm:null};
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S=Object.assign(S,s)}catch(e){}
-function save(){save._n=(save._n||0)+1;if(typeof enqueue==='function'&&BOOTED&&!save._q)enqueue('p:'+cur,PLBL[cur]||'إعدادات المنظومة','إعدادات');save._q=0;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}clearTimeout(save._t);if(typeof autoBackup==='function')save._t=setTimeout(()=>autoBackup(false),4000)}
+function save(){save._n=(save._n||0)+1;if(typeof enqueue==='function'&&BOOTED&&!save._q)enqueue('p:'+cur,PLBL[cur]||'إعدادات المنظومة','إعدادات');save._q=0;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){stFull()}clearTimeout(save._t);if(typeof autoBackup==='function')save._t=setTimeout(()=>autoBackup(false),4000)}
 const TPL=()=>{const t=S.tpl||(S.tpl=JSON.parse(JSON.stringify(TPL_DEFAULT)));for(const k in TPL_DEFAULT)if(!t[k])t[k]=JSON.parse(JSON.stringify(TPL_DEFAULT[k]));return t};
 const ROLES=['المطوّر','الأدمن','مهندس منظومة','قسم الدراسات','قسم التراخيص','مهندس التفتيش','الإدارة','مهندس المتغيرات','وكيل الإدارة'];
 const PERMS=['إضافة طلب','قبول/رفض المستندات','تسجيل نتيجة المطابقة','الإرسال للمعاينة','تسجيل تقرير المعاينة','إنهاء الطلب والتسليم','إرسال واتساب','التقارير','إدارة المستخدمين والأجهزة','تعديل بيانات الطلبات','عرض البيانات الشخصية (الرقم القومي والهاتف)'];
@@ -1931,15 +1931,20 @@ function ioBar(kind){const canImp=kind==='req'?can(0):kind==='well'?canAddWell()
 const BKEY='wells-snaps-v1';
 const BF={login:'عند كل تسجيل دخول',daily:'يومياً',weekly:'أسبوعياً',off:'متوقف'};
 const bk=()=>S.bk||(S.bk={freq:'daily',keep:7,last:0,drive:0});
-function snaps(){try{return JSON.parse(localStorage.getItem(BKEY)||'[]')}catch(_){return []}}
-function setSnaps(a){try{localStorage.setItem(BKEY,JSON.stringify(a));return true}catch(_){toast('مساحة التخزين المحلي ممتلئة. احفظ النسخ كملفات.');return false}}
+/* النسخ الاحتياطية على الجهاز تُحفظ في IndexedDB (مساحة كبيرة) بدل localStorage المحدود بـ 5 ميجا */
+let SNAPS=null;const sdb=()=>new Promise((res,rej)=>{try{const q=indexedDB.open('wl-snaps',1);q.onupgradeneeded=()=>q.result.createObjectStore('k');q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}catch(e){rej(e)}});
+const sIdb=async v=>{const db=await sdb();return new Promise((res,rej)=>{const t=db.transaction('k',v===undefined?'readonly':'readwrite');const st=t.objectStore('k');const q=v===undefined?st.get('snaps'):st.put(v,'snaps');q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})};
+const SNAPP=(async()=>{let a=null;try{a=await sIdb()}catch(_){}let ls=null;try{ls=JSON.parse(localStorage.getItem(BKEY)||'null')}catch(_){}
+ if(ls&&ls.length){a=[...(a||[]),...ls].sort((x,y)=>y.at-x.at).filter((x,i,arr)=>arr.findIndex(z=>z.at===x.at)===i);try{await sIdb(a);localStorage.removeItem(BKEY)}catch(_){}}SNAPS=a||[];return SNAPS})();
+function snaps(){return SNAPS||[]}
+function setSnaps(a){SNAPS=a;sIdb(a).catch(()=>{try{localStorage.setItem(BKEY,JSON.stringify(a.slice(0,1)))}catch(_){toast('تعذر حفظ النسخة الاحتياطية على الجهاز · احفظها كملف')}});return true}
 function bkPayload(){const o={};['mods','added','tpl','users','perm','outbox','cities','rep','wadd','wmod','kw','kwx','ch','accInit','v','bk'].forEach(k=>{if(S[k]!==undefined)o[k]=S[k]});return o}
 async function bkEncrypt(obj){const k=await crypto.subtle.importKey('raw',KRAW,'AES-GCM',false,['encrypt']);const iv=crypto.getRandomValues(new Uint8Array(12));const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(JSON.stringify(obj))));return {iv:ub64(iv),ct:ub64(ct)}}
 async function bkDecrypt(e){const k=await crypto.subtle.importKey('raw',KRAW,'AES-GCM',false,['decrypt']);const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(e.iv)},k,b64(e.ct));return JSON.parse(new TextDecoder().decode(pt))}
 const bkCounts=()=>({req:R.length,wells:WB.length,users:S.users.length,changes:Object.keys(S.mods||{}).length+(S.added||[]).length+(S.wadd||[]).length+Object.keys(S.wmod||{}).length});
 async function makeSnap(kind){if(!KRAW)return null;const e=await bkEncrypt(bkPayload());const s_={at:Date.now(),by:me().n,kind,counts:bkCounts(),size:e.ct.length,iv:e.iv,ct:e.ct};const a=snaps();a.unshift(s_);const B=bk();while(a.length>B.keep)a.pop();if(setSnaps(a)){B.last=s_.at;saveRaw()}return s_}
 function bkDue(){const B=bk();if(B.freq==='off')return false;const age=Date.now()-(B.last||0);return B.freq==='login'?true:B.freq==='daily'?age>864e5:age>7*864e5}
-async function autoBackup(fromLogin){try{if(!KRAW||!can(8)&&!isDev())return;if(bk().freq==='login'&&!fromLogin)return;if(bkDue()){await makeSnap('تلقائي');if(cur==='backup')rerender()}}catch(_){}}
+async function autoBackup(fromLogin){try{await SNAPP;if(!KRAW||!can(8)&&!isDev())return;if(bk().freq==='login'&&!fromLogin)return;if(bkDue()){await makeSnap('تلقائي');if(cur==='backup')rerender()}}catch(_){}}
 async function bkFile(s_){const file={app:'wells-kharga',title:'نسخة احتياطية - منظومة تراخيص الآبار بالخارجة',v:1,at:new Date(s_.at).toISOString(),by:s_.by,counts:s_.counts,iv:s_.iv,ct:s_.ct};const d=new Date(s_.at);const name='نسخة احتياطية تراخيص الآبار '+d.toISOString().slice(0,10)+' '+String(d.getHours()).padStart(2,'0')+'-'+String(d.getMinutes()).padStart(2,'0')+'.json';return saveFile(name,JSON.stringify(file))}
 async function bkRestore(obj){const data=await bkDecrypt(obj);Object.keys(data).forEach(k=>S[k]=data[k]);save();toast('تمت الاستعادة · جارٍ إعادة التحميل');setTimeout(()=>location.reload(),900)}
 const fT=ts=>new Date(ts).toLocaleString('ar-EG-u-nu-latn',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});
@@ -2668,7 +2673,8 @@ const DEVP=(async()=>{if(location.protocol==='file:'&&window.__DEVFIX)return DEV
 const DEVT=()=>/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)||innerWidth<700?'mobile':'pc';
 let SIMOFF=false,SCO=false,PAIR=null;
 const isOnline=()=>navigator.onLine!==false&&!SIMOFF;
-function saveRaw(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(_){}}
+function saveRaw(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(_){stFull()}}
+function stFull(){if(stFull._d)return;stFull._d=1;try{const a=snaps();if(a.length)localStorage.removeItem(BKEY)}catch(_){}try{(S.hist||[]).splice(15);localStorage.setItem(KEY,JSON.stringify(S));stFull._d=0;return}catch(_){}setTimeout(()=>toast('⚠ مساحة المتصفح على هذا الجهاز ممتلئة · التعديلات تُرسل للسحابة مباشرة، اتصل بالإنترنت ولا تمسح البيانات قبل المزامنة'),800)}
 function devs(){if(!S.devs){S.devs=[{id:'PC-LIC',n:'كمبيوتر مكتب التراخيص',t:'pc',u:'مهندس منظومة',last:Date.now()-36e5*2,ex:1},{id:'PC-STD',n:'كمبيوتر قسم الدراسات',t:'pc',u:'قسم الدراسات',last:Date.now()-864e5,ex:1},{id:'MB-FLD',n:'هاتف مهندس المعاينة',t:'mobile',u:'مهندس منظومة',last:Date.now()-36e5*5,ex:1}]}
  let me_=S.devs.find(d=>d.id===DEVID);if(!me_){me_={id:DEVID,n:DEVT()==='pc'?'هذا الكمبيوتر':'هذا الهاتف',t:DEVT(),u:'',last:0};S.devs.unshift(me_)}me_.u=me().n;me_.self=1;return S.devs}
 function enqueue(key,label,kind){if(!BOOTED)return;S.q=S.q||[];const i=S.q.findIndex(o=>o.key===key);const prev=i>=0?S.q.splice(i,1)[0]:null;S.q.push({id:DEVID+'-'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),key,label,kind,ts:Date.now(),n:prev?prev.n+1:1,by:me().n})}
@@ -2956,11 +2962,11 @@ const CAM={st:null,ap:null,r:null,slot:null,raf:0,geo:null,wid:null,busy:false,f
 const GEO={wid:null,geo:null,err:'',t0:0,subs:new Map(),sid:0,kt:null,tick:null};
 function geoWatch(){if(!navigator.geolocation||!window.isSecureContext)return;if(GEO.wid!=null)return;GEO.t0=GEO.t0||Date.now();GEO.tw=Date.now();GEO.err='';GEO.dg=GEO.dg||{fix:0,err:[],restarts:0};
  const take=(p,src)=>{const c=p.coords;const g={la:c.latitude,lo:c.longitude,alt:c.altitude!=null?Math.round(c.altitude):'',acc:Math.round(c.accuracy||0),t:Date.now(),src};GEO.dg.fix++;GEO.lastCb=Date.now();const cur=GEO.geo;if(cur&&!cur.old&&g.acc>cur.acc*1.5&&Date.now()-cur.t<15000)return false;GEO.geo=g;return g};
- const push=g=>{GEO.err='';CAM.gerr='';if(!(CAM.geo&&CAM.geo.man))CAM.geo=g;if(g.src!=='old'){try{localStorage.setItem('wl-fix',JSON.stringify(g))}catch(_){}}[...GEO.subs].forEach(([id,o])=>{try{o.cb(g)}catch(_){}if(o.once)GEO.subs.delete(id)});camGpsUpd()};
+ const push=g=>{GEO.err='';GEO.warn='';CAM.gerr='';if(!(CAM.geo&&CAM.geo.man))CAM.geo=g;if(g.src!=='old'){try{localStorage.setItem('wl-fix',JSON.stringify(g))}catch(_){}}[...GEO.subs].forEach(([id,o])=>{try{o.cb(g)}catch(_){}if(o.once)GEO.subs.delete(id)});camGpsUpd()};
  const fail=e=>{if(!e)return;GEO.dg.err.unshift({c:e.code,m:String(e.message||'').slice(0,80),t:Date.now()});GEO.dg.err=GEO.dg.err.slice(0,5);
   if(e.code===1){GEO.err=/policy/i.test(e.message||'')?'الموقع محجوب داخل هذا العرض':'تم رفض إذن الموقع · فعّله من إعدادات المتصفح';CAM.gerr=GEO.err;[...GEO.subs].forEach(([,o])=>{try{o.cb(null,GEO.err)}catch(_){}});geoHalt()}
   else if(e.code===2){GEO.warn='الهاتف لا يرسل موقعاً · تأكد أن «الموقع» مفعّل في إعدادات الهاتف'}camGpsUpd()};
- GEO.oneShot=()=>{try{navigator.geolocation.getCurrentPosition(p=>{const g=take(p,'net');if(g)push(g)},fail,{enableHighAccuracy:false,maximumAge:600000,timeout:15000})}catch(_){}
+ GEO.oneShot=()=>{try{navigator.geolocation.getCurrentPosition(p=>{const g=take(p,'net');if(g)push(g)},e=>{if(!e)return;if(e.code===1)return fail(e);GEO.dg.err.unshift({c:e.code,m:'(موقع الشبكة) '+String(e.message||'').slice(0,70),t:Date.now()});GEO.dg.err=GEO.dg.err.slice(0,5)},{enableHighAccuracy:false,maximumAge:600000,timeout:15000})}catch(_){}
   try{navigator.geolocation.getCurrentPosition(p=>{const g=take(p,'gps');if(g)push(g)},fail,{enableHighAccuracy:true,maximumAge:0,timeout:30000})}catch(_){}};
  try{const fx=JSON.parse(localStorage.getItem('wl-fix')||'null');if(fx&&!GEO.geo&&Date.now()-fx.t<10*60000){GEO.geo=Object.assign({},fx,{old:1,src:'old',acc:Math.max(fx.acc||0,50)})}}catch(_){}
  GEO.oneShot();
@@ -3371,7 +3377,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.02-0251';
+const APP_VER='2026.11.02-0308';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);

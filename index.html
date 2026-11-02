@@ -2954,16 +2954,27 @@ const LIVE_MSG='الكاميرا المباشرة وGPS يحتاجان فتح ا
 const CAM={st:null,ap:null,r:null,slot:null,raf:0,geo:null,wid:null,busy:false,face:'environment'};
 /* GPS: يعمل من قمر الهاتف مباشرة حتى بدون إنترنت أو شبكة · مراقبة مستمرة بلا مهلة + تسخين مسبق */
 const GEO={wid:null,geo:null,err:'',t0:0,subs:new Map(),sid:0,kt:null,tick:null};
-function geoWatch(){if(GEO.wid!=null||!navigator.geolocation||!window.isSecureContext)return;GEO.t0=Date.now();GEO.err='';
- const take=(p,src)=>{const c=p.coords;const g={la:c.latitude,lo:c.longitude,alt:c.altitude!=null?Math.round(c.altitude):'',acc:Math.round(c.accuracy||0),t:Date.now(),src};const cur=GEO.geo;if(cur&&!cur.old&&g.acc>cur.acc&&Date.now()-cur.t<20000)return false;GEO.geo=g;return g};
- try{const fx=JSON.parse(localStorage.getItem('wl-fix')||'null');if(fx&&!GEO.geo&&Date.now()-fx.t<10*60000){GEO.geo=Object.assign({},fx,{old:1,acc:Math.max(fx.acc||0,50)})}}catch(_){}
- try{navigator.geolocation.getCurrentPosition(p=>{const g=take(p,'net');if(!g)return;GEO.err='';CAM.gerr='';if(!(CAM.geo&&CAM.geo.man))CAM.geo=g;[...GEO.subs].forEach(([id,o])=>{try{o.cb(g)}catch(_){}if(o.once)GEO.subs.delete(id)});camGpsUpd()},()=>{},{enableHighAccuracy:false,maximumAge:600000,timeout:20000})}catch(_){}
- try{GEO.wid=navigator.geolocation.watchPosition(p=>{const g=take(p,'gps');if(!g)return;GEO.err='';CAM.gerr='';if(!(CAM.geo&&CAM.geo.man))CAM.geo=g;try{localStorage.setItem('wl-fix',JSON.stringify(g))}catch(_){}
-   [...GEO.subs].forEach(([id,o])=>{try{o.cb(g)}catch(_){}if(o.once)GEO.subs.delete(id)});camGpsUpd()},
-  e=>{if(e&&e.code===1){GEO.err=/policy/i.test(e.message||'')?'الموقع محجوب داخل هذا العرض':'تم رفض إذن الموقع · فعّله من إعدادات المتصفح';CAM.gerr=GEO.err;[...GEO.subs].forEach(([,o])=>{try{o.cb(null,GEO.err)}catch(_){}});geoHalt()}
-   else if(e&&e.code===3){try{navigator.geolocation.clearWatch(GEO.wid)}catch(_){}GEO.wid=null;setTimeout(geoWatch,500)}
-   camGpsUpd()},{enableHighAccuracy:true,maximumAge:0,timeout:180000})}catch(_){GEO.err='تعذر تشغيل GPS'}
- clearInterval(GEO.tick);GEO.tick=setInterval(camGpsUpd,1000)}
+function geoWatch(){if(!navigator.geolocation||!window.isSecureContext)return;if(GEO.wid!=null)return;GEO.t0=GEO.t0||Date.now();GEO.tw=Date.now();GEO.err='';GEO.dg=GEO.dg||{fix:0,err:[],restarts:0};
+ const take=(p,src)=>{const c=p.coords;const g={la:c.latitude,lo:c.longitude,alt:c.altitude!=null?Math.round(c.altitude):'',acc:Math.round(c.accuracy||0),t:Date.now(),src};GEO.dg.fix++;GEO.lastCb=Date.now();const cur=GEO.geo;if(cur&&!cur.old&&g.acc>cur.acc*1.5&&Date.now()-cur.t<15000)return false;GEO.geo=g;return g};
+ const push=g=>{GEO.err='';CAM.gerr='';if(!(CAM.geo&&CAM.geo.man))CAM.geo=g;if(g.src!=='old'){try{localStorage.setItem('wl-fix',JSON.stringify(g))}catch(_){}}[...GEO.subs].forEach(([id,o])=>{try{o.cb(g)}catch(_){}if(o.once)GEO.subs.delete(id)});camGpsUpd()};
+ const fail=e=>{if(!e)return;GEO.dg.err.unshift({c:e.code,m:String(e.message||'').slice(0,80),t:Date.now()});GEO.dg.err=GEO.dg.err.slice(0,5);
+  if(e.code===1){GEO.err=/policy/i.test(e.message||'')?'الموقع محجوب داخل هذا العرض':'تم رفض إذن الموقع · فعّله من إعدادات المتصفح';CAM.gerr=GEO.err;[...GEO.subs].forEach(([,o])=>{try{o.cb(null,GEO.err)}catch(_){}});geoHalt()}
+  else if(e.code===2){GEO.warn='الهاتف لا يرسل موقعاً · تأكد أن «الموقع» مفعّل في إعدادات الهاتف'}camGpsUpd()};
+ GEO.oneShot=()=>{try{navigator.geolocation.getCurrentPosition(p=>{const g=take(p,'net');if(g)push(g)},fail,{enableHighAccuracy:false,maximumAge:600000,timeout:15000})}catch(_){}
+  try{navigator.geolocation.getCurrentPosition(p=>{const g=take(p,'gps');if(g)push(g)},fail,{enableHighAccuracy:true,maximumAge:0,timeout:30000})}catch(_){}};
+ try{const fx=JSON.parse(localStorage.getItem('wl-fix')||'null');if(fx&&!GEO.geo&&Date.now()-fx.t<10*60000){GEO.geo=Object.assign({},fx,{old:1,src:'old',acc:Math.max(fx.acc||0,50)})}}catch(_){}
+ GEO.oneShot();
+ try{GEO.wid=navigator.geolocation.watchPosition(p=>{const g=take(p,'gps');if(g)push(g)},e=>{fail(e);if(e&&e.code===3){try{navigator.geolocation.clearWatch(GEO.wid)}catch(_){}GEO.wid=null;setTimeout(geoWatch,300)}},{enableHighAccuracy:true,maximumAge:0,timeout:60000})}catch(_){GEO.err='تعذر تشغيل GPS'}
+ clearInterval(GEO.tick);GEO.tick=setInterval(()=>{camGpsUpd();
+  /* حارس: لو مفيش أي قراءة خلال 25 ثانية والكاميرا أو النموذج منتظرين → إعادة تشغيل التتبع + طلب مباشر */
+  if(GEO.subs.size&&GEO.wid!=null&&Date.now()-GEO.tw>25000&&(!GEO.lastCb||Date.now()-GEO.lastCb>25000)){GEO.dg.restarts++;try{navigator.geolocation.clearWatch(GEO.wid)}catch(_){}GEO.wid=null;geoWatch()}},1000)}
+function geoDiag(){const d=GEO.dg||{fix:0,err:[],restarts:0};const sec=GEO.t0?Math.round((Date.now()-GEO.t0)/1000):0;
+ (navigator.permissions?navigator.permissions.query({name:'geolocation'}).then(x=>x.state).catch(()=>'?'):Promise.resolve('?')).then(ps=>{
+  const L=[['الإذن',ps==='granted'?'✓ مسموح':ps==='denied'?'✕ مرفوض':ps==='prompt'?'لم يُطلب / في الانتظار':ps],['اتصال آمن (https)',window.isSecureContext?'✓':'✕'],['الإنترنت',navigator.onLine?'✓ متصل':'✕ غير متصل'],['قراءات وصلت من الهاتف',String(d.fix)],['مرات إعادة المحاولة',String(d.restarts)],['المدة',Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0')],['آخر خطأ',d.err[0]?('كود '+d.err[0].c+' · '+(d.err[0].c===1?'رفض الإذن':d.err[0].c===2?'الموقع غير متاح من الهاتف':d.err[0].c===3?'انتهت المهلة':'')+(d.err[0].m?' · '+d.err[0].m:'')):'لا يوجد']];
+  const m=$('#modal');m.hidden=false;m.style.zIndex='200';m.innerHTML=`<div class="mbox" role="dialog"><div class="mhd"><h3>تشخيص تحديد الموقع</h3><button class="ibtn" data-mclose aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="mbd"><div class="kv">${L.map(([k,v])=>`<div><span>${k}</span><b>${esc(v)}</b></div>`).join('')}</div>
+   <div class="note" style="margin-top:10px;line-height:1.9"><b>لو «قراءات وصلت» = 0:</b><br>1) اسحب شريط الإشعارات وتأكد أن <b>الموقع (Location)</b> مفعّل.<br>2) إعدادات الهاتف ← الموقع ← <b>دقة الموقع من Google</b>: تشغيل.<br>3) إعدادات الهاتف ← التطبيقات ← <b>Chrome</b> ← الأذونات ← الموقع: <b>السماح طوال الوقت أو أثناء الاستخدام</b> + <b>الموقع الدقيق</b>.<br>4) داخل المباني قد لا تصل إشارة GPS · جرّب بجوار شباك أو في مكان مفتوح.</div>
+   <div class="filters" style="margin-top:10px"><button class="btn pri" data-geore>إعادة المحاولة الآن</button><button class="btn" data-mclose>إغلاق</button></div></div></div>`;
+  const b=m.querySelector('[data-geore]');if(b)b.onclick=()=>{m.hidden=true;GEO.dg.restarts++;try{if(GEO.wid!=null)navigator.geolocation.clearWatch(GEO.wid)}catch(_){}GEO.wid=null;GEO.t0=Date.now();geoWatch();toast('جارٍ إعادة تحديد الموقع…')}})}
 function geoHalt(){try{if(GEO.wid!=null)navigator.geolocation.clearWatch(GEO.wid)}catch(_){}GEO.wid=null;clearInterval(GEO.tick);GEO.tick=null}
 function geoStart(cb,once){if(!navigator.geolocation||!window.isSecureContext){cb&&cb(null,'هذا العرض لا يسمح بالوصول للموقع');return 0}clearTimeout(GEO.kt);const id=++GEO.sid;if(cb)GEO.subs.set(id,{cb,once});geoWatch();
  if(GEO.geo&&Date.now()-GEO.geo.t<60000){if(!(CAM.geo&&CAM.geo.man))CAM.geo=GEO.geo;try{cb&&cb(GEO.geo)}catch(_){}if(once)GEO.subs.delete(id)}else if(GEO.err){cb&&cb(null,GEO.err)}return id}
@@ -2980,7 +2991,7 @@ function parseLL(t){t=String(t||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'
  const n=(t.match(/-?\d{1,3}\.\d{3,}/g)||[]).map(Number);if(n.length>=2){let [a,b]=n;if(a>b&&a>28&&b<28)[a,b]=[b,a];return {la:a,lo:b}}return null}
 function geoToForm(ap,g,rg=true){if(!g||!ap)return;const s=(id,v)=>{const e=ap.querySelector('#'+id);if(e&&v!==''&&v!=null){e.value=v}};s('ip-la',g.la.toFixed(6));s('ip-lo',g.lo.toFixed(6));if(g.alt!==''&&g.alt!=null)s('ip-alt',g.alt);ap._gps=1;ap._paint&&ap._paint();
  const pl=ap.querySelector('#ip-place');if(pl&&!pl._man&&rg){revGeo(g.la,g.lo).then(a=>{if(a&&!pl._man){pl.value=a;ap._paint&&ap._paint()}})}}
-function camGpsTxt(){const g=CAM.geo;const off=navigator.onLine?'':' · بدون إنترنت';if(g&&!g.man)return g.old?`<i class="gmid"></i>آخر موقع معروف ± ${g.acc} م · جارٍ التحديث من GPS${off}`:g.acc>100?`<i class="gmid"></i>موقع تقريبي ± ${g.acc} م · جارٍ تحسين الدقة من GPS${off}`:g.acc>50?`<i class="gmid"></i>GPS ± ${g.acc} م · جارٍ تحسين الدقة${off}`:`<i class="gok"></i>GPS من الهاتف ± ${g.acc} م${off}`;if(g&&g.man)return `<i class="gman"></i>إحداثيات يدوية <button data-camgeo>تعديل</button>`;if(CAM.gerr)return `<i class="gbad"></i>${CAM.gerr} <button data-camgeo>إدخال يدوي</button>`;const sec=GEO.t0?Math.round((Date.now()-GEO.t0)/1000):0;const mm=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');return `<i class="gwait"></i>جارٍ التقاط إشارة الأقمار الصناعية (GPS) ${mm}${sec>20?' · قف في مكان مكشوف للسماء'+(navigator.onLine?'':' · بدون إنترنت قد يستغرق حتى دقيقتين'):''} <button data-camgeo>يدوي</button>`}
+function camGpsTxt(){const g=CAM.geo;const off=navigator.onLine?'':' · بدون إنترنت';if(g&&!g.man)return g.old?`<i class="gmid"></i>آخر موقع معروف ± ${g.acc} م · جارٍ التحديث من GPS${off}`:g.acc>100?`<i class="gmid"></i>موقع تقريبي ± ${g.acc} م · جارٍ تحسين الدقة من GPS${off}`:g.acc>50?`<i class="gmid"></i>GPS ± ${g.acc} م · جارٍ تحسين الدقة${off}`:`<i class="gok"></i>GPS من الهاتف ± ${g.acc} م${off}`;if(g&&g.man)return `<i class="gman"></i>إحداثيات يدوية <button data-camgeo>تعديل</button>`;if(CAM.gerr)return `<i class="gbad"></i>${CAM.gerr} <button data-camgeo>إدخال يدوي</button>`;const sec=GEO.t0?Math.round((Date.now()-GEO.t0)/1000):0;const mm=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');return `<i class="gwait"></i>جارٍ تحديد الموقع ${mm}${GEO.warn?' · '+GEO.warn:sec>20?' · قف بجوار شباك أو في مكان مفتوح':''} ${sec>15?'<button data-geodiag>تشخيص</button>':''}<button data-camgeo>يدوي</button>`}
 function camGpsUpd(){const e=$('#cam-gps');if(e)e.innerHTML=camGpsTxt()}
 function camMeta(){const ap=CAM.ap,r=CAM.r,m=inspMeta(ap);if(CAM.geo){m.la=CAM.geo.la;m.lo=CAM.geo.lo;if(m.alt==='')m.alt=CAM.geo.alt}return Object.assign(m,{ts:new Date().toISOString(),slot:slotName(r,CAM.slot),owner:r.name,rg:r.city,pre:false})}
 function camHTML(){const r=CAM.r,S_=ISLOTS(r),ap=CAM.ap;return `<div class="camw"><canvas id="cam-cv"></canvas><video id="cam-v" playsinline muted autoplay></video>
@@ -3360,7 +3371,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.01-0537';
+const APP_VER='2026.11.02-0251';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -3923,6 +3934,7 @@ document.addEventListener('click',e=>{
   const t=e.target;let el;
   if(p1Click(t))return;if(p2Click(t))return;if(p3Click(t))return;
   if(el=t.closest('[data-dvset]')){dvSet(el.dataset.dvset);return}
+  if(t.closest('[data-geodiag]')){geoDiag();return}
   if(el=t.closest('[data-wamark]')){const m=S.outbox.find(x=>waId(x)===el.dataset.wamark);if(m){m.st='sent';m.sat=nowT();saveRaw()}const wb=$('#wabar');if(wb&&wb.contains(el))wb.hidden=true;setTimeout(()=>{if(drawerOpen())renderDrawer();if(cur==='whatsapp')rerender()},400);return}
   if(el=t.closest('[data-mg]')){const k=el.dataset.mg;S.mopen=S.mopen||{};S.mopen[k]=!S.mopen[k];saveRaw();menu();return}
   if(vrClick(t))return;if(el=t.closest('[data-drsel]')){DR.sel=+el.dataset.drsel;rerender();setTimeout(()=>{const f=$('.drform')||$('#page .note.bad');if(f)f.scrollIntoView({behavior:'smooth',block:'start'})},60);return}

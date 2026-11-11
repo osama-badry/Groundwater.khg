@@ -999,6 +999,9 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .a4f{margin-top:auto;border-top:0.8pt solid #DDE4E3;padding-top:3px;display:flex;flex-direction:column;align-items:center;font-size:0.627em;color:#6B7A7D;line-height:1.45;text-align:center;font-family:"Cairo",sans-serif}
 @media (max-width:860px){.prwrap{justify-content:flex-start}.prwrap .a4{zoom:.45}}
 [hidden]{display:none!important}
+.ntqr{margin-top:5px}.ntqr button{font-size:11.5px}
+.srnt{border:1.3px solid #B08A2E;border-radius:8px;overflow:hidden;background:#fffdf6}.srnth{background:linear-gradient(90deg,#B08A2E,#C9A64B);color:#fff;font-weight:800;font-size:10pt;padding:3px 10px}.srntb{padding:5px 10px;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:9.6pt;color:#0F1E22;line-height:1.6}.srntb span{position:relative;padding-inline-start:12px;font-weight:600}.srntb span::before{content:"";position:absolute;inset-inline-start:0;top:.62em;width:6px;height:6px;border-radius:50%;background:#0B4A50}.srntb em{color:#8a979a}
+.srrem{border:1.2px solid #0B4A50;border-radius:6px;overflow:hidden;background:#fff}.srremh{background:#0B4A50;color:#fff;font-weight:700;font-size:9.5pt;padding:3px 10px}.srremb{padding:6px 10px;font-size:10pt;line-height:1.75;color:#0F1E22;border-inline-start:4px solid #B08A2E;white-space:normal;overflow-wrap:anywhere}
 
 /* ---- تنسيق احترافي لجداول تقرير الأقمار ---- */
 .a4.satpg .saty{border:1px solid #0B4A50;table-layout:fixed}
@@ -3424,7 +3427,7 @@ function vrReview(rid){const v=vrs()[rid];if(!v||!canVar())return;const s=v.snap
    <div class="fld"><label for="vr-to">حتى: تاريخ تقديم الطلب على المنظومة <span class="req">*</span></label><input class="inp" type="date" id="vr-to" value="${esc(v.to||s.date||'')}"><small class="muted">مسحوب تلقائياً من تاريخ إدخال الطلب (${fD(s.date)}) · قابل للتعديل</small></div>
    <div class="fld span2 vrdur" id="vr-dur">—</div>
    <div class="fld"><label for="vr-area">متوسط مساحة المتغيرات (فدان) <span class="req">*</span></label><input class="inp num" id="vr-area" inputmode="decimal" value="${esc(v.area??'')}" placeholder="مثال: 12.5"></div>
-   <div class="fld"><label for="vr-nt">ملاحظات</label><input class="inp" id="vr-nt" value="${esc(v.nt||'')}" placeholder="اختياري · وإلزامي عند الإنهاء بدون متغيرات"></div>
+   <div class="fld span2"><label for="vr-nt">ملاحظات وأساس الاحتساب <span class="req">*</span></label><textarea class="inp" id="vr-nt" rows="2" placeholder="مثال: تم الاحتساب من تاريخ انتهاء الترخيص حتى تاريخ تقديم الطلب · زراعات نخيل وزيتون">${esc(v.nt||'')}</textarea><div class="qr ntqr">${['من تاريخ بدء الزراعات','من تاريخ انتهاء الترخيص','من تاريخ أول صورة قمر صناعي تُظهر زراعات','حتى تاريخ تقديم الطلب على المنظومة','حتى تاريخ المعاينة','بناءً على المعاينة الميدانية','بناءً على تحليل القمر الصناعي'].map(t=>`<button type="button" data-ntq="vr-nt">${t}</button>`).join('')}</div><small class="muted">إلزامية · تظهر في تقرير الأقمار الصناعية وفي سجل المطالبة المالية</small></div>
    ${satBtn(v.rid,'vr-from','vr-to')}${v.sat?`<div class="fld span2">${satHTML(v.sat,v.rid)}</div>`:''}
   </div>
   <div class="filters" style="margin-top:14px"><button class="btn" data-mclose>إلغاء</button><button class="btn ghost" data-vrnone="${rid}">إنهاء بدون متغيرات</button><button class="btn pri" data-vrsend="${rid}" style="margin-inline-start:auto">تحويل لقسم التراخيص للمطالبة المالية</button></div>`);
@@ -3432,6 +3435,7 @@ function vrReview(rid){const v=vrs()[rid];if(!v||!canVar())return;const s=v.snap
  $('#vr-from').oninput=upd;$('#vr-to').oninput=upd;upd()}
 function vrSend(rid,none){const v=vrs()[rid];if(!v||!canVar())return;const g=id=>($('#'+id)||{}).value?.trim()||'';const nt=g('vr-nt');
  if(none){if(!nt){$('#vr-nt').focus();return toast('اكتب سبب الإنهاء بدون متغيرات في الملاحظات')}v.st='none';v.nt=nt;v.vby=me().n;v.vat=new Date().toISOString();vrLog(v,'إنهاء المراجعة: لا توجد متغيرات · '+nt);vrSave(v,'إنهاء متغيرات');vrClose();toast('✓ تم إنهاء المراجعة بدون متغيرات');rerender();if(drawerOpen())renderDrawer();return}
+ if(!nt){$('#vr-nt').focus();return toast('ملاحظات وأساس الاحتساب إلزامية (مثال: من تاريخ انتهاء الترخيص)')}
  if(SATR[rid]){v.sat=SATR[rid];vrLog(v,`تحليل القمر الصناعي: متوسط ${SATR[rid].avg} فدان · أقصى ${SATR[rid].max} فدان (${SATR[rid].n} شهر)`)}
  const a=g('vr-from'),b=g('vr-to'),ar=parseFloat(g('vr-area').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(',','.'));
  if(!a){$('#vr-from').focus();return toast('تاريخ بدء الزراعات / انتهاء الترخيص إلزامي')}if(!b){$('#vr-to').focus();return toast('تاريخ تقديم الطلب على المنظومة إلزامي')}if(b<a){$('#vr-to').focus();return toast('تاريخ النهاية يجب أن يكون بعد تاريخ البداية')}
@@ -3465,6 +3469,7 @@ function vrSteps(v){const steps=[['var','قسم المتغيرات'],['claim','�
 function vrCard(r){const v=vrs()[r.id];if(v)return `<div class="card vrcard"><h3>المتغيرات المكانية والمطالبة المالية ${vrStPill(v)}<button class="btn sm ghost" data-vrinfo="${r.id}" style="margin-inline-start:auto">السجل</button></h3>${vrSteps(v)}${v.from?`<div class="kv"><div><span>فترة المتغيرات</span><b>${fD(v.from)} ← ${fD(v.to)}</b></div><div><span>متوسط المساحة</span><b class="num">${vrFed(v.area)}</b></div>${v.amt?`<div><span>المطالبة <bdi dir="ltr">${esc(v.cno||'')}</bdi></span><b class="num">${vrMoney(v.amt)}</b></div>`:''}</div>`:''}${v.rcpt?`<div style="margin-top:8px">${rcBtns(v)}</div>`:''}${canVrBack(v)?`<div style="margin-top:8px"><button class="btn sm ghost" data-vrback="${r.id}">↩ إعادة لقسم المتغيرات لإعادة الاحتساب</button></div>`:''}<div class="muted" style="font-size:12px;margin-top:6px">مسار موازٍ لا يوقف إجراءات الطلب في منظومة التراخيص · يلزم السداد قبل عرض الملف على اللجنة العليا.</div></div>`;
  if(r.stage>=2&&r.status!=='rejected'&&canSendVar())return `<div class="card vrcard"><h3>المتغيرات المكانية</h3><div class="filters"><span class="muted" style="font-size:13px">لم تُرسل نسخة من هذا الطلب لقسم المتغيرات.</span><button class="btn sm pri" data-vrnew="${r.id}" style="margin-inline-start:auto">إرسال نسخة لقسم المتغيرات</button></div></div>`;return ''}
 function vrClick(t){let el;
+ if(el=t.closest('[data-ntq]')){const ta=$('#'+el.dataset.ntq);if(ta){const L=ta.value.split(/\s*·\s*/).map(x=>x.trim()).filter(Boolean);if(!L.includes(el.textContent))L.push(el.textContent);ta.value=L.join(' · ');ta.focus()}return true}
  if(el=t.closest('[data-vrback]')){vrBackModal(el.dataset.vrback);return true}
  if(el=t.closest('[data-vrbackok]')){vrBackOk(el.dataset.vrbackok);return true}
  if(satClick(t))return true;
@@ -3486,7 +3491,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.12-0035';
+const APP_VER='2026.11.12-0043';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -3921,7 +3926,7 @@ function vrAsk(r,ap){const v=vrs()[r.id],s=vrSnap(r);const done=v&&v.st!=='var';
    <div class="fld"><label for="vq-to">حتى: تاريخ تقديم الطلب <span class="req">*</span></label><input class="inp" type="date" id="vq-to" value="${esc(v&&v.to||s.date||'')}"><small class="muted">تاريخ إدخال الطلب (${fD(s.date)}) · قابل للتعديل</small></div>
    <div class="fld span2 vrdur" id="vq-dur">—</div>
    <div class="fld"><label for="vq-area">متوسط مساحة المتغيرات (فدان) <span class="req">*</span></label><input class="inp num" id="vq-area" inputmode="decimal" value="${esc(v&&v.area!=null?v.area:'')}" placeholder="${fed?'مساحة الأرض من الملف: '+fed.toFixed(2):'مثال: 12.5'}"></div>
-   <div class="fld"><label for="vq-nt">ملاحظات</label><input class="inp" id="vq-nt" value="${esc(v&&v.nt||'')}" placeholder="اختياري · مثال: زراعات قمح وبرسيم"></div>
+   <div class="fld span2"><label for="vq-nt">ملاحظات وأساس الاحتساب <span class="req">*</span></label><textarea class="inp" id="vq-nt" rows="2" placeholder="مثال: تم الاحتساب من تاريخ بدء الزراعات حتى تاريخ تقديم الطلب">${esc(v&&v.nt||'')}</textarea><div class="qr ntqr">${['من تاريخ بدء الزراعات','من تاريخ انتهاء الترخيص','من تاريخ أول صورة قمر صناعي تُظهر زراعات','حتى تاريخ تقديم الطلب على المنظومة','حتى تاريخ المعاينة','بناءً على المعاينة الميدانية','بناءً على تحليل القمر الصناعي'].map(t=>`<button type="button" data-ntq="vq-nt">${t}</button>`).join('')}</div></div>
    ${satBtn(r.id,'vq-from','vq-to')}
   </div><div class="note" style="margin:10px 0 0">البيانات تُرسل لقسم المتغيرات كبيانات أولية للمراجعة والتحويل للمطالبة المالية · مسار موازٍ لا يوقف الطلب.</div></div>
   <div id="vq-no" hidden><div class="fld" style="margin-top:12px"><label for="vq-nnt">ملاحظات (اختياري)</label><input class="inp" id="vq-nnt" placeholder="مثال: أرض بور · لا توجد زراعات"></div></div>
@@ -3936,7 +3941,7 @@ function vrAsk(r,ap){const v=vrs()[r.id],s=vrSnap(r);const done=v&&v.st!=='var';
   else if(ch==='no')d={has:'no',nt:g('vq-nnt')};
   else if(ch==='yes'){const a=g('vq-from'),b=g('vq-to'),ar=parseFloat(g('vq-area').replace(/[٠-٩]/g,x=>'٠١٢٣٤٥٦٧٨٩'.indexOf(x)).replace(',','.'));
    if(!a){$('#vq-from').focus();return toast('تاريخ بدء الزراعات / انتهاء الترخيص إلزامي')}if(!b){$('#vq-to').focus();return toast('تاريخ تقديم الطلب إلزامي')}if(b<a){$('#vq-to').focus();return toast('تاريخ النهاية يجب أن يكون بعد تاريخ البداية')}
-   if(!(ar>0)){$('#vq-area').focus();return toast('متوسط مساحة المتغيرات إلزامي (رقم أكبر من صفر)')}d={has:'yes',from:a,to:b,area:+ar.toFixed(2),nt:g('vq-nt')}}
+   if(!(ar>0)){$('#vq-area').focus();return toast('متوسط مساحة المتغيرات إلزامي (رقم أكبر من صفر)')}if(!g('vq-nt')){$('#vq-nt').focus();return toast('ملاحظات وأساس الاحتساب إلزامية (مثال: من تاريخ بدء الزراعات)')}d={has:'yes',from:a,to:b,area:+ar.toFixed(2),nt:g('vq-nt')}}
   else return;
   vrClose();ap._vrd=d;act('match_ok',r,ap)}}
 /* تطبيق القرار بعد اعتماد المطابقة */
@@ -3989,7 +3994,7 @@ function priorBox(r){const P=priorRecs(r).filter(x=>!DRAFTS(r).some(d=>d.wi!=nul
 function vrWaDocs(r){const n=waNum(r.phone||r.ph);if(!n||!r.cm)return '';const t='السيد/ '+r.name+'\nتحية طيبة وبعد،\nبخصوص طلب ترخيص البئر رقم '+(r.file||r.id)+'، نفيدكم بأن اللجنة العليا طلبت استكمال المستندات التالية:\n'+(r.cm.cond||'')+'\nبرجاء سرعة تقديمها لقسم التراخيص لاستكمال الإجراءات.\nالإدارة العامة للمياه الجوفية بالخارجة';return `<a class="btn sm wa" target="_blank" rel="noopener" href="https://wa.me/${n}?text=${encodeURIComponent(t)}">واتساب للمواطن</a>`}
 
 /* ===== 📡 المساحة المزروعة شهرياً من القمر الصناعي Sentinel-2 (دقة 10 م) ===== */
-const SATR={},SATP={};
+const SATR={},SATP={},SATN={};
 const polyM2=P=>{if(!P||P.length<3)return 0;const la0=P.reduce((a,p)=>a+ +p[0],0)/P.length*Math.PI/180,kx=111320*Math.cos(la0),ky=110540;let s=0;for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length];s+=(+a[1]*kx)*(+b[0]*ky)-(+b[1]*kx)*(+a[0]*ky)}return Math.abs(s/2)};
 const SAT_ERR={no_cdse_secret:'لم يتم ضبط مفاتيح Copernicus على السيرفر بعد',forbidden:'غير مصرح لحسابك باستخدام الأقمار الصناعية',bad_poly:'حدود الأرض غير صالحة',bad_dates:'التواريخ غير صحيحة',too_old:'بيانات Sentinel-2 المنتظمة متاحة من أبريل 2017 فقط',range_too_long:'أقصى فترة 10 سنوات في الطلب الواحد'};
 const satFed=m2=>m2/4200.83;
@@ -4043,7 +4048,7 @@ const satBtn=(rid,fromId,toId)=>`<div class="fld span2"><button type="button" cl
 function satClick(t){let el;
  if(el=t.closest('[data-satgo]')){const[rid,f,to]=el.dataset.satgo.split('|');satRun(rid,($('#'+f)||{}).value,($('#'+to)||{}).value,el.parentNode.querySelector('.satbox'));return true}
  if(el=t.closest('[data-satimg]')){const[rid,i]=el.dataset.satimg.split('|');satImg(rid,i,el);return true}
- if(el=t.closest('[data-satrep]')){vrClose&&vrClose();satReport(el.dataset.satrep);return true}
+ if(el=t.closest('[data-satrep]')){const nt_=$('#vr-nt')||$('#vq-nt');if(nt_)SATN[el.dataset.satrep]=nt_.value.trim();vrClose&&vrClose();satReport(el.dataset.satrep);return true}
  if(el=t.closest('[data-satxl]')){satXlsx(el.dataset.satxl);return true}
  if(el=t.closest('[data-satx]')){const b=el.closest('.satimg');b.hidden=true;b.innerHTML='';return true}
  return false}
@@ -4070,6 +4075,7 @@ function satPaginate(Sx,r,v,wrap,cnt){wrap.innerHTML='';const code='SAT-'+r.id+'
  const put=(html,cls)=>{const d=document.createElement('div');d.className='srblk '+(cls||'');d.innerHTML=html;body.appendChild(d);if(over()&&body.children.length>1){d.remove();body=mk();body.appendChild(d)}return d};
  put(`<div class="srk"><div><span>متوسط المساحة المنزرعة خلال الفترة</span><b>${Sx.avg.toLocaleString('en-US')} فدان</b></div><div><span>أقصى مساحة منزرعة في شهر</span><b>${Sx.max.toLocaleString('en-US')} فدان</b></div>${Sx.avgT!=null?`<div><span>منها أشجار دائمة / محاصيل موسمية</span><b>${Sx.avgT} / ${Sx.avgS} <small style="font-size:.6em">فدان</small></b></div>`:''}<div><span>الفترات الشهرية المحللة</span><b>${Sx.n} / ${M.length}</b></div>${v&&v.from?`<div><span>مدة المتغيرات</span><b>${vrDurT(vrDur(v.from,v.to))}</b></div>`:''}</div>`);
  if(rg)put(`<div class="srk two"><div><span>المتوسط قبل اللائحة التنفيذية «حتى 5/1/2023»</span><b>${rg.pre==null?'—':rg.pre.toLocaleString('en-US')+' فدان'}</b></div><div><span>المتوسط بعد اللائحة التنفيذية «من 6/1/2023»</span><b>${rg.post==null?'—':rg.post.toLocaleString('en-US')+' فدان'}</b></div></div>`);
+ {const nt_=(SATN[r.id]!=null?SATN[r.id]:(v&&v.nt)||'').trim();put(`<div class="srnt"><div class="srnth">📝 ملاحظات وأساس الاحتساب</div><div class="srntb">${nt_?esc(nt_).split(/\s*·\s*|\n+/).filter(Boolean).map(x=>`<span>${x}</span>`).join(''):'<em>لم تُسجل ملاحظات</em>'}</div></div>`)}
  put(`<h4>أولاً · المتوسط السنوي للمساحة المنزرعة</h4>${satYearTbl(Sx)}`);
  const short=x=>x.f==null?'لا صورة':x.i==null?'دون الحد':x.i<0.15?'تربة عارية':'خضرة ضعيفة';
  const lbl=x=>{const[y,mo]=x.m.split('-');const b=`<b class="mn">${SATMN[+mo-1]} ${y}</b>`;const n=x.p==='pre'?'حتى 5/1 · قبل اللائحة':x.p==='post'?'من 6/1 · بعد اللائحة':satFull(x)?'':'من '+ +x.a.slice(8)+' حتى '+ +x.b.slice(8);return n?b+`<span class="mnn">${n}</span>`:b};
@@ -4087,7 +4093,7 @@ function satPaginate(Sx,r,v,wrap,cnt){wrap.innerHTML='';const code='SAT-'+r.id+'
 function satXlsx(rid){const Sx=satGet(rid);const r=findReq(+rid);if(!Sx||!r)return;const nm=('تقرير الأقمار الصناعية - '+r.name+' - '+Sx.from+' إلى '+Sx.to).replace(/[\\/:*?"<>|]/g,'-');const rg=satRegSplit(Sx);
  exportX(nm,[{n:'المتوسط السنوي',rows:[['السنة','بيان الفترة','عدد الشهور','شهور بصور صالحة','متوسط الأشجار الدائمة (فدان)','متوسط المحاصيل الموسمية (فدان)','متوسط المساحة المنزرعة (فدان)','أقصى مساحة (فدان)'],...satYears(Sx).map(o=>[o.y,o.note,o.n,o.ok,o.t??'',o.s??'',o.avg??'',o.ok?o.max:'']),...(rg?[['قبل اللائحة التنفيذية','حتى 5/1/2023','','','','',rg.pre??'',''],['بعد اللائحة التنفيذية','من 6/1/2023','','','','',rg.post??'','']]:[])]},
   {n:'شهري',rows:[['الشهر / الفترة','من','إلى','عدد الأيام','أشجار دائمة (فدان)','محاصيل موسمية (فدان)','إجمالي المساحة المنزرعة (فدان)','النسبة من الأرض %','متوسط مؤشر الخضرة NDVI','درجة الثقة','ملاحظة'],...Sx.months.map(x=>[satMn(x),x.a||'',x.b||'',x.a?satDays(x):'',x.t??'',x.s??'',x.f??'',x.f==null||!Sx.land?'':Math.round(x.f/Sx.land*100),x.i??'',satConf(x),satWhy(x,Sx.thr)])]},
-  {n:'بيانات الطلب',rows:[['البيان','القيمة'],['صاحب الشأن',r.name],['الرقم القومي',r.nf||r.nid||''],['الهاتف',r.ph||r.phone||''],['رقم الطلب',r.id],['رقم الملف',r.file||''],['المنطقة',r.city||''],['نوع الطلب',KL(r.kind)],['الفترة','من '+satD(Sx.from)+' حتى '+satD(Sx.to)],['مساحة الأرض (فدان)',Sx.land],['نوع الزراعة (تحديد تلقائي)',satKind(Sx).t+' · '+satKind(Sx).d],['طريقة الحساب',Sx.mode==='trees'?'حد تكيّفي حسب تربة الأرض + ثبات الخضرة':'حد ثابت'],['حد مؤشر الخضرة NDVI',Sx.thr],['خضرة الصحراء المحيطة',Sx.base??''],['أُعدّ بواسطة',Sx.by],['تاريخ الحساب',Sx.at.slice(0,10)]]}])}
+  {n:'بيانات الطلب',rows:[['البيان','القيمة'],['صاحب الشأن',r.name],['الرقم القومي',r.nf||r.nid||''],['الهاتف',r.ph||r.phone||''],['رقم الطلب',r.id],['رقم الملف',r.file||''],['المنطقة',r.city||''],['نوع الطلب',KL(r.kind)],['الفترة','من '+satD(Sx.from)+' حتى '+satD(Sx.to)],['مساحة الأرض (فدان)',Sx.land],['نوع الزراعة (تحديد تلقائي)',satKind(Sx).t+' · '+satKind(Sx).d],['طريقة الحساب',Sx.mode==='trees'?'حد تكيّفي حسب تربة الأرض + ثبات الخضرة':'حد ثابت'],['حد مؤشر الخضرة NDVI',Sx.thr],['خضرة الصحراء المحيطة',Sx.base??''],['أُعدّ بواسطة',Sx.by],['تاريخ الحساب',Sx.at.slice(0,10)],['ملاحظات',(SATN[rid]!=null?SATN[rid]:((S.vrs||{})[rid]||{}).nt)||'']]}])}
 
 /* ===== إعادة المطالبة المالية خطوة للخلف: إلى قسم المتغيرات لإعادة الاحتساب ===== */
 const canVrBack=v=>v&&(v.st==='claim'||v.st==='pay')&&(canClaim()||canVar());

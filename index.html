@@ -999,6 +999,7 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .a4f{margin-top:auto;border-top:0.8pt solid #DDE4E3;padding-top:3px;display:flex;flex-direction:column;align-items:center;font-size:0.627em;color:#6B7A7D;line-height:1.45;text-align:center;font-family:"Cairo",sans-serif}
 @media (max-width:860px){.prwrap{justify-content:flex-start}.prwrap .a4{zoom:.45}}
 [hidden]{display:none!important}
+.cmpy{display:flex;flex-direction:column;gap:4px}.cmpt td,.cmpt th{text-align:center!important}.cmpt td:first-child{text-align:start!important}.cmpt .cbad{color:var(--bad);font-weight:800}.cmpt tfoot td{font-weight:800;background:color-mix(in srgb,var(--teal) 9%,transparent)}
 .satauto{background:color-mix(in srgb,var(--teal) 10%,var(--surface))!important;border-style:dashed!important}.satah{display:block;color:var(--teal);font-size:12px;margin-top:4px;line-height:1.6}.srntb span.srauto{flex-basis:100%;color:#0B4A50}
 .ntqr{margin-top:5px}.ntqr button{font-size:11.5px}
 .srnt{border:1.3px solid #B08A2E;border-radius:8px;overflow:hidden;background:#fffdf6}.srnth{background:linear-gradient(90deg,#B08A2E,#C9A64B);color:#fff;font-weight:800;font-size:10pt;padding:3px 10px}.srntb{padding:5px 10px;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:9.6pt;color:#0F1E22;line-height:1.6}.srntb span{position:relative;padding-inline-start:12px;font-weight:600}.srntb span::before{content:"";position:absolute;inset-inline-start:0;top:.62em;width:6px;height:6px;border-radius:50%;background:#0B4A50}.srntb em{color:#8a979a}
@@ -3493,7 +3494,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.12-1309';
+const APP_VER='2026.11.12-1703';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
@@ -4050,12 +4051,34 @@ function satHTML(S,rid){const mx=Math.max(S.land,...S.months.map(x=>x.f||0))||1;
 async function satImg(rid,i,btn){const Sx=satGet(rid),x=Sx&&Sx.months[+i];const poly=satPoly(rid);if(!x||!poly)return;const box=btn.closest('.sat').querySelector('.satimg');box.hidden=false;box.innerHTML='<div class="satld"><i></i>جارٍ تحميل صورة '+satMn(x)+'…</div>';
  const a=x.a||x.m+'-01',b=x.b||x.m+'-28';
  try{const res=await (window.__satFetch||clFetch)('/functions/v1/sat-ndvi',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({poly,from:a,to:b,img:x.m,v:2}),timeout:90000});if(!res.ok)throw 0;const u=URL.createObjectURL(await res.blob());box.innerHTML=`<div class="satih"><b>صورة ${satMn(x)}</b><small>الأخضر = زراعات فعلية</small><button type="button" class="lnk" data-satx>إغلاق</button></div><img alt="صورة القمر الصناعي" src="${u}">`}catch(_){box.innerHTML='<div class="note bad" style="margin:0">تعذر تحميل الصورة</div>'}}
-const satBtn=(rid,fromId,toId)=>`<div class="fld span2"><button type="button" class="btn sat-go" data-satgo="${rid}|${fromId}|${toId}">📡 احسب المساحة المزروعة شهرياً من القمر الصناعي</button><div class="satbox" hidden></div></div>`;
+const satBtn=(rid,fromId,toId)=>`<div class="fld span2"><button type="button" class="btn sat-go" data-satgo="${rid}|${fromId}|${toId}">📡 احسب المساحة المزروعة شهرياً من القمر الصناعي</button>${me().r===0?`<button type="button" class="btn sm ghost" data-satcmp="${rid}" style="margin-top:6px">🧪 مقارنة مصدري الصور L2A / L1C لسنتي 2016 و 2017 (للمطوّر)</button>`:''}<div class="satbox" hidden></div></div>`;
 /* اختيار «من تاريخ أول صورة قمر صناعي تُظهر زراعات»: تاريخ البدء يُحدد تلقائياً */
 function satAutoUI(){const ta=$('#vr-nt')||$('#vq-nt');const fe=$('#vr-from')||$('#vq-from');if(!ta||!fe)return;const on=ta.value.includes(SAT_AUTO);fe.readOnly=on;fe.classList.toggle('satauto',on);let h=fe.parentNode.querySelector('.satah');
  if(on&&!h){h=document.createElement('small');h.className='satah';fe.parentNode.appendChild(h)}if(h)h.hidden=!on;if(on&&h)h.innerHTML='📡 يُحدد تلقائياً من أول صورة قمر صناعي تُظهر زراعات داخل حدود الأرض · اضغط «احسب المساحة المزروعة من القمر الصناعي»';if(!on)fe.readOnly=false}
 document.addEventListener('input',e=>{if(e.target&&(e.target.id==='vr-nt'||e.target.id==='vq-nt'))satAutoUI()});
+/* ===== 🧪 أداة المطوّر: مقارنة مصدري الصور L2A و L1C لسنتي 2016 و 2017 ===== */
+async function satCmp(rid,box){const poly=satPoly(rid);if(!poly)return satNeedFile(rid,box);box.hidden=false;const SF=window.__satFetch||clFetch;if(!window.__satFetch&&!clActive()){box.innerHTML='<div class="note warn" style="margin:0">تحتاج اتصالاً بالسحابة</div>';return}
+ const A=polyM2(poly),runs=[['l2a','2016-01-01','2016-12-31'],['l1c','2016-01-01','2016-12-31'],['l2a','2017-01-01','2017-12-31'],['l1c','2017-01-01','2017-12-31']],R_={};
+ for(const [c,a,b] of runs){box.innerHTML=`<div class="satld"><i></i>🧪 جارٍ التحليل: ${c.toUpperCase()} · ${a.slice(0,4)} (${Object.keys(R_).length+1} من 4)… قد يستغرق عدة دقائق</div>`;
+  try{const res=await SF('/functions/v1/sat-ndvi',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({poly,from:a,to:b,v:3,mode:'auto',coll:c}),timeout:240000});const j=await res.json().catch(()=>({}));
+   if(!res.ok||!j.ok)throw new Error(j.error||('http_'+res.status));if(c==='l1c'&&j.coll!=='l1c')throw new Error('دالة السيرفر قديمة · حدّث sat-ndvi.ts');
+   R_[c+a.slice(0,4)]={thr:j.thr,base:j.base,meth:j.method,m:j.months.map(x=>({m:x.m,f:x.frac!=null&&x.valid>0.5?+satFed(x.frac*A).toFixed(2):null,t:x.tree!=null?+satFed(x.tree*A).toFixed(2):null,v:+(x.valid||0).toFixed(2),i:x.ndvi!=null?+(+x.ndvi).toFixed(2):null}))}}
+  catch(e){R_[c+a.slice(0,4)]={err:satErr(String(e.message||e))}}}
+ box.innerHTML=satCmpHTML(R_,+satFed(A).toFixed(2))}
+function satCmpHTML(R_,land){const yr=y=>{const a=R_['l2a'+y],b=R_['l1c'+y];const M=(a&&a.m||b&&b.m||[]).map(x=>x.m);const g=(o,m)=>o&&o.m?(o.m.find(x=>x.m===m)||{}):{};
+  const rows=M.map(m=>{const x=g(a,m),z=g(b,m);const d=x.f!=null&&z.f!=null?+(z.f-x.f).toFixed(2):null;return {m,a:x.f,b:z.f,d,va:x.v,vb:z.v,ia:x.i,ib:z.i}});
+  const both=rows.filter(r=>r.d!=null),mae=both.length?+(both.reduce((s,r)=>s+Math.abs(r.d),0)/both.length).toFixed(2):null,bias=both.length?+(both.reduce((s,r)=>s+r.d,0)/both.length).toFixed(2):null;
+  const okA=rows.filter(r=>r.a!=null).length,okB=rows.filter(r=>r.b!=null).length,avg=k=>{const L=rows.filter(r=>r[k]!=null);return L.length?+(L.reduce((s,r)=>s+r[k],0)/L.length).toFixed(2):null};
+  const er=o=>o&&o.err?`<small style="color:var(--bad)">${esc(o.err)}</small>`:'';
+  return `<div class="cmpy"><div class="sath">سنة ${y}</div>${er(a)}${er(b)}<table class="saty cmpt"><thead><tr><th>الشهر</th><th>L2A (فدان)</th><th>L1C (فدان)</th><th>الفرق</th><th>صالح L2A</th><th>صالح L1C</th><th>NDVI L2A / L1C</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${satMn(r.m)}</td><td class="num">${r.a??'—'}</td><td class="num">${r.b??'—'}</td><td class="num ${r.d!=null&&Math.abs(r.d)>Math.max(0.3,land*0.1)?'cbad':''}">${r.d==null?'—':(r.d>0?'+':'')+r.d}</td><td class="num">${r.va!=null?Math.round(r.va*100)+'%':'—'}</td><td class="num">${r.vb!=null?Math.round(r.vb*100)+'%':'—'}</td><td class="num">${r.ia??'—'} / ${r.ib??'—'}</td></tr>`).join('')}</tbody>
+   <tfoot><tr class="tot"><td>الملخص</td><td class="num">${avg('a')??'—'}</td><td class="num">${avg('b')??'—'}</td><td class="num">${mae==null?'—':'±'+mae}</td><td class="num">${okA}/${rows.length}</td><td class="num">${okB}/${rows.length}</td><td class="num">انحياز ${bias??'—'}</td></tr></tfoot></table>
+   <small class="muted">الحد: L2A ${a&&a.thr||'—'} (صحراء ${a&&a.base||'—'}) · L1C ${b&&b.thr||'—'} (صحراء ${b&&b.base||'—'}) · الطريقة ${a&&a.meth||'—'}/${b&&b.meth||'—'}</small></div>`};
+ const txt=JSON.stringify({land,R:R_});
+ return `<div class="sat cmp"><div class="sath">🧪 مقارنة مصدري الصور · أداة المطوّر <small>مساحة الأرض ${land} فدان · «الفرق» = L1C − L2A · «الملخص» = المتوسط / متوسط الفرق المطلق / الشهور الصالحة</small></div>${yr('2016')}${yr('2017')}
+  <div class="filters" style="margin:0"><button type="button" class="btn sm" data-cmpcopy>📋 نسخ النتيجة لإرسالها</button></div><textarea class="cmpraw" hidden>${esc(txt)}</textarea></div>`}
 function satClick(t){let el;
+ if(el=t.closest('[data-satcmp]')){satCmp(el.dataset.satcmp,el.parentNode.querySelector('.satbox'));return true}
+ if(el=t.closest('[data-cmpcopy]')){const t_=el.closest('.cmp').querySelector('.cmpraw').value;try{navigator.clipboard.writeText(t_).then(()=>toast('✓ تم النسخ'),()=>saveFile('sat-compare.json',new Blob([t_])))}catch(_){saveFile('sat-compare.json',new Blob([t_]))}return true}
  if(el=t.closest('[data-satgo]')){const[rid,f,to]=el.dataset.satgo.split('|');satRun(rid,($('#'+f)||{}).value,($('#'+to)||{}).value,el.parentNode.querySelector('.satbox'),f);return true}
  if(el=t.closest('[data-satimg]')){const[rid,i]=el.dataset.satimg.split('|');satImg(rid,i,el);return true}
  if(el=t.closest('[data-satrep]')){const nt_=$('#vr-nt')||$('#vq-nt');if(nt_)SATN[el.dataset.satrep]=nt_.value.trim();vrClose&&vrClose();satReport(el.dataset.satrep);return true}

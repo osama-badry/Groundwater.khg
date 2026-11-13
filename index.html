@@ -3532,7 +3532,7 @@ function vrClaimModal(rid){const v=vrs()[rid];if(!v||!canClaim())return;const du
   <div class="vrsum"><div><span>فترة المتغيرات</span><b>${fD(v.from)} ← ${fD(v.to)}</b><small>${vrDurT(du)}</small></div><div><span>متوسط المساحة</span><b>${vrFed(v.area)}</b><small>بواسطة ${esc(v.vby||'')}</small></div><div><span>كود المطالبة</span><b dir="ltr">${esc(v.cno||vrCno(rid))}</b><small>${v.st==='pay'?'صادرة '+fD((v.cat_at||'').slice(0,10)):'يُولَّد تلقائياً'}</small></div></div>
   <div class="form vrform"><div class="fld span2"><label for="vr-ph">رقم واتساب ${vrWho(v.snap.cat)} لإرسال المطالبة <span class="req">*</span></label><input class="inp num" id="vr-ph" dir="ltr" inputmode="tel" maxlength="13" value="${esc(v.snap.ph||'')}" placeholder="01xxxxxxxxx"><small class="muted">إشعار واتساب إلزامي · يُرسل نص المطالبة تلقائياً عند الإنهاء${v.snap.ph?'':' · لا يوجد رقم كامل محفوظ للطلب، اكتبه'}</small></div><div class="fld span2"><label for="vr-cnt">ملاحظات المطالبة</label><input class="inp" id="vr-cnt" value="${esc(v.cnt||'')}" placeholder="اختياري · تظهر في المطالبة المطبوعة"></div><input type="hidden" id="vr-amt" value=""></div>
   <h4 style="margin:14px 0 6px">احتساب المطالبة آلياً ${v.sat?'<small class="muted">من نتائج القمر الصناعي السنوية</small>':'<small class="muted">من متوسط المساحة المعتمد (لا يوجد تحليل قمر صناعي)</small>'}</h4>${clmForm(v,findReq(rid))}
-  <div class="filters" style="margin-top:14px"><button class="btn" data-mclose>إلغاء</button><button class="btn ghost" data-clmprev="${rid}">🖨 معاينة المطالبة</button><button class="btn pri" data-vrclaimok="${rid}" style="margin-inline-start:auto">${v.st==='pay'?'حفظ القيمة وإرسال الإشعار المعدّل':'إنهاء المطالبة وإرسال إشعار واتساب'}</button></div>`);clmLive(rid)}
+  <div class="filters" style="margin-top:14px"><button class="btn" data-mclose>إلغاء</button><button type="button" class="btn ghost" data-clmprev="${rid}" onclick="event.stopPropagation();clmPrev(${rid})">🖨 معاينة المطالبة</button><button class="btn pri" data-vrclaimok="${rid}" style="margin-inline-start:auto">${v.st==='pay'?'حفظ القيمة وإرسال الإشعار المعدّل':'إنهاء المطالبة وإرسال إشعار واتساب'}</button></div>`);clmLive(rid)}
 function vrClaimOk(rid){const v=vrs()[rid];if(!v||!canClaim())return;const C=clmRead(v,findReq(rid));if(!(C.q>0)){$('#cl-q').focus();return toast('المقنن المائي إلزامي (رقم أكبر من صفر)')}if(C.rows.some(x=>!(x.ar>=0)||isNaN(x.ar))){return toast('راجع المساحات: كل فترة تحتاج رقم صحيح')}const amt=C.grand;
  if(!(amt>0)){$('#vr-amt').focus();return toast('قيمة المطالبة المالية إلزامية (رقم أكبر من صفر)')}const ph=($('#vr-ph').value||'').replace(/\D/g,'');if(!waNum(ph)){$('#vr-ph').focus();return toast('رقم واتساب صحيح إلزامي لإرسال المطالبة (01xxxxxxxxx)')}const edit=v.st==='pay',old=v.amt;v.snap.ph=ph;
  const mn=C.rows.filter(x=>x.src==='man');Object.assign(v,{st:'pay',amt:+amt.toFixed(2),clm:C,cnt:($('#vr-cnt').value||'').trim(),cno:v.cno||vrCno(rid)});if(mn.length)vrLog(v,'تعديل يدوي لمساحات المطالبة: '+mn.map(x=>clFd(x.a)+'←'+clFd(x.b)+': '+x.ar+' بدلاً من '+x.auto).join(' · '));if(!edit){v.cby=me().n;v.cat_at=new Date().toISOString()}
@@ -3619,6 +3619,10 @@ function clmPage(v,r,C){const s=v.snap||{},fed=s.fed||(()=>{try{return fedOf(r)}
  <div class="csigw"><div class="csig">${['التراخيص','وكيل الإدارة','مدير عام الإدارة العامة للمياه الجوفية'].map(t=>`<div><h5>${t}</h5><div class="ln"></div></div>`).join('')}</div>
  <div class="capv"><b>يُعتمد</b><span>رئيس الإدارة المركزية للمياه الجوفية</span><div class="ln"></div></div></div>
  <div class="clft"><span>منظومة تراخيص الآبار بالخارجة · <b data-lat>${esc(v.cno||vrCno(v.rid))}</b> · تحقق <b data-lat>${C.vc}</b> · صفحة 1 من 1</span><span class="cr">جميع الحقوق محفوظة للمصمم والمطور - م/ أسامه حسن بدري - 01145060007</span></div><div class="cedge b"></div></div>`}
+function clmPrev(id){if(clmPrev._t&&Date.now()-clmPrev._t<700)return;clmPrev._t=Date.now();toast('⟳ جارٍ فتح معاينة المطالبة…');
+ setTimeout(()=>{try{const v=vrs()[id];if(!v)return toast('تعذر العثور على المطالبة');const C=clmRead(v,findReq(id)||{id});const keep=v.clm;v.clm=null;try{clmPrint(id,C)}finally{v.clm=keep}
+  const p=$('#print');if(!p||p.hidden)toast('تعذر فتح المعاينة · أعد المحاولة')}catch(e){console.error(e);toast('تعذر فتح المعاينة: '+(e&&e.message||e))}},30)}
+window.clmPrev=clmPrev;
 function clmPrint(rid,C){const v=vrs()[rid];if(!v)return toast('تعذر العثور على المطالبة');if(!v.from||!v.to)return toast('حدد فترة المخالفة (من / إلى) أولاً');const r=findReq(+rid)||{id:+rid};try{C=C||v.clm||clmCalc(v,r);let p=$('#print');if(!p){p=document.createElement('div');p.id='print';document.body.appendChild(p)}
  p.innerHTML=`<div class="prbar"><b>المطالبة المالية · ${esc(v.snap.name)}</b>${v.clm?'':'<span class="tag" style="background:var(--warn);color:#fff">معاينة قبل الإصدار</span>'}<span style="flex:1"></span><button class="btn pri" data-drprint>طباعة / حفظ PDF</button><button class="btn" data-drclose>إغلاق</button></div><div class="prwrap">${clmPage(v,r,C)}</div>`;
  clmArab(p.querySelector('.clmpg'));
@@ -3655,7 +3659,7 @@ function vrClick(t){let el;
  if(el=t.closest('[data-vrclaim]')){vrClaimModal(+el.dataset.vrclaim);return true}
  if(el=t.closest('[data-vrclaimok]')){vrClaimOk(+el.dataset.vrclaimok);return true}
  if(el=t.closest('[data-clmpr]')){vrClose();clmPrint(+el.dataset.clmpr);return true}
- if(el=t.closest('[data-clmprev]')){const id=+el.dataset.clmprev,v=vrs()[id];if(v){let C;try{C=clmRead(v,findReq(id)||{id})}catch(e){console.error(e);toast('تعذر الاحتساب: '+(e&&e.message||e));return true}const keep=v.clm;v.clm=null;clmPrint(id,C);v.clm=keep}return true}
+ if(el=t.closest('[data-clmprev]')){clmPrev(+el.dataset.clmprev);return true}
  if(el=t.closest('[data-vrpaid]')){vrPaidModal(+el.dataset.vrpaid);return true}
  if(el=t.closest('[data-vrpaidok]')){vrPaidOk(+el.dataset.vrpaidok);return true}
  if(el=t.closest('[data-vrinfo]')){vrInfo(+el.dataset.vrinfo);return true}
@@ -3663,7 +3667,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.13-2225';
+const APP_VER='2026.11.14-0002';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

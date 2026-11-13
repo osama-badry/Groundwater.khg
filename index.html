@@ -1078,13 +1078,13 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .clmpg .sg{min-width:34mm;border-radius:2mm;padding:.8mm 2.6mm;display:flex;flex-direction:column;line-height:1.35;position:relative;overflow:hidden}
 .clmpg .sg.a{background:linear-gradient(135deg,#e9f2f2,#d6e7e8);border:1px solid #b6d0d2}.clmpg .sg.b{background:linear-gradient(135deg,#fbf3dc,#f1e0ae);border:1px solid #e2cf9b}
 .clmpg .sg b{font-size:10.6px;color:var(--t)}.clmpg .sg.b b{color:#6e520f}
-.clmpg .sg span{font-size:12px;font-weight:800;color:#14211f}.clmpg .sg small{font-size:9.2px;color:var(--mu);direction:ltr;text-align:right;unicode-bidi:plaintext}
+.clmpg .sg span{font-size:12px;font-weight:800;color:#14211f}.clmpg .sg small{font-size:9.2px;color:var(--mu)}
 .clmpg .sgt{width:24mm;border-radius:2mm;background:var(--t);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2}
 .clmpg .sgt span{font-size:9.3px;color:#cfe1e2}.clmpg .sgt b{font-size:17px;color:var(--g2);font-weight:900}.clmpg .sgt small{font-size:9px;color:#cfe1e2}
 .clmpg .ctb{width:100%;border-collapse:collapse;table-layout:fixed;font-size:10.8px;background:rgb(255 255 255/.85)}
 .clmpg .ctb th{background:var(--t);color:#fff;font-weight:700;padding:.8mm 1mm;line-height:1.2;border:1px solid #0a3f44;font-size:10px;text-align:center;white-space:normal;letter-spacing:0}
 .clmpg .ctb th small{display:block;font-weight:600;color:var(--g2);font-size:8.4px}
-.clmpg .ctb td{border:1px solid var(--ln);padding:1.05mm 1mm;line-height:1.35;font-size:10.8px;white-space:nowrap;vertical-align:middle;text-align:center;font-variant-numeric:tabular-nums;direction:ltr}
+.clmpg .ctb td{border:1px solid var(--ln);padding:1.05mm 1mm;line-height:1.35;font-size:10.8px;white-space:nowrap;vertical-align:middle;text-align:center;font-variant-numeric:tabular-nums}
 .clmpg .ctb td.cph{direction:rtl;font-size:9.6px;font-weight:700}.clmpg .ctb tr.pr td.cph{color:var(--t2)}.clmpg .ctb tr.po td.cph{color:#7a5b12}
 .clmpg .ctb tr.pr td:first-child{box-shadow:inset -1.2mm 0 0 var(--t2)}.clmpg .ctb tr.po td:first-child{box-shadow:inset -1.2mm 0 0 var(--g)}
 .clmpg .ctb tbody tr:nth-child(even) td{background:#f8fbfb}
@@ -3583,23 +3583,27 @@ function clmWords(v){const L=Math.floor(v+1e-9),p=Math.round((v-L)*100);const c=
  const J=L===1?'جنيه واحد':L===2?'جنيهان':clmTaf(L)+' '+c(L),Q=p===1?'قرش واحد':p===2?'قرشان':clmTaf(p)+' '+pc(p);return 'فقط '+J+(p?' و'+Q:'')+' لا غير'}
 
 /* صفحة المطالبة A4 */
+const clFdP=s=>s?s.split('-').join('/'):'—';/* سنة/شهر/يوم كما في المطالبات الورقية */
+/* تحويل كل الأرقام داخل المطالبة إلى أرقام عربية (٠١٢٣…) مع الفاصلة العشرية العربية */
+function clmArab(root){const D='٠١٢٣٤٥٦٧٨٩';const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement&&n.parentElement.closest('[data-lat]')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});const L=[];while(w.nextNode())L.push(w.currentNode);
+ L.forEach(n=>{const t=n.nodeValue;if(!/[0-9%]/.test(t))return;n.nodeValue=t.replace(/\d[\d,.]*\d|\d/g,m=>m.replace(/\d/g,d=>D[d]).replace(/,/g,'٬').replace(/\./g,'٫')).replace(/%/g,'٪')})}
 function clmPage(v,r,C){const s=v.snap,fed=s.fed||fedOf(r)||(v.sat&&+v.sat.land)||0,A=fed?areaFrom(fed*FED):null,mx=Math.max(...C.rows.map(x=>x.amt))||1;
  const dPre=C.rows.filter(x=>!x.post).reduce((a,x)=>a+x.d,0),dPost=C.rows.filter(x=>x.post).reduce((a,x)=>a+x.d,0),dAll=dPre+dPost||1;
  const firstPost=C.rows.find(x=>x.post),lastPre=[...C.rows].reverse().find(x=>!x.post);
  const info=[['اسم صاحب الشأن',s.name,'w2 chl'],['الرقم القومي',s.nid||r.nf||r.nid||'—','n'],['رقم الهاتف',s.ph||s.phone||'—','n'],
   ['المنطقة / الناحية',s.city||'—'],['رقم الطلب / الملف','م '+v.rid+(s.file?' · '+s.file:''),'n'],['نوع الترخيص',KL(s.kind)],['عدد الآبار',String(C.wells)],
   ['المساحة الكلية',A?`${A.f} ف  ${A.q} ط  ${A.sh} س <small>(${fed.toFixed(3)} فدان)</small>`:'—','w2 raw'],['نظام الري',C.irr],['المقنن المائي',C.q+' م³ / يوم / فدان'],
-  ['بداية فترة المخالفة',clFd(C.from),'n'],['تاريخ طلب الترخيص',clFd(C.to),'n'],['مصدر المساحات المنزرعة',C.sat?C.sat+' · Sentinel-2':'متوسط المساحة المعتمد من قسم المتغيرات','w2 n']];
+  ['بداية فترة المخالفة',clFdP(C.from),'n'],['تاريخ طلب الترخيص',clFdP(C.to),'n'],['مصدر المساحات المنزرعة',C.sat?'<span data-lat>'+C.sat+' · Sentinel-2</span>':'متوسط المساحة المعتمد من قسم المتغيرات','w2 n raw']];
  let i=0,rows='';const sub=(t,x,c)=>`<tr class="sub ${c}"><td colspan="8">${t}</td><td class="amt">${clMoney(x)}</td></tr>`;
- C.rows.forEach((x,k)=>{rows+=`<tr class="${x.post?'po':'pr'}${x.part?' pt':''}"><td>${++i}</td><td>${clFd(x.a)}</td><td>${clFd(x.b)}</td><td class="cph">${x.post?'بعد اللائحة':'قبل اللائحة'}${x.part?'<span class="tg">جزئي</span>':''}</td><td>${x.ar.toFixed(3)}${x.src==='man'?'<sup title="معدّل يدوياً">✎</sup>':''}</td><td>${x.d}</td><td>${clMoney(x.m3)}</td><td>${clMoney(x.rate)}</td><td class="amt"><span class="bar" style="width:${Math.max(4,x.amt/mx*100).toFixed(1)}%"></span><b>${clMoney(x.amt)}</b></td></tr>`;
+ C.rows.forEach((x,k)=>{rows+=`<tr class="${x.post?'po':'pr'}${x.part?' pt':''}"><td>${++i}</td><td>${clFdP(x.a)}</td><td>${clFdP(x.b)}</td><td class="cph">${x.post?'بعد اللائحة':'قبل اللائحة'}${x.part?'<span class="tg">جزئي</span>':''}</td><td>${x.ar.toFixed(3)}${x.src==='man'?'<sup title="معدّل يدوياً">✎</sup>':''}</td><td>${x.d}</td><td>${clMoney(x.m3)}</td><td>${clMoney(x.rate)}</td><td class="amt"><span class="bar" style="width:${Math.max(4,x.amt/mx*100).toFixed(1)}%"></span><b>${clMoney(x.amt)}</b></td></tr>`;
   if(!x.post&&C.rows[k+1]&&C.rows[k+1].post)rows+=sub('إجمالي ما قبل صدور اللائحة التنفيذية',C.pre,'s1')});
  if(C.rows.some(x=>x.post))rows+=sub('إجمالي ما بعد صدور اللائحة التنفيذية',C.post,'s2');else rows+=sub('إجمالي ما قبل صدور اللائحة التنفيذية',C.pre,'s1');
- const seg=(cls,t,rate,a,b,d)=>d?`<div class="sg ${cls}" style="flex:${d}"><b>${t}</b><span>${clMoney(rate)} ج/م³ · ${d.toLocaleString('en-US')} يوم</span><small>${clFd(a)} ← ${clFd(b)}</small></div>`:'';
+ const seg=(cls,t,rate,a,b,d)=>d?`<div class="sg ${cls}" style="flex:${d}"><b>${t}</b><span>${clMoney(rate)} ج/م³ · ${d.toLocaleString('en-US')} يوم</span><small>من ${clFdP(a)} إلى ${clFdP(b)}</small></div>`:'';
  const man=C.rows.some(x=>x.src==='man');const paid=v.st==='paid';
  return `<div class="a4 clmpg${C.rows.length>11?' dense':''}" dir="rtl"><div class="cedge t"></div><img class="cwm" src="${LOGO}" alt="">
- ${paid?`<div class="cstamp"><b>تم السداد</b><span>${clFd(v.pdate)}${v.rno?' · إيصال '+esc(v.rno):''}</span></div>`:''}
+ ${paid?`<div class="cstamp"><b>تم السداد</b><span>${clFdP(v.pdate)}${v.rno?' · إيصال '+esc(v.rno):''}</span></div>`:''}
  <div class="chd"><div class="corg"><b>قطاع المياه الجوفية</b>الإدارة العامة للمياه الجوفية<br>بالخارجة ودرب الأربعين</div><div class="clogo"><img src="${LOGO}" alt=""><span>منظومة تراخيص الآبار بالخارجة</span></div>
-  <div class="cmeta"><div class="k"><span>رقم المطالبة</span><b>${esc(v.cno||vrCno(v.rid))}</b></div><div><span>تاريخ الإصدار</span><b>${clFd((v.cat_at||new Date().toISOString()).slice(0,10))}</b></div><div><span>رقم الطلب</span><b>م ${v.rid}</b></div><div><span>كود التحقق</span><b>${C.vc}</b></div></div></div>
+  <div class="cmeta"><div class="k"><span>رقم المطالبة</span><b data-lat>${esc(v.cno||vrCno(v.rid))}</b></div><div><span>تاريخ الإصدار</span><b>${clFdP((v.cat_at||new Date().toISOString()).slice(0,10))}</b></div><div><span>رقم الطلب</span><b>م ${v.rid}</b></div><div><span>كود التحقق</span><b data-lat>${C.vc}</b></div></div></div>
  <div class="crule"></div>
  <div class="cttl"><h1>مطالبة مالية · سحب مياه بالمخالفة <em>(بدون ترخيص)</em></h1><p>طبقاً لبيان المساحات المنزرعة الوارد بتقرير المتغيرات المكانية</p></div>
  <div class="csec"><span>1</span>بيانات صاحب الشأن والأرض</div>
@@ -3613,9 +3617,10 @@ function clmPage(v,r,C){const s=v.snap,fed=s.fed||fedOf(r)||(v.sat&&+v.sat.land)
  <div class="cwords"><span>المبلغ بالحروف: </span>${clmWords(C.grand)}</div>
  <div class="csigw"><div class="csig">${['التراخيص','وكيل الإدارة','مدير عام الإدارة العامة للمياه الجوفية'].map(t=>`<div><h5>${t}</h5><div class="ln"></div></div>`).join('')}</div>
  <div class="capv"><b>يُعتمد</b><span>رئيس الإدارة المركزية للمياه الجوفية</span><div class="ln"></div></div></div>
- <div class="clft"><span>منظومة تراخيص الآبار بالخارجة · <b>${esc(v.cno||vrCno(v.rid))}</b> · تحقق <b>${C.vc}</b> · صفحة 1 من 1</span><span class="cr">جميع الحقوق محفوظة للمصمم والمطور - م/ أسامه حسن بدري - 01145060007</span></div><div class="cedge b"></div></div>`}
+ <div class="clft"><span>منظومة تراخيص الآبار بالخارجة · <b data-lat>${esc(v.cno||vrCno(v.rid))}</b> · تحقق <b data-lat>${C.vc}</b> · صفحة 1 من 1</span><span class="cr">جميع الحقوق محفوظة للمصمم والمطور - م/ أسامه حسن بدري - 01145060007</span></div><div class="cedge b"></div></div>`}
 function clmPrint(rid,C){const v=vrs()[rid];const r=findReq(+rid);if(!v||!r||!v.from)return;C=C||v.clm||clmCalc(v,r);let p=$('#print');if(!p){p=document.createElement('div');p.id='print';document.body.appendChild(p)}
  p.innerHTML=`<div class="prbar"><b>المطالبة المالية · ${esc(v.snap.name)}</b>${v.clm?'':'<span class="tag" style="background:var(--warn);color:#fff">معاينة قبل الإصدار</span>'}<span style="flex:1"></span><button class="btn pri" data-drprint>طباعة / حفظ PDF</button><button class="btn" data-drclose>إغلاق</button></div><div class="prwrap">${clmPage(v,r,C)}</div>`;
+ clmArab(p.querySelector('.clmpg'));
  p.hidden=false;document.body.classList.add('pon')}
 /* جدول الاحتساب داخل نافذة المطالبة */
 function clmForm(v,r){const C=clmCalc(v,r);return `<div class="clmf" id="clmf"><div class="form vrform"><div class="fld"><label for="cl-q">المقنن المائي (م³ / يوم / فدان) <span class="req">*</span></label><input class="inp num" id="cl-q" inputmode="decimal" value="${C.q}"></div><div class="fld"><label for="cl-irr">نظام الري</label><input class="inp" id="cl-irr" value="${esc(C.irr)}"></div></div>
@@ -3655,7 +3660,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.13-1433';
+const APP_VER='2026.11.13-1445';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);

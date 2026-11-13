@@ -1539,7 +1539,7 @@ function rerender(){DIRTY=null;BGPEND=0;const y=window.scrollY;$('#page').innerH
 let DIRTY=null,BGPEND=0,DPEND=0;
 const isField=el=>!!el&&/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)&&!['checkbox','radio','button','submit','file'].includes((el.type||'').toLowerCase());
 const busyIn=sel=>{const a=document.activeElement,box=$(sel);if(!box||(sel==='#modal'&&box.hidden)||(sel==='#drawer'&&!drawerOpen()))return false;if(box&&isField(a)&&box.contains(a))return true;return !!(DIRTY&&DIRTY.box===sel&&(sel!=='#page'||DIRTY.page===cur)&&Date.now()-DIRTY.t<5*60000)};
-document.addEventListener('input',e=>{const t=e.target;if(!isField(t)&&!(t&&t.tagName==='TEXTAREA'))return;if(t.closest('[data-live]')||/^(drq|drfq|vrq|clq|gsearch|rq|wq|q)$/.test(t.id||''))return;const box=t.closest('#modal')?'#modal':t.closest('#drawer')?'#drawer':t.closest('#page')?'#page':null;if(box)DIRTY={box,page:cur,t:Date.now()}},true);
+['input','change'].forEach(ev=>document.addEventListener(ev,e=>{const t=e.target;if(!isField(t)&&!(t&&t.tagName==='TEXTAREA'))return;if(t.closest('[data-live]')||/^(drq|drfq|vrq|clq|gsearch|rq|wq|q)$/.test(t.id||''))return;const box=t.closest('#modal')?'#modal':t.closest('#drawer')?'#drawer':t.closest('#page')?'#page':null;if(box)DIRTY={box,page:cur,t:Date.now()}},true));
 function bgRender(){if(busyIn('#page')||busyIn('#modal')){BGPEND=1;return}rerender()}
 function bgDrawer(){if(!(drawerOpen()&&openId))return;if(busyIn('#drawer')){DPEND=1;return}renderDrawer()}
 setInterval(()=>{if(BGPEND&&!busyIn('#page')&&!busyIn('#modal'))rerender();if(DPEND&&!busyIn('#drawer')){DPEND=0;if(drawerOpen()&&openId)renderDrawer()}},4000);
@@ -3588,7 +3588,7 @@ const clFdP=s=>s?s.split('-').join('/'):'—';/* سنة/شهر/يوم كما ف�
 /* تحويل كل الأرقام داخل المطالبة إلى أرقام عربية (٠١٢٣…) مع الفاصلة العشرية العربية */
 function clmArab(root){const D='٠١٢٣٤٥٦٧٨٩';const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement&&n.parentElement.closest('[data-lat]')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});const L=[];while(w.nextNode())L.push(w.currentNode);
  L.forEach(n=>{const t=n.nodeValue;if(!/[0-9%]/.test(t))return;n.nodeValue=t.replace(/\d[\d,.]*\d|\d/g,m=>m.replace(/\d/g,d=>D[d]).replace(/,/g,'٬').replace(/\./g,'٫')).replace(/%/g,'٪')})}
-function clmPage(v,r,C){const s=v.snap,fed=s.fed||fedOf(r)||(v.sat&&+v.sat.land)||0,A=fed?areaFrom(fed*FED):null,mx=Math.max(...C.rows.map(x=>x.amt))||1;
+function clmPage(v,r,C){const s=v.snap||{},fed=s.fed||(()=>{try{return fedOf(r)}catch(_){return 0}})()||(v.sat&&+v.sat.land)||0,A=fed?areaFrom(fed*FED):null,mx=Math.max(...C.rows.map(x=>x.amt))||1;
  const dPre=C.rows.filter(x=>!x.post).reduce((a,x)=>a+x.d,0),dPost=C.rows.filter(x=>x.post).reduce((a,x)=>a+x.d,0),dAll=dPre+dPost||1;
  const firstPost=C.rows.find(x=>x.post),lastPre=[...C.rows].reverse().find(x=>!x.post);
  const info=[['اسم صاحب الشأن',s.name,'w2 chl'],['الرقم القومي',s.nid||r.nf||r.nid||'—','n'],['رقم الهاتف',s.ph||s.phone||'—','n'],
@@ -3619,10 +3619,12 @@ function clmPage(v,r,C){const s=v.snap,fed=s.fed||fedOf(r)||(v.sat&&+v.sat.land)
  <div class="csigw"><div class="csig">${['التراخيص','وكيل الإدارة','مدير عام الإدارة العامة للمياه الجوفية'].map(t=>`<div><h5>${t}</h5><div class="ln"></div></div>`).join('')}</div>
  <div class="capv"><b>يُعتمد</b><span>رئيس الإدارة المركزية للمياه الجوفية</span><div class="ln"></div></div></div>
  <div class="clft"><span>منظومة تراخيص الآبار بالخارجة · <b data-lat>${esc(v.cno||vrCno(v.rid))}</b> · تحقق <b data-lat>${C.vc}</b> · صفحة 1 من 1</span><span class="cr">جميع الحقوق محفوظة للمصمم والمطور - م/ أسامه حسن بدري - 01145060007</span></div><div class="cedge b"></div></div>`}
-function clmPrint(rid,C){const v=vrs()[rid];const r=findReq(+rid);if(!v||!r||!v.from)return;C=C||v.clm||clmCalc(v,r);let p=$('#print');if(!p){p=document.createElement('div');p.id='print';document.body.appendChild(p)}
+function clmPrint(rid,C){const v=vrs()[rid];if(!v)return toast('تعذر العثور على المطالبة');if(!v.from||!v.to)return toast('حدد فترة المخالفة (من / إلى) أولاً');const r=findReq(+rid)||{id:+rid};try{C=C||v.clm||clmCalc(v,r);let p=$('#print');if(!p){p=document.createElement('div');p.id='print';document.body.appendChild(p)}
  p.innerHTML=`<div class="prbar"><b>المطالبة المالية · ${esc(v.snap.name)}</b>${v.clm?'':'<span class="tag" style="background:var(--warn);color:#fff">معاينة قبل الإصدار</span>'}<span style="flex:1"></span><button class="btn pri" data-drprint>طباعة / حفظ PDF</button><button class="btn" data-drclose>إغلاق</button></div><div class="prwrap">${clmPage(v,r,C)}</div>`;
  clmArab(p.querySelector('.clmpg'));
- p.hidden=false;document.body.classList.add('pon')}
+
+ p.hidden=false;document.body.classList.add('pon')
+ }catch(e){console.error(e);toast('تعذر عرض المطالبة: '+(e&&e.message||e))}}
 /* جدول الاحتساب داخل نافذة المطالبة */
 function clmForm(v,r){const C=clmCalc(v,r);return `<div class="clmf" id="clmf"><div class="form vrform"><div class="fld"><label for="cl-q">المقنن المائي (م³ / يوم / فدان) <span class="req">*</span></label><input class="inp num" id="cl-q" inputmode="decimal" value="${C.q}"></div><div class="fld"><label for="cl-irr">نظام الري</label><input class="inp" id="cl-irr" value="${esc(C.irr)}"></div></div>
  <div class="tw"><table class="clmt"><thead><tr><th>الفترة</th><th>المرحلة</th><th>المساحة (فدان)</th><th>الأيام</th><th>السعر</th><th>المبلغ</th></tr></thead><tbody>${C.rows.map((x,i)=>`<tr class="${x.post?'po':'pr'}"><td class="num">${clFd(x.a)} ← ${clFd(x.b)}</td><td>${x.post?'بعد اللائحة':'قبل اللائحة'}</td><td><input class="inp num clar" data-i="${i}" data-auto="${clmArea(v,x.a,x.b).ar}" inputmode="decimal" value="${x.ar.toFixed(3)}"><small class="muted">${x.src==='sat'?'من القمر الصناعي':x.src==='man'?'معدّل يدوياً':'متوسط المتغيرات'}</small></td><td class="num">${x.d}</td><td class="num">${clMoney(x.rate)}</td><td class="num"><b data-amt="${i}">${clMoney(x.amt)}</b></td></tr>`).join('')}</tbody></table></div>
@@ -3653,7 +3655,7 @@ function vrClick(t){let el;
  if(el=t.closest('[data-vrclaim]')){vrClaimModal(+el.dataset.vrclaim);return true}
  if(el=t.closest('[data-vrclaimok]')){vrClaimOk(+el.dataset.vrclaimok);return true}
  if(el=t.closest('[data-clmpr]')){vrClose();clmPrint(+el.dataset.clmpr);return true}
- if(el=t.closest('[data-clmprev]')){const id=+el.dataset.clmprev,v=vrs()[id];if(v){const C=clmRead(v,findReq(id));const keep=v.clm;v.clm=null;clmPrint(id,C);v.clm=keep}return true}
+ if(el=t.closest('[data-clmprev]')){const id=+el.dataset.clmprev,v=vrs()[id];if(v){let C;try{C=clmRead(v,findReq(id)||{id})}catch(e){console.error(e);toast('تعذر الاحتساب: '+(e&&e.message||e));return true}const keep=v.clm;v.clm=null;clmPrint(id,C);v.clm=keep}return true}
  if(el=t.closest('[data-vrpaid]')){vrPaidModal(+el.dataset.vrpaid);return true}
  if(el=t.closest('[data-vrpaidok]')){vrPaidOk(+el.dataset.vrpaidok);return true}
  if(el=t.closest('[data-vrinfo]')){vrInfo(+el.dataset.vrinfo);return true}
@@ -3661,7 +3663,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.13-2019';
+const APP_VER='2026.11.13-2225';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */
@@ -3690,9 +3692,10 @@ window.addEventListener('appinstalled',()=>{INSTALL_EVT=null;instUI();toast('✓
 function instUI(){document.querySelectorAll('[data-install]').forEach(b=>b.hidden=IS_APP()||!CAN_SW()||!(INSTALL_EVT||isIOS()))}
 async function doInstall(){if(INSTALL_EVT){INSTALL_EVT.prompt();try{await INSTALL_EVT.userChoice}catch(_){}INSTALL_EVT=null;instUI();return}
  const m=$('#modal');m.hidden=false;m.innerHTML=`<div class="mbox" role="dialog" aria-label="تثبيت التطبيق"><div class="mhd"><h3>تثبيت المنظومة على ${isIOS()?'iPhone':'هذا الجهاز'}</h3><button class="ibtn" data-mclose aria-label="إغلاق"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="mbd">${isIOS()?'<ol class="clean"><li>اضغط زر <b>المشاركة</b> أسفل Safari.</li><li>اختر <b>إضافة إلى الشاشة الرئيسية</b>.</li><li>اضغط <b>إضافة</b>، وستظهر أيقونة المنظومة على الشاشة الرئيسية.</li></ol>':'<ol class="clean"><li>من قائمة المتصفح (⋮ أو ⋯) اختر <b>تثبيت التطبيق</b> أو <b>Install app</b>.</li><li>في Edge على ويندوز: ⋯ ← التطبيقات ← تثبيت هذا الموقع كتطبيق.</li></ol>'}</div></div>`}
-function updBar(){if(!UPD_READY&&(busyIn('#page')||busyIn('#modal')||busyIn('#drawer'))){if(!updBar._w){updBar._w=1;toast('⟳ يوجد تحديث جديد للمنظومة · سيُطبق تلقائياً بعد حفظ ما تكتبه')}clearTimeout(updBar._t);updBar._t=setTimeout(updBar,5000);return}if(UPD_READY)return;UPD_READY=true;try{saveRaw()}catch(_){}let b=$('#updbar');if(!b){b=document.createElement('div');b.id='updbar';b.className='updforce';document.body.appendChild(b)}
+const updBusy=()=>{const m=$('#modal'),p=$('#print');return busyIn('#page')||busyIn('#modal')||busyIn('#drawer')||(m&&!m.hidden)||drawerOpen()||(p&&!p.hidden)||PDF_BUSY};
+function updBar(){if(!UPD_READY&&updBusy()){if(!updBar._w){updBar._w=1;toast('⟳ يوجد تحديث جديد للمنظومة · سيُطبق تلقائياً بعد حفظ ما تكتبه')}clearTimeout(updBar._t);updBar._t=setTimeout(updBar,5000);return}if(UPD_READY)return;UPD_READY=true;try{saveRaw()}catch(_){}let b=$('#updbar');if(!b){b=document.createElement('div');b.id='updbar';b.className='updforce';document.body.appendChild(b)}
  let n=8;const draw=()=>{b.innerHTML=`<div class="updbox"><img src="${LOGO_S}" alt=""><h3>تحديث إلزامي للمنظومة</h3><p>صدر تحديث جديد مهم. سيتم تطبيقه الآن تلقائياً، وكل بياناتك وتعديلاتك غير المتزامنة محفوظة ولن تُفقد.</p><div class="updbar2"><i style="width:${(8-n)/8*100}%"></i></div><button class="btn pri" data-appupd>تحديث الآن${n>0?' ('+n+')':''}</button></div>`};draw();b.hidden=false;
- const t=setInterval(()=>{if(busyIn('#page')||busyIn('#modal')||busyIn('#drawer')){b.hidden=true;return}b.hidden=false;n--;if(n<=0){clearInterval(t);applyUpdate()}else draw()},1000)}
+ const t=setInterval(()=>{if(updBusy()){b.hidden=true;n=8;draw();return}b.hidden=false;n--;if(n<=0){clearInterval(t);applyUpdate()}else draw()},1000)}
 function applyUpdate(){try{saveRaw();localStorage.setItem('wl-upd',APP_VER)}catch(_){}location.reload()}
 async function checkUpdate(manual){if(!SWREG){if(manual)toast(CAN_SW()?'جارٍ تجهيز التحديث التلقائي…':'التحديث التلقائي يعمل في نسخة التطبيق المثبتة');return}
  try{await SWREG.update()}catch(_){}setTimeout(()=>{if(manual&&!UPD_READY)toast('✓ لديك أحدث نسخة من المنظومة ('+APP_VER+')')},2500)}

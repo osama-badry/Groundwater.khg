@@ -997,7 +997,7 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .a4 i{flex:1;border-bottom:1px dotted #59696C;display:inline-block;min-width:25mm;height:1.15em}
 .a4ap{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm;margin-top:6px;text-align:center;font-size:0.9em}.a4ap>div{border:0.8pt solid #D8C690;border-radius:5px;padding:3px 4px 4px;background:rgb(252 248 236/.7);display:flex;flex-direction:column;align-items:center}.a4ap small{font-size:.72em;color:#7A6A3A;line-height:1.2}.a4ap b{font-size:.92em;color:#0F1E22;font-weight:800;margin-top:2px;line-height:1.35}.a4ap span{font-weight:700;color:var(--tl);font-family:"Cairo",sans-serif}.a4ap p{margin:5px 0 0;display:flex;gap:4px;justify-content:center;align-items:flex-end;width:100%;font-size:.82em;color:#55666A}
 .a4f{margin-top:auto;border-top:0.8pt solid #DDE4E3;padding-top:3px;display:flex;flex-direction:column;align-items:center;font-size:0.627em;color:#6B7A7D;line-height:1.45;text-align:center;font-family:"Cairo",sans-serif}
-@media (max-width:860px){.prwrap{justify-content:flex-start}.prwrap .a4{zoom:.45}}
+@media (max-width:860px){.prwrap{justify-content:flex-start}.prwrap .a4{zoom:.45}#print.pdfing .prwrap .a4{zoom:1!important}}
 [hidden]{display:none!important}
 .cmpy{display:flex;flex-direction:column;gap:4px}.cmpt td,.cmpt th{text-align:center!important}.cmpt td:first-child{text-align:start!important}.cmpt .cbad{color:var(--bad);font-weight:800}.cmpt tfoot td{font-weight:800;background:color-mix(in srgb,var(--teal) 9%,transparent)}
 .satauto{background:color-mix(in srgb,var(--teal) 10%,var(--surface))!important;border-style:dashed!important}.satah{display:block;color:var(--teal);font-size:12px;margin-top:4px;line-height:1.6}.srntb span.srauto{flex-basis:100%;color:#0B4A50}
@@ -3661,8 +3661,27 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.13-1611';
+const APP_VER='2026.11.13-2019';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
+
+/* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */
+const PDFLIB={h:'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js',j:'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'};
+const ldJs=src=>new Promise((ok,no)=>{if([...document.scripts].some(s=>s.src===src&&s.dataset.ok))return ok();const s=document.createElement('script');s.src=src;s.onload=()=>{s.dataset.ok=1;ok()};s.onerror=()=>{s.remove();no(new Error('load'))};document.head.appendChild(s)});
+const NEED_PDF=()=>IS_APP()||/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
+let PDF_BUSY=0;
+async function prPdf(btn){if(PDF_BUSY)return;const box=$('#print');const P=box?[...box.querySelectorAll('.a4')]:[];if(!P.length)return;PDF_BUSY=1;const t0=btn.textContent;btn.disabled=true;btn.textContent='جارٍ تجهيز PDF…';box.classList.add('pdfing');
+ try{if(!window.htmlToImage)await ldJs(window.__H2I||PDFLIB.h);if(!(window.jspdf&&window.jspdf.jsPDF))await ldJs(window.__JSPDF||PDFLIB.j);
+  if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+  const doc=new jspdf.jsPDF({unit:'mm',format:'a4',orientation:'portrait',compress:true});
+  for(let i=0;i<P.length;i++){btn.textContent=P.length>1?`جارٍ تجهيز PDF… ${i+1}/${P.length}`:'جارٍ تجهيز PDF…';
+   const url=await htmlToImage.toJpeg(P[i],{quality:.93,pixelRatio:2.4,backgroundColor:'#ffffff',width:794,height:1123,style:{zoom:'1',margin:'0',boxShadow:'none',transform:'none'}});
+   if(i)doc.addPage('a4','portrait');doc.addImage(url,'JPEG',0,0,210,297,undefined,'FAST')}
+  const nm=((box.querySelector('.prbar b')||{}).textContent||'تقرير').replace(/[\\/:*?"<>|]+/g,' ').trim().slice(0,90);
+  const blob=doc.output('blob'),file=new File([blob],nm+'.pdf',{type:'application/pdf'});
+  let shared=false;if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:nm});shared=true}catch(e){if(e&&e.name==='AbortError')shared=true}}
+  if(!shared){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nm+'.pdf';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);toast('تم حفظ الملف PDF في التنزيلات')}
+ }catch(e){console.error(e);toast(e&&e.message==='load'?'تعذر تحميل أداة PDF · تأكد من الاتصال بالإنترنت وأعد المحاولة':'تعذر إنشاء ملف PDF · أعد المحاولة')}
+ finally{box.classList.remove('pdfing');btn.disabled=false;btn.textContent=t0;PDF_BUSY=0}}
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);
 let INSTALL_EVT=null,SWREG=null,UPD_READY=false;
@@ -4561,7 +4580,7 @@ document.addEventListener('click',e=>{
   if(t.closest('[data-drmake]')){drMake();return}
   if(el=t.closest('[data-drshow]')){drShow(el.dataset.drshow);return}
   if(el=t.closest('[data-drvoid]')){drVoid(el.dataset.drvoid,el);return}
-  if(t.closest('[data-drprint]')){window.print();return}
+  {const pb=t.closest('[data-drprint]');if(pb){if(NEED_PDF())prPdf(pb);else window.print();return}}
   if(t.closest('[data-drclose]')){drClose();return}
   if(t.closest('[data-vclose]')){closeVerify();return}
   if(t.closest('[data-vgo]')){const v=($('#vcode').value||'').trim().toUpperCase().replace(/\s/g,''),h=($('#vhash').value||'').trim().toUpperCase();if(!v)return toast('اكتب كود الإقرار');openVerify(v,h||null);return}

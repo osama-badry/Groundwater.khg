@@ -1032,6 +1032,89 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .a4.satpg .saty{font-size:8.8pt}.a4.satpg .saty th,.a4.satpg .saty td{padding:2.5px 5px;line-height:1.45}.a4.satpg .saty.srm th:first-child{width:auto}.a4.satpg .srm th:nth-child(1){width:33%}.a4.satpg .srm th:nth-child(2){width:10%}.a4.satpg .srm th:nth-child(3){width:17%}.a4.satpg .srm th:nth-child(4){width:12%}.a4.satpg .srm th:nth-child(5){width:11%}
 .a4.satpg .srm td small{font-size:7.4pt;color:#55686b}.a4.satpg .srnote{font-size:8pt;line-height:1.6;padding:4px 8px}.a4.satpg .srsig{margin-top:0;font-size:9.5pt}.a4.satpg .srsig p{margin:10px 0 0}
 .a4f.satf{flex-direction:row;justify-content:space-between;gap:8px;flex:none}.a4f.satf .pgno{color:#0B4A50;font-size:1.25em;white-space:nowrap}
+/* المطالبة المالية A4 */
+.a4.clmpg{--t:#0b4a50;--t2:#0e5f66;--g:#b08a2e;--g2:#f3dc9a;--mu:#5d6f73;--ln:#c9d6d7;--bg:#f4f8f8;padding:4mm 10mm 11mm;font-size:10.8px;line-height:1.45;font-weight:600;display:flex;flex-direction:column}
+.clmpg>*{position:relative;z-index:1}
+.clmpg .cedge{position:absolute!important;left:0;right:0;height:1.8mm;background:linear-gradient(90deg,#8a6a1e,#f3dc9a,#b08a2e,#f7e6b0,#8a6a1e)}.clmpg .cedge.t{top:0}.clmpg .cedge.b{display:none}
+.clmpg .cwm{position:absolute!important;left:50%;top:58%;width:112mm;transform:translate(-50%,-50%);opacity:.05;z-index:0!important;pointer-events:none}
+.clmpg .cstamp{position:absolute!important;top:96mm;left:16mm;z-index:6!important;transform:rotate(-14deg);border:3px double #1f7a43;color:#1f7a43;border-radius:3mm;padding:1mm 5mm;text-align:center;background:rgb(255 255 255/.55);line-height:1.3}
+.clmpg .cstamp b{display:block;font-size:22px;font-weight:900}.clmpg .cstamp span{font-size:10px;direction:ltr;unicode-bidi:plaintext}
+.clmpg .chd{display:grid;grid-template-columns:62mm 1fr 58mm;align-items:center;gap:3mm;margin-top:0}
+.clmpg .corg{font-weight:800;font-size:12.5px;line-height:1.55;color:var(--t);border-right:1.2mm solid var(--g);padding-right:2.6mm}.clmpg .corg b{display:block;color:var(--g);font-size:14px}
+.clmpg .clogo{text-align:center;display:flex;flex-direction:column;align-items:center;gap:.6mm}.clmpg .clogo img{width:21mm;height:21mm;object-fit:contain;border-radius:50%;box-shadow:0 0 0 .7mm #fff,0 0 0 1.1mm var(--g)}
+.clmpg .clogo span{font-size:8.6px;color:var(--mu);font-weight:700;letter-spacing:.2px}
+.clmpg .cmeta{justify-self:end;width:58mm;border:1px solid var(--ln);border-radius:2mm;overflow:hidden;font-size:10.6px;box-shadow:0 .6mm 1.6mm rgb(11 74 80/.08)}
+.clmpg .cmeta div{display:flex;justify-content:space-between;padding:.6mm 2.4mm;border-bottom:1px solid var(--ln)}.clmpg .cmeta div:last-child{border:0}
+.clmpg .cmeta span{color:var(--mu)}.clmpg .cmeta b{color:var(--t);direction:ltr;unicode-bidi:plaintext}
+.clmpg .cmeta .k{background:linear-gradient(90deg,var(--t),var(--t2))}.clmpg .cmeta .k span{color:#cfe1e2}.clmpg .cmeta .k b{color:var(--g2);letter-spacing:.3px}
+.clmpg .crule{height:1.6mm;margin:1.4mm 0 1.8mm;border-top:.5mm solid var(--g);border-bottom:.25mm solid var(--g)}
+.clmpg .cttl{text-align:center;color:#fff;border-radius:2mm;padding:.7mm 4mm .9mm;margin:0 14mm;background:linear-gradient(90deg,var(--t),var(--t2),var(--t));position:relative;overflow:hidden}
+.clmpg .cttl:before,.clmpg .cttl:after{content:"";position:absolute;top:50%;width:16mm;height:.4mm;background:linear-gradient(90deg,transparent,var(--g2));}.clmpg .cttl:before{right:4mm}.clmpg .cttl:after{left:4mm;transform:scaleX(-1)}
+.clmpg .csigw{display:grid;grid-template-columns:118mm 1fr;gap:8mm;margin-top:5mm;align-items:start}.clmpg .csig{display:grid;grid-template-columns:30mm 30mm 1fr;gap:3mm}
+.clmpg .csig div{text-align:center;display:flex;flex-direction:column;align-items:center}
+.clmpg .csig h5{font-size:10.4px;color:var(--t);font-weight:800;margin:0;line-height:1.35;min-height:5.5mm;display:flex;align-items:center}
+.clmpg .csig .ln{width:92%;border-bottom:1px dotted #8fa3a6;height:9mm}
+.clmpg .csig small{font-size:8.6px;color:var(--mu);margin-top:.6mm}
+.clmpg .capv{margin-top:5mm;text-align:center;position:relative;padding-top:2mm}
+.clmpg .capv b{display:block;font-size:13px;font-weight:900;color:#7a5b12;letter-spacing:.5px}
+.clmpg .capv span{display:block;font-size:10.8px;font-weight:800;color:var(--t)}
+.clmpg .capv .ln{margin:9mm auto 0;width:80%;border-bottom:1px dotted #8fa3a6}
+.clmpg .capv small{display:block;font-size:8.6px;color:var(--mu);margin-top:.6mm}
+.clmpg .capv:before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:30mm;height:.5mm;background:linear-gradient(90deg,transparent,var(--g),transparent)}
+.clmpg .clft{position:absolute!important;bottom:0;left:0;right:0;height:9mm;display:flex;justify-content:space-between;align-items:center;padding:0 10mm;font-size:8.8px;color:#cfe1e2;background:linear-gradient(90deg,var(--t),var(--t2),var(--t));border-top:.6mm solid var(--g)}
+.clmpg .clft b{color:var(--g2);font-size:inherit}.clmpg .clft .cr{color:var(--g2);font-weight:700}
+.clmpg .cttl h1{font-size:15.5px;font-weight:900;line-height:1.4;margin:0}.clmpg .cttl h1 em{font-style:normal;color:var(--g2)}
+.clmpg .cttl p{font-size:10px;color:#d6e6e7;font-weight:600;margin:0;line-height:1.3}
+.clmpg .csec{display:flex;align-items:center;gap:2mm;margin:3mm 0 1.6mm;font-weight:800;color:var(--t);font-size:12.5px}
+.clmpg .csec span{width:5.2mm;height:5.2mm;border-radius:50%;background:var(--g);color:#fff;display:grid;place-items:center;font-size:10.5px}
+.clmpg .csec:after{content:"";flex:1;border-top:1px solid var(--ln)}
+.clmpg .cinfo{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--ln);border-radius:2mm;overflow:hidden;background:rgb(255 255 255/.8)}
+.clmpg .cinfo div{padding:.6mm 2.2mm;border-left:1px solid var(--ln);border-bottom:1px solid var(--ln);font-size:11px;line-height:1.4;min-height:9mm}
+.clmpg .cinfo div.w2{grid-column:span 2}.clmpg .cinfo span{display:block;color:var(--mu);font-size:9.5px;font-weight:600}.clmpg .cinfo b{font-weight:700;color:#14211f}
+.clmpg .cinfo b small{color:var(--mu);font-size:9.5px}.clmpg .cinfo .n b{unicode-bidi:plaintext}
+.clmpg .cinfo .chl{background:#f7f1e2}.clmpg .cinfo .chl b{color:var(--t);font-size:12px}
+.clmpg .cinfo div:nth-last-child(-n+3){border-bottom:0}
+.clmpg .ctl{display:flex;gap:1.5mm;margin-top:2.4mm;align-items:stretch}
+.clmpg .sg{min-width:34mm;border-radius:2mm;padding:.8mm 2.6mm;display:flex;flex-direction:column;line-height:1.35;position:relative;overflow:hidden}
+.clmpg .sg.a{background:linear-gradient(135deg,#e9f2f2,#d6e7e8);border:1px solid #b6d0d2}.clmpg .sg.b{background:linear-gradient(135deg,#fbf3dc,#f1e0ae);border:1px solid #e2cf9b}
+.clmpg .sg b{font-size:10.6px;color:var(--t)}.clmpg .sg.b b{color:#6e520f}
+.clmpg .sg span{font-size:12px;font-weight:800;color:#14211f}.clmpg .sg small{font-size:9.2px;color:var(--mu);direction:ltr;text-align:right;unicode-bidi:plaintext}
+.clmpg .sgt{width:24mm;border-radius:2mm;background:var(--t);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2}
+.clmpg .sgt span{font-size:9.3px;color:#cfe1e2}.clmpg .sgt b{font-size:17px;color:var(--g2);font-weight:900}.clmpg .sgt small{font-size:9px;color:#cfe1e2}
+.clmpg .ctb{width:100%;border-collapse:collapse;table-layout:fixed;font-size:10.8px;background:rgb(255 255 255/.85)}
+.clmpg .ctb th{background:var(--t);color:#fff;font-weight:700;padding:.8mm 1mm;line-height:1.2;border:1px solid #0a3f44;font-size:10px;text-align:center;white-space:normal;letter-spacing:0}
+.clmpg .ctb th small{display:block;font-weight:600;color:var(--g2);font-size:8.4px}
+.clmpg .ctb td{border:1px solid var(--ln);padding:1.05mm 1mm;line-height:1.35;font-size:10.8px;white-space:nowrap;vertical-align:middle;text-align:center;font-variant-numeric:tabular-nums;direction:ltr}
+.clmpg .ctb td.cph{direction:rtl;font-size:9.6px;font-weight:700}.clmpg .ctb tr.pr td.cph{color:var(--t2)}.clmpg .ctb tr.po td.cph{color:#7a5b12}
+.clmpg .ctb tr.pr td:first-child{box-shadow:inset -1.2mm 0 0 var(--t2)}.clmpg .ctb tr.po td:first-child{box-shadow:inset -1.2mm 0 0 var(--g)}
+.clmpg .ctb tbody tr:nth-child(even) td{background:#f8fbfb}
+.clmpg .ctb tr.pt td{background:repeating-linear-gradient(135deg,#fff,#fff 6px,#fbf6e8 6px,#fbf6e8 12px)!important}
+.clmpg .ctb .tg{display:inline-block;font-size:8px;line-height:1.5;padding:0 1.2mm;border-radius:1mm;background:var(--g);color:#fff;margin-inline-start:1mm}
+.clmpg .ctb sup{color:#b45309;font-size:8px}
+.clmpg .ctb td.amt{position:relative;text-align:left;padding-left:2mm;font-weight:800;color:var(--t)}
+.clmpg .ctb td.amt .bar{position:absolute;right:0;top:20%;bottom:20%;background:linear-gradient(90deg,rgb(14 95 102/.08),rgb(14 95 102/.22));border-radius:1mm 0 0 1mm}
+.clmpg .ctb tr.po td.amt .bar{background:linear-gradient(90deg,rgb(176 138 46/.1),rgb(176 138 46/.32))}
+.clmpg .ctb td.amt b{position:relative}
+.clmpg .ctb tr.sub td{background:#eef4f4!important;font-weight:800;color:var(--t);border-top:1.5px solid var(--t);direction:rtl;text-align:right;padding-right:3mm}
+.clmpg .ctb tr.sub td.amt{direction:ltr;text-align:left;padding-left:2mm}
+.clmpg .ctb tr.s2 td{background:#f7f1e2!important;color:#7a5b12;border-top-color:var(--g)}
+.clmpg .ctot{display:grid;grid-template-columns:1fr 76mm;gap:3mm;margin-top:3mm}
+.clmpg .cbas{border:1px solid var(--ln);border-radius:2mm;padding:1.2mm 2.6mm;font-size:9.6px;line-height:1.5;background:var(--bg)}
+.clmpg .cbas h4{color:var(--t);font-size:11.3px;margin:0 0 .4mm}.clmpg .cbas ul{margin:0;padding-right:4mm}
+.clmpg .cnt{margin-top:.8mm;padding-top:.8mm;border-top:1px dashed var(--ln);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.clmpg .cnt b{color:var(--t)}
+.clmpg .csum{border:1.5px solid var(--t);border-radius:2mm;overflow:hidden;background:#fff}
+.clmpg .csum div{display:flex;justify-content:space-between;padding:.55mm 3mm;font-size:11px;border-bottom:1px solid var(--ln)}
+.clmpg .csum div b{font-variant-numeric:tabular-nums;direction:ltr}.clmpg .csum small{color:var(--mu);font-size:9.3px}
+.clmpg .csum .g{background:linear-gradient(90deg,var(--t),var(--t2));color:#fff;border:0;padding:1.3mm 3mm;align-items:center}
+.clmpg .csum .g span{font-weight:800;font-size:12.5px}.clmpg .csum .g b{font-size:19px;color:var(--g2);font-weight:900}.clmpg .csum .g b small{color:#cfe1e2;font-size:10.5px}
+.clmpg .cwords{margin-top:2.6mm;border:1px dashed var(--g);background:#fffaf0;border-radius:2mm;padding:1.3mm 3mm;font-size:12px;font-weight:800;color:#5c430c;text-align:center}
+.clmpg .cwords span{color:var(--mu);font-weight:600;font-size:10.5px}
+.clmpg.dense .ctb td{padding:.35mm 1mm;font-size:10px}.clmpg .ctb tbody tr{cursor:default}.clmpg .ctb tbody tr:hover td{background:inherit}.clmpg .ctb tr.pr td.cph{color:var(--t2)}.clmpg .ctb tr.po td.cph{color:#7a5b12}.clmpg.dense .cinfo div{min-height:7.6mm}
+/* داخل نافذة المطالبة */
+.clmf .clmt td{vertical-align:middle;padding:5px 10px}.clmf .clmt .inp{width:90px;padding:4px 6px}.clmf .clmt .inp.man{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--surface))}
+.clmf .clmt small{display:block;font-size:11px}.clmf .clmt tr.po td:first-child{box-shadow:inset -3px 0 0 var(--gold)}.clmf .clmt tr.pr td:first-child{box-shadow:inset -3px 0 0 var(--brand,#0b4a50)}
+.clms{margin-top:10px;border:1px solid var(--line);border-radius:12px;overflow:hidden}.clms div{display:flex;justify-content:space-between;padding:6px 12px;border-bottom:1px solid var(--line)}.clms .g{background:var(--brand,#0b4a50);color:#fff;font-size:1.1em}.clms .g b{color:#f3dc9a}.clms p{margin:0;padding:8px 12px;font-weight:700;color:var(--gold);text-align:center}
+
 @media print{.satwrap{display:block!important}.a4.satpg{break-after:page;page-break-after:always;margin:0}.a4.satpg:last-child{break-after:auto;page-break-after:auto}}
 .saty{width:100%;max-width:100%;min-width:0;border-collapse:collapse;font-size:12.5px;table-layout:fixed}.saty th,.saty td{white-space:normal!important;overflow-wrap:anywhere}.saty th:first-child{width:34%}.saty.srm th:first-child{width:30%}.saty th,.saty td{border:1px solid var(--line);padding:5px 8px;text-align:start}.saty th{background:var(--surface2);font-weight:700}.saty tr.tot td{background:color-mix(in srgb,var(--teal) 9%,transparent);font-weight:800}
 .a4.long{height:auto;min-height:297mm;overflow:visible}.satrep{display:flex;flex-direction:column;gap:9px;position:relative;z-index:1;flex:1}.satrep h4{margin:6px 0 0;color:#0B4A50;font-size:12.5pt;border-bottom:2px solid #B08A2E;padding-bottom:3px}
@@ -3410,8 +3493,8 @@ VIEWS.claims=()=>{const L=Object.values(vrs());const by={claim:[],pay:[],paid:[]
  <div class="card"><label class="search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="clq" value="${esc(VRQ.cq)}" placeholder="الاسم، رقم الطلب، كود المطالبة، رقم الإيصال"></label>
  ${list.length?`<div class="tw"><table><thead><tr><th>${CLT==='claim'?'الطلب':'كود المطالبة'}</th><th>المواطن / الشركة</th><th>فترة المتغيرات</th><th>متوسط المساحة</th><th>${CLT==='claim'?'وصل للقسم':'القيمة'}</th><th>${CLT==='paid'?'السداد':CLT==='pay'?'تاريخ المطالبة':'مهندس المتغيرات'}</th><th></th></tr></thead><tbody>${list.map(v=>{const s=v.snap,du=vrDur(v.from,v.to);return `<tr style="cursor:default"><td class="num">${CLT==='claim'?'م '+v.rid:`<bdi dir="ltr"><b>${esc(v.cno||'')}</b></bdi><br><small class="muted">م ${v.rid}</small>`}<br><small class="muted">${esc(s.file||'')}</small></td><td><b>${esc(s.name)}</b><br><small class="muted">${vrWho(s.cat)} · ${esc(s.city)}</small></td><td>${fD(v.from)} ← ${fD(v.to)}<br><small class="muted">${vrDurT(du)}</small></td><td class="num"><b>${vrFed(v.area)}</b></td>
    <td class="num">${CLT==='claim'?fD((v.vat||'').slice(0,10)):'<b>'+vrMoney(v.amt)+'</b>'}</td><td>${CLT==='paid'?`${fD(v.pdate)}${v.rno?'<br><small class="muted">إيصال '+esc(v.rno)+'</small>':''}`:CLT==='pay'?`${fD((v.cat_at||'').slice(0,10))}<br><small class="muted" style="color:${days((v.cat_at||todayISO()).slice(0,10))>30?'var(--bad)':'inherit'}">${days((v.cat_at||todayISO()).slice(0,10))?'منذ '+days((v.cat_at||todayISO()).slice(0,10))+' يوم':'اليوم'}</small>`:esc(v.vby||'')}</td>
-   <td style="display:flex;gap:6px;flex-wrap:wrap">${CLT==='claim'&&canClaim()?`<button class="btn sm pri" data-vrclaim="${v.rid}">إنهاء المطالبة المالية</button>`:''}${CLT==='pay'&&canClaim()?`<button class="btn sm pri" data-vrpaid="${v.rid}">تأكيد السداد</button>${vrWa(v,'claim')}<button class="btn sm ghost" data-vrclaim="${v.rid}">تعديل القيمة</button>`:''}${CLT==='paid'&&canClaim()?vrWa(v,'claim_paid'):''}${canVrBack(v)?`<button class="btn sm ghost" data-vrback="${v.rid}">↩ إعادة للمتغيرات</button>`:''}<button class="btn sm ghost" data-vrinfo="${v.rid}">السجل</button></td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty">لا توجد مطالبات في هذه الخانة.</div>`}</div>
- <div class="note">قيمة المطالبة إلزامية عند الإنهاء · بعد الإنهاء تنتقل المطالبة لقائمة انتظار السداد · يؤكد قسم التراخيص السداد فور دفع القيمة فيظهر إشعار السداد لجميع المستخدمين.</div>`};
+   <td style="display:flex;gap:6px;flex-wrap:wrap">${CLT==='claim'&&canClaim()?`<button class="btn sm pri" data-vrclaim="${v.rid}">إنهاء المطالبة المالية</button>`:''}${CLT==='pay'&&canClaim()?`<button class="btn sm pri" data-vrpaid="${v.rid}">تأكيد السداد</button>${vrWa(v,'claim')}<button class="btn sm ghost" data-vrclaim="${v.rid}">تعديل القيمة</button>`:''}${CLT==='paid'&&canClaim()?vrWa(v,'claim_paid'):''}${canVrBack(v)?`<button class="btn sm ghost" data-vrback="${v.rid}">↩ إعادة للمتغيرات</button>`:''}${v.clm&&CLT!=='claim'?`<button class="btn sm ghost" data-clmpr="${v.rid}">🖨 المطالبة</button>`:''}<button class="btn sm ghost" data-vrinfo="${v.rid}">السجل</button></td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty">لا توجد مطالبات في هذه الخانة.</div>`}</div>
+ <div class="note">قيمة المطالبة تُحسب آلياً من المساحات السنوية للقمر الصناعي (المقنن × المساحة × الأيام × السعر) مع رسوم الانتقال والرسوم الإدارية والدمغة · بعد الإنهاء تنتقل المطالبة لقائمة انتظار السداد · يؤكد قسم التراخيص السداد فور دفع القيمة فيظهر إشعار السداد لجميع المستخدمين.</div>`};
 AFTER.claims=()=>{const q=$('#clq');if(q)q.oninput=()=>{VRQ.cq=q.value;const p_=q.selectionStart;rerender();const n=$('#clq');n.focus();n.setSelectionRange(p_,p_)}};
 const vrR=v=>({id:v.rid,name:v.snap.name,file:v.snap.file,phone:v.snap.phone,ph:v.snap.ph});
 const vrVals=v=>({'كود_المطالبة':v.cno||'','القيمة':vrMoney(v.amt),'من':fD(v.from),'حتى':fD(v.to),'المدة':vrDurT(vrDur(v.from,v.to)).replace(/ \(.*\)$/,''),'المساحة':vrFed(v.area),'تاريخ_السداد':fD(v.pdate),'رقم_الإيصال':v.rno?' بموجب الإيصال رقم '+v.rno:''});
@@ -3447,11 +3530,12 @@ function vrSend(rid,none){const v=vrs()[rid];if(!v||!canVar())return;const g=id=
 function vrClaimModal(rid){const v=vrs()[rid];if(!v||!canClaim())return;const du=vrDur(v.from,v.to);
  vrModal(v.st==='pay'?'تعديل قيمة المطالبة المالية':'إنهاء المطالبة المالية',`${vrHead(v)}
   <div class="vrsum"><div><span>فترة المتغيرات</span><b>${fD(v.from)} ← ${fD(v.to)}</b><small>${vrDurT(du)}</small></div><div><span>متوسط المساحة</span><b>${vrFed(v.area)}</b><small>بواسطة ${esc(v.vby||'')}</small></div><div><span>كود المطالبة</span><b dir="ltr">${esc(v.cno||vrCno(rid))}</b><small>${v.st==='pay'?'صادرة '+fD((v.cat_at||'').slice(0,10)):'يُولَّد تلقائياً'}</small></div></div>
-  <div class="form vrform"><div class="fld span2"><label for="vr-ph">رقم واتساب ${vrWho(v.snap.cat)} لإرسال المطالبة <span class="req">*</span></label><input class="inp num" id="vr-ph" dir="ltr" inputmode="tel" maxlength="13" value="${esc(v.snap.ph||'')}" placeholder="01xxxxxxxxx"><small class="muted">إشعار واتساب إلزامي · يُرسل نص المطالبة تلقائياً عند الإنهاء${v.snap.ph?'':' · لا يوجد رقم كامل محفوظ للطلب، اكتبه'}</small></div><div class="fld"><label for="vr-amt">قيمة المطالبة المالية (جنيه) <span class="req">*</span></label><input class="inp num vramt" id="vr-amt" inputmode="decimal" value="${esc(v.amt??'')}" placeholder="0.00"></div><div class="fld"><label for="vr-cnt">ملاحظات المطالبة</label><input class="inp" id="vr-cnt" value="${esc(v.cnt||'')}" placeholder="اختياري"></div></div>
-  <div class="filters" style="margin-top:14px"><button class="btn" data-mclose>إلغاء</button><button class="btn pri" data-vrclaimok="${rid}" style="margin-inline-start:auto">${v.st==='pay'?'حفظ القيمة وإرسال الإشعار المعدّل':'إنهاء المطالبة وإرسال إشعار واتساب'}</button></div>`);setTimeout(()=>{const e=$('#vr-amt');if(e)e.focus()},50)}
-function vrClaimOk(rid){const v=vrs()[rid];if(!v||!canClaim())return;const raw=($('#vr-amt').value||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[,\s]/g,'');const amt=parseFloat(raw);
+  <div class="form vrform"><div class="fld span2"><label for="vr-ph">رقم واتساب ${vrWho(v.snap.cat)} لإرسال المطالبة <span class="req">*</span></label><input class="inp num" id="vr-ph" dir="ltr" inputmode="tel" maxlength="13" value="${esc(v.snap.ph||'')}" placeholder="01xxxxxxxxx"><small class="muted">إشعار واتساب إلزامي · يُرسل نص المطالبة تلقائياً عند الإنهاء${v.snap.ph?'':' · لا يوجد رقم كامل محفوظ للطلب، اكتبه'}</small></div><div class="fld span2"><label for="vr-cnt">ملاحظات المطالبة</label><input class="inp" id="vr-cnt" value="${esc(v.cnt||'')}" placeholder="اختياري · تظهر في المطالبة المطبوعة"></div><input type="hidden" id="vr-amt" value=""></div>
+  <h4 style="margin:14px 0 6px">احتساب المطالبة آلياً ${v.sat?'<small class="muted">من نتائج القمر الصناعي السنوية</small>':'<small class="muted">من متوسط المساحة المعتمد (لا يوجد تحليل قمر صناعي)</small>'}</h4>${clmForm(v,findReq(rid))}
+  <div class="filters" style="margin-top:14px"><button class="btn" data-mclose>إلغاء</button><button class="btn ghost" data-clmprev="${rid}">🖨 معاينة المطالبة</button><button class="btn pri" data-vrclaimok="${rid}" style="margin-inline-start:auto">${v.st==='pay'?'حفظ القيمة وإرسال الإشعار المعدّل':'إنهاء المطالبة وإرسال إشعار واتساب'}</button></div>`);clmLive(rid)}
+function vrClaimOk(rid){const v=vrs()[rid];if(!v||!canClaim())return;const C=clmRead(v,findReq(rid));if(!(C.q>0)){$('#cl-q').focus();return toast('المقنن المائي إلزامي (رقم أكبر من صفر)')}if(C.rows.some(x=>!(x.ar>=0)||isNaN(x.ar))){return toast('راجع المساحات: كل فترة تحتاج رقم صحيح')}const amt=C.grand;
  if(!(amt>0)){$('#vr-amt').focus();return toast('قيمة المطالبة المالية إلزامية (رقم أكبر من صفر)')}const ph=($('#vr-ph').value||'').replace(/\D/g,'');if(!waNum(ph)){$('#vr-ph').focus();return toast('رقم واتساب صحيح إلزامي لإرسال المطالبة (01xxxxxxxxx)')}const edit=v.st==='pay',old=v.amt;v.snap.ph=ph;
- Object.assign(v,{st:'pay',amt:+amt.toFixed(2),cnt:($('#vr-cnt').value||'').trim(),cno:v.cno||vrCno(rid)});if(!edit){v.cby=me().n;v.cat_at=new Date().toISOString()}
+ const mn=C.rows.filter(x=>x.src==='man');Object.assign(v,{st:'pay',amt:+amt.toFixed(2),clm:C,cnt:($('#vr-cnt').value||'').trim(),cno:v.cno||vrCno(rid)});if(mn.length)vrLog(v,'تعديل يدوي لمساحات المطالبة: '+mn.map(x=>clFd(x.a)+'←'+clFd(x.b)+': '+x.ar+' بدلاً من '+x.auto).join(' · '));if(!edit){v.cby=me().n;v.cat_at=new Date().toISOString()}
  vrLog(v,edit?`تعديل قيمة المطالبة ${v.cno} من ${vrMoney(old)} إلى ${vrMoney(v.amt)}`:`إصدار المطالبة المالية ${v.cno} بقيمة ${vrMoney(v.amt)} · في انتظار السداد`);vrNotify(v,'claim');vrSave(v,edit?'تعديل مطالبة':'مطالبة مالية');vrClose();toast(edit?'✓ تم تعديل القيمة وإرسال الإشعار المعدّل عبر واتساب':'✓ صدرت المطالبة '+v.cno+' وأُرسل إشعار واتساب · انتقلت لانتظار السداد');CLT='pay';rerender()}
 function vrPaidModal(rid){const v=vrs()[rid];if(!v||!canClaim())return;
  vrModal('تأكيد سداد المطالبة المالية',`${vrHead(v)}
@@ -3466,10 +3550,85 @@ async function vrPaidOk(rid){const v=vrs()[rid];if(!v||!canClaim())return;const 
 function vrInfo(rid){const v=vrs()[rid];if(!v)return;const _sat=v.sat?satHTML(v.sat,rid):'';const steps=[['var','قسم المتغيرات'],['claim','إعداد المطالبة'],['pay','انتظار السداد'],['paid','تم السداد']];const ix=v.st==='none'?0:steps.findIndex(x=>x[0]===v.st);
  vrModal('سجل المتغيرات والمطالبة المالية',`${vrHead(v)}${vrSteps(v)}
   ${v.from?`<div class="vrsum"><div><span>فترة المتغيرات</span><b>${fD(v.from)} ← ${fD(v.to)}</b><small>${vrDurT(vrDur(v.from,v.to))}</small></div><div><span>متوسط المساحة</span><b>${vrFed(v.area)}</b></div>${v.amt?`<div><span>المطالبة ${esc(v.cno||'')}</span><b>${vrMoney(v.amt)}</b><small>${v.st==='paid'?'سُددت '+fD(v.pdate):'لم تُسدد'}</small></div>`:''}</div>`:''}
-  ${_sat}${v.rcpt?`<div style="margin:10px 0">${rcBtns(v)}</div>`:''}<ol class="vrlog">${(v.log||[]).slice().reverse().map(l=>`<li><b>${esc(l.t)}</b><small>${fD(l.d)} · ${esc(l.u||'')}</small></li>`).join('')}</ol>`)}
+  ${v.clm?`<div style="margin:10px 0"><button class="btn sm pri" data-clmpr="${rid}">🖨 طباعة المطالبة المالية</button></div>`:''}${_sat}${v.rcpt?`<div style="margin:10px 0">${rcBtns(v)}</div>`:''}<ol class="vrlog">${(v.log||[]).slice().reverse().map(l=>`<li><b>${esc(l.t)}</b><small>${fD(l.d)} · ${esc(l.u||'')}</small></li>`).join('')}</ol>`)}
 function vrSteps(v){const steps=[['var','قسم المتغيرات'],['claim','إعداد المطالبة'],['pay','انتظار السداد'],['paid','تم السداد']];if(v.st==='none')return `<div class="note">${VRST.none.t}${v.nt?' · '+esc(v.nt):''}</div>`;const ix=steps.findIndex(x=>x[0]===v.st);return `<div class="vrsteps">${steps.map((s,i)=>`<span class="${i<ix?'done':i===ix?'cur':''}"><i>${i<ix||v.st==='paid'?'✓':i+1}</i>${s[1]}</span>`).join('')}</div>`}
+/* ==== المطالبة المالية المحسوبة آلياً من نتائج القمر الصناعي ==== */
+const CLM={q:12,pre:0.03,post:0.60,fees:[['رسوم انتقال',7],['رسوم إدارية',10]],stamp:['تكريم شهداء (قيمة الدمغة)',5]};
+const clR2=x=>Math.round((+x+Number.EPSILON)*100)/100;/* تقريب مالي لأقرب قرش */
+const clMoney=x=>(+x).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const clD=s=>Date.parse(s+'T00:00:00Z'),clISO=t=>new Date(t).toISOString().slice(0,10),clDays=(a,b)=>Math.round((clD(b)-clD(a))/864e5)+1;
+const clFd=s=>s?s.split('-').reverse().join('/'):'—';
+const clMEnd=m=>{const[y,mo]=m.split('-').map(Number);return clISO(Date.UTC(y,mo,0))};
+function clmWell(r){return WB.find(o=>o.rq==r.id)||(r.wi!=null?WB.find(o=>o.i==r.wi):null)||(r.dbw!=null?WB.find(o=>o.i==r.dbw):null)}
+function clmIrr(r){const w=r&&clmWell(r);const x=w&&w.irr;return x&&x!=='بدون'?'ري '+String(x).replace(/^ري\s*/,''):'ري حديث'}
+/* متوسط المساحة المنزرعة لفترة من شهور القمر الصناعي (مرجّح بالأيام) */
+function clmArea(v,a,b){const S=v.sat;if(S&&S.months&&S.months.length&&S.from<=a&&S.to>=b){const L=S.months.filter(x=>(x.a||x.m+'-01')>=a&&(x.b||clMEnd(x.m))<=b);const w=satW(L);if(w!=null)return {ar:+w.toFixed(3),src:'sat',n:L.filter(x=>x.f!=null).length,N:L.length}}return {ar:+(+v.area||0).toFixed(3),src:'avg'}}
+function clmPeriods(from,to){const P=[];const y0=+from.slice(0,4),y1=+to.slice(0,4);const pre=clISO(clD(SAT_REG)-864e5);
+ for(let y=y0;y<=y1;y++){const a=y===y0?from:y+'-01-01',b=y===y1?to:y+'-12-31';if(a>b)continue;if(a<SAT_REG&&b>=SAT_REG){P.push([a,pre]);P.push([SAT_REG,b])}else P.push([a,b])}return P}
+function clmCalc(v,r,o){o=o||{};const q=+(o.q!=null&&o.q!==''?o.q:(v.clm&&v.clm.q)||CLM.q);const old=v.clm&&v.clm.from===v.from&&v.clm.to===v.to?v.clm.rows:null;
+ const rows=clmPeriods(v.from,v.to).map(([a,b],i)=>{const post=a>=SAT_REG;let A=clmArea(v,a,b);const man=o.ars?o.ars[i]:(old&&old[i]&&old[i].src==='man'?old[i].ar:null);if(man!=null&&man!==''&&!isNaN(+man)&&+(+man).toFixed(3)!==A.ar)A={ar:+(+man).toFixed(3),src:'man',auto:A.ar};
+  const d=clDays(a,b),rate=post?CLM.post:CLM.pre;return {a,b,post,part:!(a.slice(5)==='01-01'&&b.slice(5)==='12-31'),ar:A.ar,src:A.src,auto:A.auto,d,m3:clR2(q*A.ar*d),rate,amt:clR2(q*A.ar*d*rate)}});
+ const pre=clR2(rows.filter(x=>!x.post).reduce((s,x)=>s+x.amt,0)),post=clR2(rows.filter(x=>x.post).reduce((s,x)=>s+x.amt,0)),base=clR2(pre+post);
+ const fees=CLM.fees.map(([n,p])=>({n,p,v:clR2(base*p/100)}));const stamp=CLM.stamp[1];const grand=clR2(base+fees.reduce((s,f)=>s+f.v,0)+stamp);
+ const C={v:2,from:v.from,to:v.to,q,irr:o.irr||(v.clm&&v.clm.irr)||clmIrr(r),wells:(v.snap&&v.snap.nw)||1,reg:SAT_REG,rates:[CLM.pre,CLM.post],rows,pre,post,base,fees,sn:CLM.stamp[0],stamp,grand,sat:v.sat?('SAT-'+v.rid+'-'+(v.sat.at||'').slice(0,10).replace(/-/g,'')):''};
+ C.vc=clmHash(v.rid+'|'+C.from+'|'+C.to+'|'+q+'|'+rows.map(x=>x.a+x.ar+x.amt).join(',')+'|'+grand);return C}
+function clmHash(s){let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0}const x=h.toString(16).toUpperCase().padStart(8,'0');return x.slice(0,4)+'-'+x.slice(4)}
+/* التفقيط بالجنيه والقرش */
+function clmTaf(n){const u=['','واحد','اثنان','ثلاثة','أربعة','خمسة','ستة','سبعة','ثمانية','تسعة','عشرة','أحد عشر','اثنا عشر','ثلاثة عشر','أربعة عشر','خمسة عشر','ستة عشر','سبعة عشر','ثمانية عشر','تسعة عشر'],
+ t=['','','عشرون','ثلاثون','أربعون','خمسون','ستون','سبعون','ثمانون','تسعون'],h=['','مائة','مائتان','ثلاثمائة','أربعمائة','خمسمائة','ستمائة','سبعمائة','ثمانمائة','تسعمائة'];
+ const a=x=>x<20?u[x]:(x%10?u[x%10]+' و':'')+t[Math.floor(x/10)];const b=x=>[h[Math.floor(x/100)],x%100?a(x%100):''].filter(Boolean).join(' و');
+ const g=(x,one,two,few,many)=>x===1?one:x===2?two:(x>=3&&x<=10)?b(x)+' '+few:b(x)+' '+many;
+ if(!n)return 'صفر';const P=[],m=Math.floor(n/1e6),k=Math.floor(n%1e6/1000),r=n%1000;if(m)P.push(g(m,'مليون','مليونان','ملايين','مليون'));if(k)P.push(g(k,'ألف','ألفان','آلاف','ألف'));if(r)P.push(b(r));return P.join(' و')}
+function clmWords(v){const L=Math.floor(v+1e-9),p=Math.round((v-L)*100);const c=x=>x===1?'جنيه':x===2?'جنيهان':(x%100>=3&&x%100<=10)?'جنيهات':'جنيهاً';const pc=x=>x===1?'قرش':x===2?'قرشان':(x>=3&&x<=10)?'قروش':'قرشاً';
+ const J=L===1?'جنيه واحد':L===2?'جنيهان':clmTaf(L)+' '+c(L),Q=p===1?'قرش واحد':p===2?'قرشان':clmTaf(p)+' '+pc(p);return 'فقط '+J+(p?' و'+Q:'')+' لا غير'}
+
+/* صفحة المطالبة A4 */
+function clmPage(v,r,C){const s=v.snap,fed=s.fed||fedOf(r)||(v.sat&&+v.sat.land)||0,A=fed?areaFrom(fed*FED):null,mx=Math.max(...C.rows.map(x=>x.amt))||1;
+ const dPre=C.rows.filter(x=>!x.post).reduce((a,x)=>a+x.d,0),dPost=C.rows.filter(x=>x.post).reduce((a,x)=>a+x.d,0),dAll=dPre+dPost||1;
+ const firstPost=C.rows.find(x=>x.post),lastPre=[...C.rows].reverse().find(x=>!x.post);
+ const info=[['اسم صاحب الشأن',s.name,'w2 chl'],['الرقم القومي',s.nid||r.nf||r.nid||'—','n'],['رقم الهاتف',s.ph||s.phone||'—','n'],
+  ['المنطقة / الناحية',s.city||'—'],['رقم الطلب / الملف','م '+v.rid+(s.file?' · '+s.file:''),'n'],['نوع الترخيص',KL(s.kind)],['عدد الآبار',String(C.wells)],
+  ['المساحة الكلية',A?`${A.f} ف  ${A.q} ط  ${A.sh} س <small>(${fed.toFixed(3)} فدان)</small>`:'—','w2 raw'],['نظام الري',C.irr],['المقنن المائي',C.q+' م³ / يوم / فدان'],
+  ['بداية فترة المخالفة',clFd(C.from),'n'],['تاريخ طلب الترخيص',clFd(C.to),'n'],['مصدر المساحات المنزرعة',C.sat?C.sat+' · Sentinel-2':'متوسط المساحة المعتمد من قسم المتغيرات','w2 n']];
+ let i=0,rows='';const sub=(t,x,c)=>`<tr class="sub ${c}"><td colspan="8">${t}</td><td class="amt">${clMoney(x)}</td></tr>`;
+ C.rows.forEach((x,k)=>{rows+=`<tr class="${x.post?'po':'pr'}${x.part?' pt':''}"><td>${++i}</td><td>${clFd(x.a)}</td><td>${clFd(x.b)}</td><td class="cph">${x.post?'بعد اللائحة':'قبل اللائحة'}${x.part?'<span class="tg">جزئي</span>':''}</td><td>${x.ar.toFixed(3)}${x.src==='man'?'<sup title="معدّل يدوياً">✎</sup>':''}</td><td>${x.d}</td><td>${clMoney(x.m3)}</td><td>${clMoney(x.rate)}</td><td class="amt"><span class="bar" style="width:${Math.max(4,x.amt/mx*100).toFixed(1)}%"></span><b>${clMoney(x.amt)}</b></td></tr>`;
+  if(!x.post&&C.rows[k+1]&&C.rows[k+1].post)rows+=sub('إجمالي ما قبل صدور اللائحة التنفيذية',C.pre,'s1')});
+ if(C.rows.some(x=>x.post))rows+=sub('إجمالي ما بعد صدور اللائحة التنفيذية',C.post,'s2');else rows+=sub('إجمالي ما قبل صدور اللائحة التنفيذية',C.pre,'s1');
+ const seg=(cls,t,rate,a,b,d)=>d?`<div class="sg ${cls}" style="flex:${d}"><b>${t}</b><span>${clMoney(rate)} ج/م³ · ${d.toLocaleString('en-US')} يوم</span><small>${clFd(a)} ← ${clFd(b)}</small></div>`:'';
+ const man=C.rows.some(x=>x.src==='man');const paid=v.st==='paid';
+ return `<div class="a4 clmpg${C.rows.length>11?' dense':''}" dir="rtl"><div class="cedge t"></div><img class="cwm" src="${LOGO}" alt="">
+ ${paid?`<div class="cstamp"><b>تم السداد</b><span>${clFd(v.pdate)}${v.rno?' · إيصال '+esc(v.rno):''}</span></div>`:''}
+ <div class="chd"><div class="corg"><b>قطاع المياه الجوفية</b>الإدارة العامة للمياه الجوفية<br>بالخارجة ودرب الأربعين</div><div class="clogo"><img src="${LOGO}" alt=""><span>منظومة تراخيص الآبار بالخارجة</span></div>
+  <div class="cmeta"><div class="k"><span>رقم المطالبة</span><b>${esc(v.cno||vrCno(v.rid))}</b></div><div><span>تاريخ الإصدار</span><b>${clFd((v.cat_at||new Date().toISOString()).slice(0,10))}</b></div><div><span>رقم الطلب</span><b>م ${v.rid}</b></div><div><span>كود التحقق</span><b>${C.vc}</b></div></div></div>
+ <div class="crule"></div>
+ <div class="cttl"><h1>مطالبة مالية · سحب مياه بالمخالفة <em>(بدون ترخيص)</em></h1><p>طبقاً لبيان المساحات المنزرعة الوارد بتقرير المتغيرات المكانية</p></div>
+ <div class="csec"><span>1</span>بيانات صاحب الشأن والأرض</div>
+ <div class="cinfo">${info.map(([k,x,c])=>`<div class="${c||''}"><span>${k}</span><b>${(c||'').includes('raw')?x:esc(x)}</b></div>`).join('')}</div>
+ <div class="ctl">${seg('a','قبل صدور اللائحة التنفيذية',C.rates[0],C.from,lastPre&&lastPre.b,dPre)}${seg('b','بعد صدور اللائحة التنفيذية',C.rates[1],firstPost&&firstPost.a,C.to,dPost)}<div class="sgt"><span>مدة المخالفة</span><b>${dAll.toLocaleString('en-US')}</b><small>يوم</small></div></div>
+ <div class="csec"><span>2</span>بيان الاستهلاك المائي وقيمة المخالفة</div>
+ <table class="ctb"><colgroup><col style="width:6mm"><col style="width:20mm"><col style="width:20mm"><col style="width:21mm"><col style="width:17mm"><col style="width:12mm"><col style="width:23mm"><col style="width:14mm"><col></colgroup>
+ <thead><tr><th>م</th><th>من</th><th>إلى</th><th>المرحلة<small>اللائحة التنفيذية</small></th><th>المساحة المنزرعة<small>فدان</small></th><th>الأيام</th><th>كمية المياه<small>م³ = ${C.q} × المساحة × الأيام</small></th><th>السعر<small>جنيه / م³</small></th><th>المبلغ<small>جنيه</small></th></tr></thead><tbody>${rows}</tbody></table>
+ <div class="ctot"><div class="cbas"><h4>أساس الاحتساب</h4><ul><li>المبلغ = المقنن (${C.q} م³/يوم/فدان) × المساحة المنزرعة × عدد الأيام × سعر المتر المكعب.</li><li>المساحات من تقرير المتغيرات المكانية، متوسط مرجّح بالأيام لكل فترة.${man?' (✎ معدّلة يدوياً بقسم التراخيص)':''}</li><li>الأيام شاملة يومي البداية والنهاية · كل بند مقرّب لأقرب قرش والإجمالي مجموع البنود.</li></ul>${v.nt?`<div class="cnt"><b>ملاحظات قسم المتغيرات:</b> ${esc(v.nt)}</div>`:''}${v.cnt?`<div class="cnt"><b>ملاحظات المطالبة:</b> ${esc(v.cnt)}</div>`:''}</div>
+  <div class="csum"><div><span>المجموع</span><b>${clMoney(C.base)}</b></div>${C.fees.map(f=>`<div><span>${f.n} <small>(${f.p}% من المجموع)</small></span><b>${clMoney(f.v)}</b></div>`).join('')}<div><span>${C.sn}</span><b>${clMoney(C.stamp)}</b></div><div class="g"><span>إجمالي قيمة السداد</span><b>${clMoney(C.grand)}<small> جنيه</small></b></div></div></div>
+ <div class="cwords"><span>المبلغ بالحروف: </span>${clmWords(C.grand)}</div>
+ <div class="csigw"><div class="csig">${['التراخيص','وكيل الإدارة','مدير عام الإدارة العامة للمياه الجوفية'].map(t=>`<div><h5>${t}</h5><div class="ln"></div></div>`).join('')}</div>
+ <div class="capv"><b>يُعتمد</b><span>رئيس الإدارة المركزية للمياه الجوفية</span><div class="ln"></div></div></div>
+ <div class="clft"><span>منظومة تراخيص الآبار بالخارجة · <b>${esc(v.cno||vrCno(v.rid))}</b> · تحقق <b>${C.vc}</b> · صفحة 1 من 1</span><span class="cr">جميع الحقوق محفوظة للمصمم والمطور - م/ أسامه حسن بدري - 01145060007</span></div><div class="cedge b"></div></div>`}
+function clmPrint(rid,C){const v=vrs()[rid];const r=findReq(+rid);if(!v||!r||!v.from)return;C=C||v.clm||clmCalc(v,r);let p=$('#print');if(!p){p=document.createElement('div');p.id='print';document.body.appendChild(p)}
+ p.innerHTML=`<div class="prbar"><b>المطالبة المالية · ${esc(v.snap.name)}</b>${v.clm?'':'<span class="tag" style="background:var(--warn);color:#fff">معاينة قبل الإصدار</span>'}<span style="flex:1"></span><button class="btn pri" data-drprint>طباعة / حفظ PDF</button><button class="btn" data-drclose>إغلاق</button></div><div class="prwrap">${clmPage(v,r,C)}</div>`;
+ p.hidden=false;document.body.classList.add('pon')}
+/* جدول الاحتساب داخل نافذة المطالبة */
+function clmForm(v,r){const C=clmCalc(v,r);return `<div class="clmf" id="clmf"><div class="form vrform"><div class="fld"><label for="cl-q">المقنن المائي (م³ / يوم / فدان) <span class="req">*</span></label><input class="inp num" id="cl-q" inputmode="decimal" value="${C.q}"></div><div class="fld"><label for="cl-irr">نظام الري</label><input class="inp" id="cl-irr" value="${esc(C.irr)}"></div></div>
+ <div class="tw"><table class="clmt"><thead><tr><th>الفترة</th><th>المرحلة</th><th>المساحة (فدان)</th><th>الأيام</th><th>السعر</th><th>المبلغ</th></tr></thead><tbody>${C.rows.map((x,i)=>`<tr class="${x.post?'po':'pr'}"><td class="num">${clFd(x.a)} ← ${clFd(x.b)}</td><td>${x.post?'بعد اللائحة':'قبل اللائحة'}</td><td><input class="inp num clar" data-i="${i}" data-auto="${clmArea(v,x.a,x.b).ar}" inputmode="decimal" value="${x.ar.toFixed(3)}"><small class="muted">${x.src==='sat'?'من القمر الصناعي':x.src==='man'?'معدّل يدوياً':'متوسط المتغيرات'}</small></td><td class="num">${x.d}</td><td class="num">${clMoney(x.rate)}</td><td class="num"><b data-amt="${i}">${clMoney(x.amt)}</b></td></tr>`).join('')}</tbody></table></div>
+ <div class="clms" id="clms"></div></div>`}
+function clmRead(v,r){const ars=[...document.querySelectorAll('.clar')].map(e=>(e.value||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(',','.').trim());return clmCalc(v,r,{q:($('#cl-q').value||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)),irr:($('#cl-irr').value||'').trim(),ars})}
+function clmLive(rid){const v=vrs()[rid],r=findReq(+rid);const up=()=>{const C=clmRead(v,r);C.rows.forEach((x,i)=>{const b=document.querySelector(`[data-amt="${i}"]`);if(b)b.textContent=clMoney(x.amt);const e=document.querySelector(`.clar[data-i="${i}"]`);if(e){e.classList.toggle('man',x.src==='man');const sm=e.nextElementSibling;if(sm)sm.textContent=x.src==='man'?'معدّل يدوياً (الآلي '+(+e.dataset.auto).toFixed(3)+')':(v.sat?'من القمر الصناعي':'متوسط المتغيرات')}});
+  $('#clms').innerHTML=`<div><span>المجموع</span><b>${clMoney(C.base)}</b></div>${C.fees.map(f=>`<div><span>${f.n} ${f.p}%</span><b>${clMoney(f.v)}</b></div>`).join('')}<div><span>${C.sn}</span><b>${clMoney(C.stamp)}</b></div><div class="g"><span>الإجمالي</span><b>${clMoney(C.grand)} جنيه</b></div><p>${clmWords(C.grand)}</p>`;const a=$('#vr-amt');if(a)a.value=C.grand.toFixed(2);CLMX=C};
+ document.querySelectorAll('#clmf input').forEach(e=>e.oninput=up);up()}
+let CLMX=null;
+
 /* بطاقة داخل ملف الطلب */
-function vrCard(r){const v=vrs()[r.id];if(v)return `<div class="card vrcard"><h3>المتغيرات المكانية والمطالبة المالية ${vrStPill(v)}<button class="btn sm ghost" data-vrinfo="${r.id}" style="margin-inline-start:auto">السجل</button></h3>${vrSteps(v)}${v.from?`<div class="kv"><div><span>فترة المتغيرات</span><b>${fD(v.from)} ← ${fD(v.to)}</b></div><div><span>متوسط المساحة</span><b class="num">${vrFed(v.area)}</b></div>${v.amt?`<div><span>المطالبة <bdi dir="ltr">${esc(v.cno||'')}</bdi></span><b class="num">${vrMoney(v.amt)}</b></div>`:''}</div>`:''}${v.rcpt?`<div style="margin-top:8px">${rcBtns(v)}</div>`:''}${canVrBack(v)?`<div style="margin-top:8px"><button class="btn sm ghost" data-vrback="${r.id}">↩ إعادة لقسم المتغيرات لإعادة الاحتساب</button></div>`:''}<div class="muted" style="font-size:12px;margin-top:6px">مسار موازٍ لا يوقف إجراءات الطلب في منظومة التراخيص · يلزم السداد قبل عرض الملف على اللجنة العليا.</div></div>`;
+function vrCard(r){const v=vrs()[r.id];if(v)return `<div class="card vrcard"><h3>المتغيرات المكانية والمطالبة المالية ${vrStPill(v)}<button class="btn sm ghost" data-vrinfo="${r.id}" style="margin-inline-start:auto">السجل</button></h3>${vrSteps(v)}${v.from?`<div class="kv"><div><span>فترة المتغيرات</span><b>${fD(v.from)} ← ${fD(v.to)}</b></div><div><span>متوسط المساحة</span><b class="num">${vrFed(v.area)}</b></div>${v.amt?`<div><span>المطالبة <bdi dir="ltr">${esc(v.cno||'')}</bdi></span><b class="num">${vrMoney(v.amt)}</b></div>`:''}</div>`:''}${v.clm?`<div style="margin-top:8px"><button class="btn sm ghost" data-clmpr="${r.id}">🖨 المطالبة المالية</button></div>`:''}${v.rcpt?`<div style="margin-top:8px">${rcBtns(v)}</div>`:''}${canVrBack(v)?`<div style="margin-top:8px"><button class="btn sm ghost" data-vrback="${r.id}">↩ إعادة لقسم المتغيرات لإعادة الاحتساب</button></div>`:''}<div class="muted" style="font-size:12px;margin-top:6px">مسار موازٍ لا يوقف إجراءات الطلب في منظومة التراخيص · يلزم السداد قبل عرض الملف على اللجنة العليا.</div></div>`;
  if(r.stage>=2&&r.status!=='rejected'&&canSendVar())return `<div class="card vrcard"><h3>المتغيرات المكانية</h3><div class="filters"><span class="muted" style="font-size:13px">لم تُرسل نسخة من هذا الطلب لقسم المتغيرات.</span><button class="btn sm pri" data-vrnew="${r.id}" style="margin-inline-start:auto">إرسال نسخة لقسم المتغيرات</button></div></div>`;return ''}
 function vrClick(t){let el;
  if(el=t.closest('[data-ntq]')){const ta=$('#'+el.dataset.ntq);if(ta){const L=ta.value.split(/\s*·\s*/).map(x=>x.trim()).filter(Boolean);if(!L.includes(el.textContent))L.push(el.textContent);ta.value=L.join(' · ');ta.focus();satAutoUI()}return true}
@@ -3487,6 +3646,8 @@ function vrClick(t){let el;
  if(el=t.closest('[data-vrnone]')){vrSend(+el.dataset.vrnone,true);return true}
  if(el=t.closest('[data-vrclaim]')){vrClaimModal(+el.dataset.vrclaim);return true}
  if(el=t.closest('[data-vrclaimok]')){vrClaimOk(+el.dataset.vrclaimok);return true}
+ if(el=t.closest('[data-clmpr]')){vrClose();clmPrint(+el.dataset.clmpr);return true}
+ if(el=t.closest('[data-clmprev]')){const id=+el.dataset.clmprev,v=vrs()[id];if(v){const C=clmRead(v,findReq(id));const keep=v.clm;v.clm=null;clmPrint(id,C);v.clm=keep}return true}
  if(el=t.closest('[data-vrpaid]')){vrPaidModal(+el.dataset.vrpaid);return true}
  if(el=t.closest('[data-vrpaidok]')){vrPaidOk(+el.dataset.vrpaidok);return true}
  if(el=t.closest('[data-vrinfo]')){vrInfo(+el.dataset.vrinfo);return true}
@@ -3494,7 +3655,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.12-1737';
+const APP_VER='2026.11.13-1433';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent);
 const CAN_SW=()=>'serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')&&!/claude\.ai|claudeusercontent|anthropic/.test(location.hostname);

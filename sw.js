@@ -1,9 +1,9 @@
 /* منظومة تراخيص الآبار بالخارجة — service worker (offline app shell) */
-const VERSION='91fb75c72c';const SHELL='wells-shell-'+VERSION;const RT='wells-rt-v1';
+const VERSION='4adba64cb8';const SHELL='wells-shell-'+VERSION;const RT='wells-rt-v1';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-192.png','./icon-maskable-512.png','./apple-touch-icon.png','./favicon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(SHELL).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('wells-shell-')&&k!==SHELL).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
-const CDN=/^https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|cdnjs\.cloudflare\.com)\//;
+const CDN=/^https:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net)\//;
 function timeout(ms,p){return new Promise((res,rej)=>{const t=setTimeout(()=>rej(new Error('timeout')),ms);p.then(v=>{clearTimeout(t);res(v)},e=>{clearTimeout(t);rej(e)})})}
 self.addEventListener('fetch',e=>{const req=e.request;if(req.method!=='GET')return;const url=new URL(req.url);
   if(req.mode==='navigate'&&url.origin===location.origin){
@@ -14,3 +14,9 @@ self.addEventListener('fetch',e=>{const req=e.request;if(req.method!=='GET')retu
   /* Supabase, maps, WhatsApp and everything else: always network */
 });
 self.addEventListener('message',e=>{if(e.data==='skip')self.skipWaiting()});
+
+/* إشعارات الموبايل (تصل حتى والتطبيق مغلق) */
+self.addEventListener('push',e=>{let d={};try{d=e.data?e.data.json():{}}catch(_){d={body:e.data&&e.data.text()}}
+  e.waitUntil(self.registration.showNotification(d.title||'منظومة تراخيص الآبار',{body:d.body||'',icon:'./icon-192.png',badge:'./favicon.png',dir:'rtl',lang:'ar',tag:d.tag||undefined,data:{url:d.url||''}}))});
+self.addEventListener('notificationclick',e=>{e.notification.close();const u=new URL('./'+((e.notification.data&&e.notification.data.url)||''),self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(L=>{for(const c of L){if(c.url.startsWith(self.registration.scope)){c.focus();if(e.notification.data&&e.notification.data.url)c.navigate(u).catch(()=>{});return}}return self.clients.openWindow(u)}))});

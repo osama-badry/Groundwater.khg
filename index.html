@@ -1248,7 +1248,7 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .rcnt>span{font-size:.8em;font-weight:700;color:var(--tl)}.rcnt i{display:block;border-bottom:1px dotted #8a9a9c;height:6mm}
 .rcn{margin:0;text-align:center;font-size:.64em;color:#7a8a8c}
 .rccut{position:relative;height:6mm;display:grid;place-items:center}.rccut:before{content:"";position:absolute;inset-inline:0;top:50%;border-top:1px dashed #9fb0b2}.rccut span{position:relative;background:#fff;padding:0 2mm;color:#9fb0b2}
-@media print{@page{size:A4;margin:0}html,body{background:#fff!important}body>*:not(#print){display:none!important}#print{position:static;background:#fff;overflow:visible}.prbar{display:none!important}.prwrap{padding:0!important;display:block}.a4{box-shadow:none;zoom:1!important}}
+@media print{@page{size:A4;margin:0}@page land{size:A4 landscape;margin:0}html,body{background:#fff!important}body>*:not(#print){display:none!important}#print{position:static;background:#fff;overflow:visible}.prbar{display:none!important}.prwrap{padding:0!important;display:block}.a4{box-shadow:none;zoom:1!important}}
 
 .a4gu{position:absolute!important;left:15mm;top:70mm;width:180mm;height:180mm;opacity:.16;z-index:0!important;pointer-events:none}
 .a4micro{position:absolute!important;inset:0;width:210mm;height:297mm;z-index:0!important;pointer-events:none}
@@ -1262,6 +1262,54 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .a4ml{font-family:"Cairo",sans-serif;font-size:3.3pt;line-height:1;color:#0B4A50;white-space:nowrap;overflow:hidden;opacity:.85;margin:2px 0;letter-spacing:.02em}
 .a4t{font-family:"Cairo",sans-serif!important;font-size:2.35em!important;font-weight:900!important;letter-spacing:0}
 .vbox .inp{min-width:0}
+.a4.land{width:297mm;min-width:297mm;height:210mm;flex:none;page:land}
+@page land{size:A4 landscape;margin:0}
+.a4.cmpg{--t:#0b4a50;--t2:#0e5f66;--g:#b08a2e;--g2:#f3dc9a;--mu:#5d6f73;--ln:#c9d6d7;--bg:#f4f8f8;padding:7mm 9mm 6mm;font-size:9.6px;line-height:1.4;font-weight:600;display:flex;flex-direction:column}
+.cmpg>*{position:relative;z-index:1}
+.cmpg .cedge{position:absolute!important;left:0;right:0;height:1.8mm;background:linear-gradient(90deg,#8a6a1e,#f3dc9a,#b08a2e,#f7e6b0,#8a6a1e)}
+.cmpg .cedge.t{top:0}
+.cmpg .cwm{position:absolute!important;left:50%;top:55%;width:95mm;transform:translate(-50%,-50%);opacity:.045;z-index:0!important;pointer-events:none}
+.cmpg .cmh{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6mm;padding-bottom:2.6mm;border-bottom:1.4px solid var(--t);margin-bottom:2.4mm}
+.cmpg .corg{font-weight:800;font-size:10.5px;line-height:1.5;color:var(--t)}
+.cmpg .corg b{display:block;color:var(--g);font-size:11.5px}
+.cmpg .cmt{display:flex;align-items:center;gap:3.5mm;text-align:center}
+.cmpg .cmt img{width:15mm;height:15mm;object-fit:contain}
+.cmpg .cmt h1{margin:0;font-size:17px;font-weight:900;color:var(--t);letter-spacing:-.2px}
+.cmpg .cmt p{margin:.6mm 0 0;font-size:10px;color:var(--mu);font-weight:700}
+.cmpg .cmm{display:flex;gap:2mm;justify-content:flex-end}
+.cmpg .cmm div{border:1px solid var(--ln);border-top:2.4px solid var(--g);border-radius:2mm;padding:1.2mm 3mm;text-align:center;min-width:22mm;background:#fff}
+.cmpg .cmm span{display:block;font-size:8.4px;color:var(--mu);font-weight:700}
+.cmpg .cmm b{font-size:12px;color:var(--t);font-weight:900}
+.cmpg .cmsum{display:flex;gap:2mm;align-items:center;flex-wrap:wrap;margin-bottom:2.2mm}
+.cmpg .cmsum span{background:var(--bg);border:1px solid var(--ln);border-radius:5mm;padding:.6mm 3mm;font-size:9px;color:var(--t);font-weight:700}
+.cmpg .cmsum span b{color:var(--g);font-size:11px;font-weight:900;margin-left:1mm}
+.cmpg .cmsum .sp{flex:1;background:none;border:0;padding:0}
+.cmpg .cmtb{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;border:1px solid var(--t);border-radius:2mm;overflow:hidden}
+.cmpg .cmtb th{background:linear-gradient(180deg,var(--t2),var(--t));color:#fff;font-size:9px;font-weight:800;padding:1.4mm 1mm;text-align:center;border-left:1px solid rgb(255 255 255/.18);line-height:1.3}
+.cmpg .cmtb th small{display:block;font-size:7.6px;font-weight:600;color:var(--g2)}
+.cmpg .cmtb td{height:12.6mm;padding:.8mm 1.2mm;border-top:1px solid var(--ln);border-left:1px solid var(--ln);text-align:center;vertical-align:middle;font-size:9.2px;color:#0f1e22;overflow:hidden;line-height:1.35}
+.cmpg .cmtb td:last-child,.cmpg .cmtb th:last-child{border-left:0}
+.cmpg .cmtb tbody tr:nth-child(even) td{background:rgb(244 248 248/.75)}
+.cmpg .cmtb td small{display:block;font-size:7.8px;color:var(--mu);font-weight:600}
+.cmpg .cmtb td:first-child{font-weight:900;color:var(--g);font-size:11px}
+.cmpg .cmtb td:nth-child(2){text-align:right}
+.cmpg .cmtb td:nth-child(2) b{font-size:9.8px;color:var(--t)}
+.cmpg .cmtb td.ll{direction:ltr;font-size:8.2px;font-family:"Cairo",sans-serif;letter-spacing:.1px}
+.cmpg .cmtb .ok{color:#1e7a46}.cmpg .cmtb .bad{color:#b23b2e}
+.cmpg .cmtb td.dec{text-align:right;font-size:8.6px;line-height:1.55;padding-right:2mm}
+.cmpg .cmtb td.dec span{display:block;white-space:nowrap}
+.cmpg .cmtb tr.empty td{height:12.6mm}
+.cmpg .cmsig{display:grid;grid-template-columns:1fr 1fr 1.3fr 1.2fr;gap:5mm;margin-top:auto;padding-top:3mm;align-items:end}
+.cmpg .cmsig h5{margin:0 0 7mm;font-size:10px;color:var(--t);font-weight:800;text-align:center}
+.cmpg .cmsig .ln{border-top:1px dashed var(--mu);margin:0 4mm}
+.cmpg .cmsig .cap{border:1px solid var(--g);border-radius:2.4mm;padding:1.6mm 3mm 3mm;text-align:center;background:linear-gradient(180deg,#fffaf0,#fff)}
+.cmpg .cmsig .cap b{display:block;font-size:13px;color:var(--g);font-weight:900}
+.cmpg .cmsig .cap span{display:block;font-size:9.6px;color:var(--t);font-weight:800;margin-bottom:6mm}
+.cmpg .cmtb td,.cmpg .cmtb td b{white-space:normal;word-break:break-word}.cmpg .cmtb td:nth-child(2) b{display:block;line-height:1.3}.cmpg .cmsig+.clft{margin-top:2.4mm!important}
+.cmpg .clft{display:flex;justify-content:space-between;gap:4mm;border-top:1px solid var(--ln);margin-top:auto;padding-top:1.4mm;font-size:8px;color:var(--mu);font-weight:700}
+.cmpg .clft .cr{color:var(--t);font-weight:800}
+.cmpg .csep{display:inline-block;width:2px;height:.9em;background:var(--g);margin:0 1.4mm;vertical-align:-.1em;border-radius:1px;opacity:.85}
+
 </style>
 
 <div class="login" id="login" hidden>
@@ -1464,7 +1512,7 @@ const RA_DEF=[{lic:'edit',lsec:'edit',vr:'edit',db:'edit',rep:1,set:1,pd:1},{lic
 const SECN={lic:'منظومة التراخيص',lsec:'قسم التراخيص',vr:'المتغيرات المكانية',db:'قاعدة البيانات'};const ACCN={edit:'إضافة وتعديل',view:'مشاهدة فقط',none:'بدون وصول'};
 function ra(u){u=u||me();if(u.r===0)return RA_DEF[0];const d=RA_DEF[u.r]||RA_DEF[6];return Object.assign({},d,(S.ra&&S.ra[u.r])||{})}
 const PSEC={cal:'lic',audit:'set',dash:'lic',requests:'lic',new:'lic',map:'lic',whatsapp:'lic',portal:'lic',inspq:'lic',registry:'db',cmte:'db',drill:'lsec',drills:'lsec',vars:'lsec',claims:'lsec',lcm:'lsec',rnw:'lsec',gm:'lic',prefs:'set',wellform:'db',wmap:'db',monitor:'db',reports:'rep',users:'set',backup:'set'};
-function pageOK(p){const u=me();if(pageHidden(p,u))return false;if(p==='smon')return u.r===0||ra(u).db!=='none'||ra(u).vr!=='none';if(p==='coll')return u.r===0||ra(u).lsec!=='none'||ra(u).vr!=='none';if(p==='monthly')return [0,1,6,8].includes(u.r)||can(7);if(p==='tv')return [0,1,6,8].includes(u.r);if(p==='route')return [0,1,2,5].includes(u.r);if(p==='vmap')return u.r===0||ra(u).db!=='none';if(p==='lcm'&&u.r===2)return true;if(p==='fcam')return [0,1,4,5].includes(u.r)||ra(u).lsec!=='none';if(p==='gm')return [0,1,6,8].includes(u.r);if(p==='inspq')return [0,1,5].includes(u.r);if(p==='vars')return u.r===0||ra(u).vr!=='none';if(PSEC[p]==='lsec')return u.r===0||ra(u).lsec!=='none';if(u.r===0)return true;if(u.r===5&&PSEC[p]==='lic'&&!['requests','map'].includes(p))return false;if(u.r===5&&p==='cmte')return false;const sc_=PSEC[p];if(!sc_)return true;const a=ra(u);if(sc_==='lic'||sc_==='db')return a[sc_]!=='none'&&(p!=='new'||can(0))&&(p!=='wellform'||canAddWell());if(sc_==='rep')return !!a.rep;if(sc_==='set')return !!a.set;return true}
+function pageOK(p){const u=me();if(pageHidden(p,u))return false;if(p==='smon')return u.r===0||u.r===1;if(p==='coll')return u.r===0||ra(u).lsec!=='none'||ra(u).vr!=='none';if(p==='monthly')return [0,1,6,8].includes(u.r)||can(7);if(p==='tv')return [0,1,6,8].includes(u.r);if(p==='route')return [0,1,2,5].includes(u.r);if(p==='vmap')return u.r===0||ra(u).db!=='none';if(p==='lcm'&&u.r===2)return true;if(p==='fcam')return [0,1,4,5].includes(u.r)||ra(u).lsec!=='none';if(p==='gm')return [0,1,6,8].includes(u.r);if(p==='inspq')return [0,1,5].includes(u.r);if(p==='vars')return u.r===0||ra(u).vr!=='none';if(PSEC[p]==='lsec')return u.r===0||ra(u).lsec!=='none';if(u.r===0)return true;if(u.r===5&&PSEC[p]==='lic'&&!['requests','map'].includes(p))return false;if(u.r===5&&p==='cmte')return false;const sc_=PSEC[p];if(!sc_)return true;const a=ra(u);if(sc_==='lic'||sc_==='db')return a[sc_]!=='none'&&(p!=='new'||can(0))&&(p!=='wellform'||canAddWell());if(sc_==='rep')return !!a.rep;if(sc_==='set')return !!a.set;return true}
 function firstPage(){return (me().r===5?['inspq']:me().r===7?['vars']:[]).concat(['dash','registry','reports','mobile']).find(pageOK)||'mobile'}
 const can=i=>{const u=me();if(u.r===0)return true;const a=ra(u);let ok=i<=6?a.lic==='edit':i===7?!!a.rep:i===8?!!a.set:i===9?a.db==='edit':i===10?!!a.pd:false;return ok&&lvOk(lvOf(u),i)};
 const can_old=i=>{const u=me();if(u.r===0)return true;if(!(S.perm[u.r]&&S.perm[u.r][i]))return false;return lvOk(lvOf(u),i)};
@@ -1570,7 +1618,7 @@ function menu(){topUser();if(cur==='inspq'||(typeof me==='function'&&me()&&me().
  $('#menu').innerHTML=favH+G.map(g=>{const its=g.items.filter(vis);if(!its.length)return '';const open=!!mo[g.k];const main=['lic','lsec','db'].includes(g.k);
   return `<div class="mg mg-${g.k} ${open?'open':''} ${main?'mgm':''} ${g.k===cg?'cur':''}"><button class="mgh" data-mg="${g.k}" aria-expanded="${open}"><span class="mgic"><svg class="ico" viewBox="0 0 24 24">${MGIC[g.k]||''}</svg></span><b>${g.t}</b><small>${its.length}</small><svg class="ico chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button><div class="mgb">${its.map(it).join('')}</div></div>`}).join('')}
 function bell(){const e=$('#bellN');if(!e)return;const n=BOOTED?notifs().length:0;e.textContent=n||'';e.hidden=!n}
-function topUser(){bell();const u=me(),e=$('#userChip');if(e)e.innerHTML=`<div class="av" style="background:${u.r===0?'var(--gold)':'var(--teal)'}">${esc(u.n.replace('م/ ','').trim()[0])}</div><div class="un"><b>${esc(u.n)}</b><div class="muted" style="font-size:11px">${ROLES[u.r]}${lvOf(u)!=='full'?` · <span class="lvb lv-${lvOf(u)}">${LV[lvOf(u)]}</span>`:''}</div></div>`}
+function topUser(){bell();const u=me(),e=$('#userChip');if(e)e.innerHTML=`<div class="av" style="background:${u.r===0?'var(--gold)':'var(--teal)'}">${esc(u.n.replace('م/ ','').trim()[0])}</div><div class="un"><b>${esc(u.n)}</b><div class="muted" style="font-size:11px">${esc(posTitle(u))}${lvOf(u)!=='full'?` · <span class="lvb lv-${lvOf(u)}">${LV[lvOf(u)]}</span>`:''}</div></div>`}
 let NAV=[];
 function navPush(e){NAV.push(e);try{history.pushState({n:NAV.length},'')}catch(_){}}
 const drawerOpen=()=>$('#drawer').classList.contains('on');
@@ -1734,7 +1782,7 @@ function renderDrawer(){const r=R.find(x=>x.id==openId);if(!r)return;
    ${slaBar(r)}
    ${dbmCard(r)}
    ${actionPanel(r)}
-   ${vrCard(r)}
+   ${asgCard(r)}${vrCard(r)}
    ${sugCard(r)}${spCard(r)}
    <div class="card"><h3>بيانات الطلب ${canEditReq()?`<button class="btn sm ghost" data-redit="${r.id}" style="margin-inline-start:auto">تعديل بيانات الطلب</button>`:''}</h3><div class="kv">
     <div><span>نوع الترخيص</span><b>${esc(KL(r.kind))}</b></div>
@@ -2224,7 +2272,7 @@ VIEWS.users=()=>{try{repMig()}catch(_){}
  ${S.users.map((u,i)=>{const st=uStatus(u),rm=remain(u);return `<tr style="cursor:default"><td class="nm"><span style="display:flex;align-items:center;gap:10px"><span class="av" style="width:32px;height:32px;font-size:12px;background:${u.r===0?'var(--gold)':'var(--teal)'}">${esc(u.n.replace('م/ ','').trim()[0]||'؟')}</span><span>${esc(u.n)}${u.u===S.cur?' <span class="tag k-new">أنت</span>':''}${u.ex?' <span class="tag">مثال</span>':''}</span></span></td>
   <td class="num">${ltr(u.u)}</td>
   ${dev?`<td><span class="pwc num">${showPw[i]?ltr(u.p):'••••••'}</span> <button class="btn sm ghost" data-pw="${i}" aria-label="إظهار كلمة المرور">${showPw[i]?'إخفاء':'إظهار'}</button></td><td><span class="num code-s">${ltr(u.code)}</span> <button class="btn sm ghost" data-copy="${esc(u.code)}">نسخ</button></td>`:''}
-  <td>${ROLES[u.r]}</td><td>${u.r===0?'<span class="lvb lv-dev">تحكم كامل</span>':(dev||(isAdm()&&u.r>1))?`<select class="inp lvsel lv-${lvOf(u)}" data-acc="${i}" aria-label="مستوى الوصول">${Object.entries(LV).map(([k,v])=>`<option value="${k}" ${lvOf(u)===k?'selected':''}>${v}</option>`).join('')}</select>`:`<span class="lvb lv-${lvOf(u)}">${LV[lvOf(u)]}</span>`}</td>
+  <td>${esc(posTitle(u))}</td><td>${u.r===0?'<span class="lvb lv-dev">تحكم كامل</span>':(dev||(isAdm()&&u.r>1))?`<select class="inp lvsel lv-${lvOf(u)}" data-acc="${i}" aria-label="مستوى الوصول">${Object.entries(LV).map(([k,v])=>`<option value="${k}" ${lvOf(u)===k?'selected':''}>${v}</option>`).join('')}</select>`:`<span class="lvb lv-${lvOf(u)}">${LV[lvOf(u)]}</span>`}</td>
   <td><span class="st" style="color:${st.c};background:${st.bg}">${st.t}</span></td>
   <td><span class="st" style="color:${rm.c};background:${rm.bg}">${rm.t}</span>${dev&&u.r!==0?`<span class="extq"><button class="btn sm ghost" data-ext="${i}|30" title="تمديد 30 يوماً">+30 يوم</button><button class="btn sm ghost" data-ext="${i}|365" title="تمديد سنة">+سنة</button></span>`:''}</td>
   <td class="muted" style="font-size:12.5px">${u.last?esc(u.last):'لم يدخل بعد'}</td>
@@ -2249,7 +2297,7 @@ function editUser(e,dev){const lock=e.r===0&&UE!=='new';const dur=e.exp?'custom'
  return `<form class="card uedit" id="uform" novalidate><h3>${UE==='new'?'إضافة مستخدم جديد':'تعديل: '+esc(e.n)}</h3><div class="form">
   <div class="fld span2"><label for="ue-n">الاسم</label><input class="inp" id="ue-n" value="${esc(e.n)}"></div>
   <div class="fld"><label for="ue-u">اسم الدخول</label><input class="inp num" id="ue-u" dir="ltr" value="${esc(e.u)}" ${lock?'readonly':''}></div>
-  <div class="fld"><label for="ue-r">الدور</label><select class="inp" id="ue-r" style="width:100%" ${lock?'disabled':''}>${ROLES.map((r,i)=>(i===0&&!lock)||(!dev&&i<=1&&e.r!==i)?'':`<option value="${i}" ${e.r===i?'selected':''}>${r}</option>`).join('')}</select></div>${!dev&&e.r>1&&UE!=='new'?`<div class="fld"><label for="ue-acc2">مستوى الوصول</label><select class="inp" id="ue-acc2" style="width:100%">${Object.entries(LV).map(([k,v])=>`<option value="${k}" ${lvOf(e)===k?'selected':''}>${v}</option>`).join('')}</select></div>`:''}
+  <div class="fld"><label for="ue-r">الدور</label><select class="inp" id="ue-r" style="width:100%" ${lock?'disabled':''}>${ROLES.map((r,i)=>(i===0&&!lock)||(!dev&&i<=1&&e.r!==i)?'':`<option value="${i}" ${e.r===i?'selected':''}>${r}</option>`).join('')}</select></div>${dev?(()=>{const o=uposOf(e);return `<div class="fld"><label for="ue-pos">المنصب داخل القسم</label><select class="inp" id="ue-pos" style="width:100%"><option value="">— حسب الدور —</option><option value="head" ${o.pos==='head'?'selected':''}>مدير / رئيس القسم</option><option value="dep" ${o.pos==='dep'?'selected':''}>وكيل (التفتيش)</option><option value="eng" ${o.pos==='eng'?'selected':''}>مهندس القسم</option></select></div><div class="fld"><label for="ue-sec">القطاع (إدارات التفتيش)</label><select class="inp" id="ue-sec" style="width:100%"><option value="all" ${!o.sec||o.sec==='all'?'selected':''}>كل القطاعات</option><option value="kh" ${o.sec==='kh'?'selected':''}>إدارة تفتيش الخارجة</option><option value="pa" ${o.sec==='pa'?'selected':''}>إدارة تفتيش باريس</option></select></div>`})():''}${!dev&&e.r>1&&UE!=='new'?`<div class="fld"><label for="ue-acc2">مستوى الوصول</label><select class="inp" id="ue-acc2" style="width:100%">${Object.entries(LV).map(([k,v])=>`<option value="${k}" ${lvOf(e)===k?'selected':''}>${v}</option>`).join('')}</select></div>`:''}
   ${dev?`<div class="fld"><label for="ue-p">كلمة المرور</label><span style="display:flex;gap:6px"><input class="inp num" id="ue-p" dir="ltr" value="${esc(e.p)}"><button type="button" class="btn sm" data-genpw>توليد</button></span></div>
   <div class="fld"><label for="ue-d">مدة ترخيص البرنامج</label><select class="inp" id="ue-d" style="width:100%" ${lock?'disabled':''}>${DUR.map(d=>`<option value="${d[0]}" ${d[0]===dur?'selected':''}>${d[1]}</option>`).join('')}</select></div>
   <div class="fld" id="ue-dw" ${dur==='custom'?'':'hidden'}><label for="ue-exp">تنتهي في</label><input class="inp" type="date" id="ue-exp" value="${e.exp||addDays(todayISO(),30)}" min="${todayISO()}"></div>
@@ -2280,6 +2328,7 @@ AFTER.users=()=>{if(!can(8))return;drawQR();
   const _isNew=UE==='new',_oldP=_isNew?null:S.users[UE].p;const u=UE==='new'?{ex:0,last:'',code:genCode(),on:1,exp:'',p:'123'}:S.users[UE];u.n=n;u.u=un;if(!(u.r===0&&UE!=='new'))u.r=+$('#ue-r').value;
   if(!dev){if(UE==='new')return toast('إنشاء الحسابات للمطوّر فقط');if(u.r<=1&&S.users[UE].r>1)return toast('لا يمكن منح دور المطوّر أو الأدمن');const a2=$('#ue-acc2');if(a2)u.acc=a2.value}
   if(dev){const p=$('#ue-p').value.trim();if(p.length<3)return toast('كلمة المرور 3 أحرف على الأقل');if(p!==_oldP&&!pwStrong(p))return toast('كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل وتحتوي على حروف وأرقام');u.p=p;if(u.r!==0){const dv=$('#ue-d').value;u.exp=dv==='0'?'':dv==='custom'?$('#ue-exp').value:addDays(todayISO(),+dv);u.on=$('#ue-on').checked?1:0;u.acc=$('#ue-acc').value}}
+  if(dev&&$('#ue-pos')){const k=u.u.toLowerCase(),P=$('#ue-pos').value,Sc=$('#ue-sec').value;S.upos=S.upos||{};if(oldU&&oldU.toLowerCase()!==k)delete S.upos[oldU.toLowerCase()];const pv=JSON.stringify(S.upos[k]||{});if(P||Sc!=='all')S.upos[k]={pos:P||'',sec:Sc};else delete S.upos[k];if(JSON.stringify(S.upos[k]||{})!==pv)enqueue('p:upos','المناصب والقطاعات','إعدادات')}
   if(UE==='new')S.users.push(u);enqueue('u'+u.u.toLowerCase(),'مستخدم: '+u.n,'مستخدم');if(oldU&&oldU.toLowerCase()!==u.u.toLowerCase()){(S.kwx=S.kwx||{})[oldU.toLowerCase()]=1;if(S.kw)delete S.kw[oldU.toLowerCase()]}const _u=u;wrapFor(_u.u,_u.p);clUserSave(_u,oldU,_isNew,_u.p!==_oldP);sha(_u.code).then(h=>{(S.ch=S.ch||{})[h]=_u.u.toLowerCase();save()});UE=null;save();syncPulse();toast('تم حفظ حساب '+n+(dev?' · كود التفعيل '+u.code:''));rerender()};
  f.querySelector('[data-ucancel]').onclick=()=>{UE=null;rerender()};
  const gp=f.querySelector('[data-genpw]');if(gp)gp.onclick=()=>{$('#ue-p').value=genPw()};
@@ -3314,9 +3363,9 @@ async function clPull(quiet){if(!clActive()||!navigator.onLine||CL.busy)return;C
   try{n+=await lgPull()}catch(_){}
   try{n+=await dvPull()}catch(_){}
   try{vrToastNew()}catch(_){}
-  const st=await clJson('/rest/v1/app_state?select=key,data,updated_at');S.stSnap=S.stSnap||{};(st||[]).forEach(s=>{S.stSnap[s.key]=JSON.stringify(s.data);if(s.key==='tpl')S.tpl=s.data;else if(s.key==='cities')S.cities=s.data;else if(s.key==='rep')S.rep=s.data;else if(s.key==='ra')S.ra=s.data;else if(s.key==='org')S.org=s.data;else if(s.key==='uh')S.uh=s.data;else if(s.key==='monr'){S.monr=s.data;try{monMerge()}catch(_){}}else if(s.key==='notice')S.notice=s.data});if(!(st||[]).some(s=>s.key==='notice'))S.notice=null;try{noticeUI()}catch(_){}touchV();dvRecheck();
+  const st=await clJson('/rest/v1/app_state?select=key,data,updated_at');S.stSnap=S.stSnap||{};(st||[]).forEach(s=>{S.stSnap[s.key]=JSON.stringify(s.data);if(s.key==='tpl')S.tpl=s.data;else if(s.key==='cities')S.cities=s.data;else if(s.key==='rep')S.rep=s.data;else if(s.key==='ra')S.ra=s.data;else if(s.key==='org')S.org=s.data;else if(s.key==='uh')S.uh=s.data;else if(s.key==='upos')S.upos=s.data;else if(s.key==='monr'){S.monr=s.data;try{monMerge()}catch(_){}}else if(s.key==='notice')S.notice=s.data});if(!(st||[]).some(s=>s.key==='notice'))S.notice=null;try{noticeUI()}catch(_){}touchV();dvRecheck();
   const sf=await clJson('/rest/v1/staff?select=*');let pws=[];if(me().r===0){try{pws=await clJson('/rest/v1/staff_pw?select=id,p')}catch(_){}}mergeStaff(sf||[],pws);
-  if(me().r===5){try{const stt=await clRpc('req_states');const mp={};(stt||[]).forEach(x=>mp[x.id]=x);const before=R.length;R=R.filter(r=>{const x=mp[r.id];return !x||(x.stage===4&&x.status==='pending')||pendingKey('r'+r.id)});if(R.length!==before)n+=before-R.length}catch(_){}}
+  if(me().r===5){try{const stt=await clRpc('req_states');const mp={};(stt||[]).forEach(x=>mp[x.id]=x);const before=R.length;R=R.filter(r=>{const x=mp[r.id];return !x||(x.stage===4&&x.status==='pending')||pendingKey('r'+r.id)});if(R.length!==before)n+=before-R.length}catch(_){}try{secApply()}catch(_){}}
   const mine=(sf||[]).find(s=>s.id===CL.uid);if(mine&&(!mine.active||(mine.role!==0&&mine.exp&&mine.exp<todayISO()))){toast('تم إيقاف حسابك أو انتهت صلاحيته من المطوّر');setTimeout(()=>$('#logoutBtn').click(),1800)}
   CL.err='';CL.pullAt=Date.now();S.lastSync=Date.now();saveRaw();if(n&&!quiet){toast('☁ تم استلام '+n+' تحديث من السحابة')}if(n||!quiet){if(quiet){bgDrawer();bgRender()}else{if(drawerOpen()&&openId)renderDrawer();rerender()}}}
  catch(e){CL.err=e.message||'تعذر الاتصال بالسحابة';if(e.status===401){CL.on=false}}finally{CL.busy=false;pill()}}
@@ -3331,7 +3380,7 @@ async function clPushOp(op){const k=op.key;
  if(k.startsWith('imp')){const ids=[...new Set([...Object.keys(S.mods||{}).map(Number),...(S.added||[]).map(a=>a.id)])];for(let i=0;i<ids.length;i+=200){const rows=rowsForReq(ids.slice(i,i+200));if(rows.length&&[0,1,2].includes(me().r))await clReqResult(await clRpc('save_requests',{rows}))}
   const ws=[...Object.values(S.wmod||{}),...(S.wadd||[])];if([0,1,3].includes(me().r))for(let i=0;i<ws.length;i+=300)await clWellResult(await clRpc('save_wells',{rows:ws.slice(i,i+300).map(w=>{const o=WB.find(x=>x.i==w.i)||w;return {i:w.i,base:o._cu||null,data:strip(o)}})}));return}
  if(/^w\d+$/.test(k)){const i=+k.slice(1);const o=WB.find(x=>x.i==i);if(o)await clWellResult(await clRpc('save_wells',{rows:[{i,base:o._cu||null,data:strip(o)}]}));return}
- if(k.startsWith('p:')){const r=me().r;const keys=r===0?['tpl','cities','rep','ra','org','uh','monr']:r===1?['tpl','cities','rep','org','ra','monr']:r===2?['cities']:r===3?['monr']:[];S.stSnap=S.stSnap||{};for(const kk of keys){const d=kk==='tpl'?S.tpl:kk==='cities'?S.cities:kk==='rep'?S.rep:kk==='org'?S.org:kk==='uh'?S.uh:kk==='monr'?S.monr:S.ra;if(d==null)continue;const js=JSON.stringify(d);if(S.stSnap[kk]===js)continue;await clRpc('save_state',{k:kk,d});S.stSnap[kk]=js}return}
+ if(k.startsWith('p:')){const r=me().r;const keys=r===0?['tpl','cities','rep','ra','org','uh','monr','upos']:r===1?['tpl','cities','rep','org','ra','monr']:r===2?['cities']:r===3?['monr']:[];S.stSnap=S.stSnap||{};for(const kk of keys){const d=kk==='tpl'?S.tpl:kk==='cities'?S.cities:kk==='rep'?S.rep:kk==='org'?S.org:kk==='uh'?S.uh:kk==='monr'?S.monr:kk==='upos'?S.upos:S.ra;if(d==null)continue;const js=JSON.stringify(d);if(S.stSnap[kk]===js)continue;await clRpc('save_state',{k:kk,d});S.stSnap[kk]=js}return}
  if(k.startsWith('bulkw:')){const is=(S.bulk||{})[k]||[];if([0,1,3].includes(me().r))for(let i=0;i<is.length;i+=80){const rows=is.slice(i,i+80).map(x=>WB.find(o=>o.i==x)).filter(Boolean).map(o=>({i:o.i,base:o._cu||null,data:strip(o)}));if(rows.length)await clWellResult(await clRpc('save_wells',{rows}))}if(S.bulk)delete S.bulk[k];return}
  if(k.startsWith('bulk:')){const ids=(S.bulk||{})[k]||[];for(let i=0;i<ids.length;i+=60){const rows=rowsForReq(ids.slice(i,i+60));if(rows.length)await clReqResult(await clRpc('save_requests',{rows}))}if(S.bulk)delete S.bulk[k];return}
  if(k.startsWith('wc:')){const i=k.slice(3);const c=wcs()[i];if(c)await clRpc('save_well_contacts',{rows:[{i:+i,data:c}]});return}
@@ -3362,8 +3411,8 @@ async function clNeedLogin(){if(!BOOTED||clActive()||!navigator.onLine)return;if
 
 /* ---------- after delivery: higher committee → wells database ---------- */
 const CM_DEC=['موافقة','طلب مستندات','رفض'];const MATCH_M=50;
-const canCommittee=()=>{const u=me();return u.r===0||([1,4].includes(u.r)&&ra(u).lsec==='edit'&&lvOf(u)!=='view')};
-const canSubmitCm=()=>{const u=me();return u.r===0||(ra(u).lsec==='edit'&&[1,4].includes(u.r)&&lvOf(u)!=='view')};
+const canCommittee=()=>{const u=me();return u.r===0||([1,3].includes(u.r)&&lvOf(u)!=='view')};
+const canSubmitCm=()=>{const u=me();return u.r===0||([1,2].includes(u.r)&&lvOf(u)!=='view')};
 const canComplete=()=>{const u=me();return [0,1,3].includes(u.r)&&lvOf(u)!=='view'};
 const fromSys=o=>o&&o.rq!=null;
 const sysBadge=(o,sm)=>fromSys(o)?`<span class="sysb${sm?' sm':''}" title="${o.rqm?'بئر قائم حُدّث من':'سُجّل من'} منظومة التراخيص · طلب م ${o.rq}${o.rqd?' · '+o.rqd:''}"><svg class="ico" viewBox="0 0 24 24"><path d="M4 12h11M11 6l6 6-6 6"/><path d="M20 4v16"/></svg>${o.rqm?'حُدّث من المنظومة':'من المنظومة'}${sm?'':' · م '+o.rq}</span>`:'';
@@ -3371,7 +3420,7 @@ const DRAFTS=r=>r.wds||(r.wd?[r.wd]:[]);const pendDrafts=r=>DRAFTS(r).filter(d=>
 function nextWellI(){let m=Math.max(0,...WB.map(x=>+x.i||0));R.forEach(r=>DRAFTS(r).forEach(d=>{if(d.wi==null&&+d.i>m)m=+d.i}));return m+1}
 const draftMatches=r=>pendDrafts(r).reduce((a,d)=>a+cmMatches(d).length,0);
 function postSt(r){if(r.status!=='closed')return null;if(r.post==='done'||(r.post==='cmok'&&DRAFTS(r).length&&!pendDrafts(r).length))return 'done';const c=r.cm;if(!c||c.dec==='تأجيل'||c.dec==='طلب مستندات')return (r.cmsub||c)?'cm':'lic';if(c.dec==='رفض')return 'cmno';return 'cmok'}
-const POST={lic:{t:'العرض على اللجنة العليا · لدى قسم التراخيص',c:'var(--s4)',bg:'color-mix(in srgb,var(--s4) 14%,var(--surface))'},cm:{t:'بانتظار موافقة اللجنة العليا',c:'var(--s5)',bg:'var(--gold-soft)'},cmok:{t:'موافقات اللجنة العليا · لدى قسم الدراسات',c:'var(--teal)',bg:'var(--teal-soft)'},done:{t:'مسجل بقاعدة البيانات',c:'var(--ok)',bg:'var(--ok-soft)'},cmno:{t:'رفضته اللجنة العليا',c:'var(--bad)',bg:'var(--bad-soft)'}};
+const POST={lic:{t:'العرض على اللجنة العليا · لدى منظومة التراخيص',c:'var(--s4)',bg:'color-mix(in srgb,var(--s4) 14%,var(--surface))'},cm:{t:'بانتظار موافقة اللجنة العليا',c:'var(--s5)',bg:'var(--gold-soft)'},cmok:{t:'موافقات اللجنة العليا · لدى قسم الدراسات',c:'var(--teal)',bg:'var(--teal-soft)'},done:{t:'مسجل بقاعدة البيانات',c:'var(--ok)',bg:'var(--ok-soft)'},cmno:{t:'رفضته اللجنة العليا',c:'var(--bad)',bg:'var(--bad-soft)'}};
 const mapPur=u=>/زراع/.test(u||'')?'الزراعة':/صناع/.test(u||'')?'الصناعة':/شرب/.test(u||'')?'مياه شرب (جمعيات)':'أخرى (خدمة طريق، حمام سباحة، ...)';
 function cmDraft(r,cm){const c=r.coords.find(q=>q[2])||[];const ip=(r.insp||[]).find(o=>o.la!=null)||{};const rp=r.rep||{};
  const d={n:r.name,nid:r.nid,nf:r.nf,reg:r.city,la:c[0]!=null?c[0]:ip.la,lo:c[1]!=null?c[1]:ip.lo,ar:cm.ar!=null&&cm.ar!==''?+cm.ar:(r.area?+(r.area.m2/FED).toFixed(4):null),q:cm.q!=null&&cm.q!==''?+cm.q:null,
@@ -3477,13 +3526,14 @@ function cmCreate(r,o,k){const rec=Object.assign({},o,{rq:r.id,rqtc:r.tc,rqd:tod
 /* list page in the database section */
 let CMT='lic';
 VIEWS.cmte=(mode)=>{const L=R.filter(r=>r.status==='closed');const by={lic:[],cm:[],cmok:[],done:[],cmno:[]};L.forEach(r=>by[postSt(r)].push(r));
- let tabs=[['lic','عند قسم التراخيص · بانتظار العرض','var(--s4)'],['cm','تم الإنهاء للعرض على اللجنة العليا','var(--s5)'],['cmok','وافقت اللجنة · استكمال البيانات','var(--teal)'],['done','مسجل بقاعدة البيانات','var(--ok)'],['cmno','رفضته اللجنة','var(--bad)']];if(mode==='lsec'){tabs=tabs.slice(0,2);if(!['lic','cm'].includes(CMT))CMT='lic'}
+ let tabs=[['lic','عند منظومة التراخيص · بانتظار العرض','var(--s4)'],['cm','تم الإنهاء للعرض على اللجنة العليا','var(--s5)'],['cmok','وافقت اللجنة · استكمال البيانات','var(--teal)'],['done','مسجل بقاعدة البيانات','var(--ok)'],['cmno','رفضته اللجنة','var(--bad)']];if(mode==='lsec'){tabs=tabs.slice(0,2);if(!['lic','cm'].includes(CMT))CMT='lic'}
  const list=by[CMT].sort((a,b)=>CMT==='lic'?((a.post_at||a.date)||'').localeCompare((b.post_at||b.date)||''):CMT==='cm'?(((a.cmsub&&a.cmsub.date)||'').localeCompare((b.cmsub&&b.cmsub.date)||'')):((b.cm&&b.cm.date)||'').localeCompare((a.cm&&a.cm.date)||''));const openOK=pageOK('requests');
- return `<div class="ph"><div><h2>${mode==='lsec'?'العرض على اللجنة العليا':'المحوّل من منظومة التراخيص'}</h2><p>${mode==='lsec'?'الطلبات المسلّمة من منظومة التراخيص ← قسم التراخيص يسجّل «تم الإنهاء للعرض على اللجنة العليا» (الملف بالوزارة) ← قسم الدراسات يؤكد قرار اللجنة ← التحويل التلقائي لقاعدة البيانات.':'الطلبات المسلّمة لقسم التراخيص ← العرض على اللجنة العليا ← تأكيد قسم الدراسات لقرار اللجنة ← استكمال بيانات البئر ← مطابقة الإحداثيات مع قاعدة البيانات ← التسجيل.'}</p></div></div>
+ return `<div class="ph"><div><h2>${mode==='lsec'?'العرض على اللجنة العليا':'المحوّل من منظومة التراخيص'}</h2><p>${mode==='lsec'?'الطلبات المستوفاة ← منظومة التراخيص تُعد كشف العرض وتسجّل «تم الإنهاء للعرض على اللجنة العليا» (الملف بالوزارة) ← قسم الدراسات يؤكد قرار اللجنة ← التحويل التلقائي لقاعدة البيانات.':'الطلبات المستوفاة لدى منظومة التراخيص ← العرض على اللجنة العليا ← تأكيد قسم الدراسات لقرار اللجنة ← استكمال بيانات البئر ← مطابقة الإحداثيات مع قاعدة البيانات ← التسجيل.'}</p></div></div>
+ ${CMT==='lic'&&canSubmitCm()&&by.lic.length?`<div class="filters" style="margin-bottom:10px"><button class="btn pri" data-cmprint>🖨 كشف العرض على اللجنة العليا (${by.lic.length})</button><span class="muted" style="font-size:12px">A4 أفقي · يشمل كل الطلبات بانتظار العرض · رقم الجلسة وتاريخها من شريط المعاينة</span></div>`:''}
  <div class="minis">${tabs.map(t=>`<button class="card cmk ${CMT===t[0]?'on':''}" data-cmtab="${t[0]}" style="--c:${t[2]}"><span class="muted">${t[1]}</span><b>${by[t[0]].length}</b></button>`).join('')}</div>
  <div class="card"><h3>${tabs.find(t=>t[0]===CMT)[1]} <small>${list.length}</small></h3>${list.length?`<div class="tw"><table><thead><tr><th>الطلب</th><th>العميل</th><th>المنطقة</th><th>النوع</th><th>الآبار</th><th>اللجنة العليا</th><th>التطابق</th><th></th></tr></thead><tbody>${list.map(r=>{const nmt=CMT==='cmok'?draftMatches(r):0;const D=DRAFTS(r),dn=D.filter(d=>d.wi!=null).length;return `<tr style="cursor:default"><td class="num">م ${r.id}<br><small class="muted">${esc(r.file||'')}</small></td><td><b>${esc(r.name)}</b></td><td>${esc(r.city)}</td><td>${esc(KL(r.kind))}<br><small class="muted">${esc(catOf(r))}</small></td><td class="num"><b>${nwOf(r)}</b></td><td>${r.cm?`${fD(r.cm.date)}<br><small class="muted">${esc(r.cm.dec)}${r.cm.dno?' · '+esc(r.cm.dno):''}</small>`:r.cmsub?`عُرض ${fD(r.cmsub.date)}<br><small class="muted">${r.cmsub.no?'خطاب '+esc(r.cmsub.no)+' · ':''}منذ ${days(r.cmsub.date)} يوم</small>`:'<span class="muted">لم يُعرض بعد</span>'}</td><td>${CMT==='cmok'?(nmt?`<span class="tag" style="background:var(--warn-soft);color:var(--warn)">⚠ ${nmt} تطابق</span>`:'<span class="muted">لا يوجد</span>')+(D.some(d=>d.hold&&d.wi==null)?' <span class="tag" style="background:var(--warn-soft);color:var(--warn)">⏸ معلّق للمراجعة</span>':''):CMT==='done'&&D.length?'ترقيم '+D.map(d=>d.wi).filter(x=>x!=null).join('، '):'—'}</td>
    <td style="display:flex;gap:6px;flex-wrap:wrap">${CMT==='lic'&&canSubmitCm()?(vrLock(r)?vrLockBox(r,1):`<button class="btn sm pri" data-cmsub="${r.id}">تم الإنهاء للعرض على اللجنة</button>`):''}${CMT==='cm'&&canCommittee()?`<button class="btn sm pri" data-cmopen="${r.id}">تأكيد قرار اللجنة</button>`:''}${CMT==='cm'&&canSubmitCm()?`<button class="btn sm ghost" data-cmsub="${r.id}">بيانات العرض</button>`:''}${CMT==='cmok'&&canComplete()?`<button class="btn sm pri" data-cmfill="${r.id}">استكمال البيانات${D.length>1?' ('+dn+'/'+D.length+')':''}</button>`:''}${CMT==='done'&&r.wi!=null&&WB.findIndex(x=>x.i==r.wi)>=0?`<button class="btn sm" data-well="${WB.findIndex(x=>x.i==r.wi)}">عرض البئر</button>`:''}${(CMT==='cmok'||CMT==='cmno')&&canCommittee()?`<button class="btn sm ghost" data-cmopen="${r.id}">تعديل القرار</button>`:''}${openOK?`<button class="btn sm ghost" data-open="${r.id}">ملف الطلب</button>`:''}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty">لا توجد طلبات في هذه الخانة.</div>`}</div>
- <div class="note">الإنهاء للعرض على اللجنة العليا: قسم التراخيص · تأكيد قرار اللجنة (موافقة / رفض) واستكمال البيانات والمطابقة: قسم الدراسات والأدمن (تحكم كامل).</div>`};
+ <div class="note">إعداد كشف العرض والإنهاء للعرض على اللجنة العليا: منظومة التراخيص · تأكيد قرار اللجنة (موافقة / رفض) واستكمال البيانات والمطابقة: قسم الدراسات والأدمن (تحكم كامل).</div>`};
 VIEWS.lcm=()=>VIEWS.cmte('lsec');
 
 /* ---------- المتغيرات المكانية والمطالبات المالية (مسار موازٍ لا يعطّل منظومة التراخيص) ---------- */
@@ -4047,10 +4097,58 @@ async function gdVerify(f){try{const o=JSON.parse(await f.text());if(o.app!=='we
  const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:ub(o.iv)},key,ub(o.ct));const txt=await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('gzip'))).text();const d=JSON.parse(txt);
  const c=Object.entries(d.tables||{}).map(([k,v])=>k+': '+(Array.isArray(v)?v.length:0)).join(' · ');toast('✓ النسخة سليمة ('+fT(Date.parse(d.at))+') · '+c,9000)}catch(e){toast('تعذر فك الملف · تأكد من كلمة السر')}}
 
+/* =====================================================================
+   القطاعات (الخارجة / باريس) · المناصب داخل الأقسام · كشف العرض على اللجنة العليا
+   ===================================================================== */
+const SECT={kh:'قطاع الخارجة',pa:'قطاع باريس'};const SEC_LAT=24.93;
+const PA_CITIES=['باريس','بغداد','عدن','جده','جدة','دوش','المكس (البحرى/القبلى)','القصر (البحرى/القبلى)','درب الاربعين و الشب','قرى الأربعين'];
+const PA_RX=/باريس|بغداد|عدن|جد[هة]|دوش|المكس|القصر|الأربعين|الاربعين|الشب\b/;
+const KH_RX=/الخارجة|المنيرة|المنيره|الشركة|بورسعيد|جناح|ناصر|بولاق|الجزائر|صنعاء|الكويت|جورمشين|طليب|النقب|الجب|عين الغزال|الكوامل|جرجا|قنا|سوهاج/;
+const secLat=la=>la>20&&la<30?(la<SEC_LAT?'pa':'kh'):null;
+function secOfReq(r){const p=reqPt(r);const s=p&&secLat(p.la);if(s)return s;const c=(r.city||'').trim();if(PA_CITIES.includes(c)||PA_RX.test(c))return 'pa';if(c&&c!=='فلسطين'&&KH_RX.test(c))return 'kh';return '?'}
+function secOfWell(o){const s=o.la!=null&&secLat(+o.la);if(s)return s;const c=(o.reg||'')+' '+(o.addr||'');if(PA_RX.test(c))return 'pa';if(KH_RX.test(c))return 'kh';return '?'}
+const secTag=s=>s==='?'?'<span class="tag" style="background:var(--surface2);color:var(--muted)">قطاع غير محدد</span>':`<span class="tag" style="background:color-mix(in srgb,${s==='pa'?'var(--gold)':'var(--teal)'} 15%,var(--surface));color:${s==='pa'?'var(--gold)':'var(--teal)'}">${SECT[s]}</span>`;
+
+/* المناصب داخل الأقسام · تُحفظ للمطوّر في app_state 'upos' */
+const POSN={5:{head:'مدير التفتيش',dep:'وكيل التفتيش',eng:'مهندس التفتيش'},3:{head:'رئيس قسم الدراسات',eng:'مهندس قسم الدراسات'},4:{head:'رئيس قسم التراخيص',eng:'مهندس قسم التراخيص'}};
+const uposOf=u=>u&&(S.upos||{})[String(u.u||'').toLowerCase()]||{};
+const mySec=()=>{const u=me();if(!u||u.r!==5)return 'all';const s=uposOf(u).sec;return s==='kh'||s==='pa'?s:'all'};
+const isHead=u=>{u=u||me();const p=uposOf(u).pos;return u&&(u.r===0||u.r===1||p==='head'||p==='dep')};
+function posTitle(u){if(!u)return '';const P=POSN[u.r],o=uposOf(u);let t=(P&&o.pos&&P[o.pos])||ROLES[u.r]||'';if(u.r===5&&(o.sec==='kh'||o.sec==='pa'))t+=' · '+(o.sec==='kh'?'الخارجة':'باريس');return t}
+/* مهندس التفتيش يرى معاينات وآبار قطاعه فقط */
+function secApply(){const s=mySec();if(s==='all')return;const ok=x=>x===s||x==='?';const n0=R.length;R=R.filter(r=>ok(secOfReq(r))||pendingKey('r'+r.id));if(typeof WB!=='undefined'&&WB.length){WB=WB.filter(o=>ok(secOfWell(o)));WB.forEach((o,i)=>o._i=i)}return n0-R.length}
+/* إسناد المعاينة لمهندس من قطاعها (المدير والوكيل) */
+const inspEngs=r=>{const s=secOfReq(r);return (S.users||[]).filter(u=>u.r===5&&u.on&&(!uposOf(u).pos||uposOf(u).pos==='eng'||uposOf(u).pos==='dep'||uposOf(u).pos==='head')&&(s==='?'||!uposOf(u).sec||uposOf(u).sec==='all'||uposOf(u).sec===s))};
+function asgCard(r){if(r.status!=='pending'||r.stage!==4)return '';const u=me();const can=u.r===0||u.r===1||(u.r===5&&isHead(u));const cur_=r.asg?(S.users||[]).find(x=>x.u.toLowerCase()===r.asg):null;
+ if(!can&&!cur_)return '';return `<div class="card"><h3>إسناد المعاينة ${secTag(secOfReq(r))}</h3>${can?`<div class="filters"><select class="inp" id="asg-u" style="max-width:260px"><option value="">— بدون إسناد —</option>${inspEngs(r).map(x=>`<option value="${esc(x.u.toLowerCase())}" ${r.asg===x.u.toLowerCase()?'selected':''}>${esc(x.n)} · ${esc(posTitle(x))}</option>`).join('')}</select><button class="btn sm pri" data-asgsave="${r.id}">حفظ الإسناد</button></div>`:''}${cur_?`<p class="muted" style="margin:8px 0 0">مسندة إلى: <b>${esc(cur_.n)}</b>${r.asgby?' · بواسطة '+esc(r.asgby):''}</p>`:''}</div>`}
+function asgSave(id){const r=findReq(id);if(!r)return;const v=$('#asg-u').value;r.asg=v||null;r.asgby=v?me().n:null;r.log.push({d:todayISO(),t:v?'إسناد المعاينة إلى '+((S.users.find(x=>x.u.toLowerCase()===v)||{}).n||v):'إلغاء إسناد المعاينة',u:me().n,ts:Date.now()});persist(r);syncPulse();toast('✓ تم حفظ الإسناد');renderDrawer()}
+
+/* ---------- كشف العرض على اللجنة العليا (A4 أفقي) ---------- */
+const CMS={sel:{},no:'',date:''};
+function cmRow(r,k){const fed=fedOf(r),A=fed?areaFrom(fed*FED):null,p=reqPt(r),v=(S.vrs||{})[r.id];const ins=(r.insp||[]).length;const s=secOfReq(r);
+ const pay=v&&v.st==='paid'?`<b class="ok">مسدد</b><small>${vrMoney(v.amt)}${v.rcpt?' · إيصال '+esc(v.rcpt):''}</small>`:v&&v.st==='pay'?`<b class="bad">لم يُسدد</b><small>${vrMoney(v.amt)}</small>`:v&&['var','claim'].includes(v.st)?'<small>جارٍ الاحتساب</small>':v&&v.st==='none'?'<small>لا متغيرات</small>':'<small>—</small>';
+ return `<tr><td>${k}</td><td><b>${esc(r.name)}</b><small>${esc(r.nf||r.nid||'')}</small></td><td>${esc(r.file||'—')}<small>م ${r.id}</small></td><td>${esc(r.city||'')}<small>${s==='?'?'':SECT[s].replace('قطاع ','')}</small></td><td>${esc(KL(r.kind))}<small>${esc(r.use||'')}</small></td>
+ <td>${A?`${A.f} ف ${A.q} ط ${A.sh} س`:'—'}<small>${nwOf(r)} بئر</small></td><td class="ll" data-lat>${p?p.la.toFixed(5)+'<br>'+p.lo.toFixed(5):'—'}</td><td>${ins?'<b class="ok">تمت</b>':'—'}<small>${ins?ins+' صورة':''}</small></td><td>${pay}</td><td class="dec"><span>☐ موافقة</span><span>☐ رفض</span><span>☐ تأجيل</span></td><td class="nt"></td></tr>`}
+function cmPages(L){const per=11,LP=8,P=[];for(let i=0;i<L.length;i+=per)P.push(L.slice(i,i+per));if(!P.length)P.push([]);if(P[P.length-1].length>LP){const x=P.pop();P.push(x.slice(0,x.length-3));P.push(x.slice(-3))}const tot=P.length;const kinds={};L.forEach(r=>{const k=KL(r.kind);kinds[k]=(kinds[k]||0)+1});const sec={kh:0,pa:0,'?':0};L.forEach(r=>sec[secOfReq(r)]++);
+ return P.map((rows,pi)=>`<div class="a4 land cmpg" dir="rtl"><div class="cedge t"></div><img class="cwm" src="${LOGO}" alt="">
+ <div class="cmh"><div class="corg"><b>قطاع المياه الجوفية</b>الإدارة العامة للمياه الجوفية بالخارجة ودرب الأربعين<br>منظومة تراخيص الآبار</div><div class="cmt"><img src="${LOGO}" alt=""><div><h1>كشف العرض على اللجنة العليا للتراخيص</h1><p>طلبات تراخيص الآبار الجوفية المستوفاة للعرض</p></div></div>
+ <div class="cmm"><div><span>رقم الجلسة</span><b>${esc(CMS.no||'............')}</b></div><div><span>تاريخ الانعقاد</span><b>${CMS.date?clFdP(CMS.date):'..../..../......'}</b></div><div><span>عدد الطلبات</span><b>${L.length}</b></div></div></div>
+ ${pi===0?`<div class="cmsum">${Object.entries(kinds).map(([k,n])=>`<span><b>${n}</b> ${esc(k)}</span>`).join('')}<span class="sp"></span><span><b>${sec.kh}</b> قطاع الخارجة</span><span><b>${sec.pa}</b> قطاع باريس</span></div>`:''}
+ <table class="cmtb"><colgroup><col style="width:8mm"><col style="width:52mm"><col style="width:22mm"><col style="width:24mm"><col style="width:26mm"><col style="width:24mm"><col style="width:22mm"><col style="width:16mm"><col style="width:24mm"><col style="width:24mm"><col></colgroup>
+ <thead><tr><th>م</th><th>صاحب الطلب<small>الرقم القومي</small></th><th>رقم الملف</th><th>المنطقة</th><th>نوع الترخيص<small>الغرض</small></th><th>المساحة<small>عدد الآبار</small></th><th>الإحداثيات<small>N / E</small></th><th>المعاينة</th><th>المطالبة المالية</th><th>قرار اللجنة</th><th>ملاحظات اللجنة</th></tr></thead>
+ <tbody>${rows.map((r,i)=>cmRow(r,P.slice(0,pi).reduce((a,x)=>a+x.length,0)+i+1)).join('')}${rows.length<LP&&pi===tot-1?Array(LP-rows.length).fill('<tr class="empty"><td colspan="11"></td></tr>').join(''):''}</tbody></table>
+ ${pi===tot-1?`<div class="cmsig">${['مقرر اللجنة','منظومة التراخيص','مدير عام الإدارة العامة للمياه الجوفية'].map(t=>`<div><h5>${t}</h5><div class="ln"></div></div>`).join('')}<div class="cap"><b>يُعتمد</b><span>رئيس اللجنة العليا للتراخيص</span><div class="ln"></div></div></div>`:''}
+ <div class="clft"><span>منظومة تراخيص الآبار بالخارجة · كشف العرض على اللجنة العليا${CMS.no?' · جلسة '+esc(CMS.no):''} · صفحة ${pi+1} من ${tot}</span><span class="cr">جميع الحقوق محفوظة للمصمم والمطور - م/ أسامه حسن بدري - 01145060007</span></div></div>`).join('')}
+function cmPrint(){const L=R.filter(r=>r.status==='closed'&&postSt(r)==='lic');const chosen=L.filter(r=>CMS.sel[r.id]!==false);if(!chosen.length)return toast('لا توجد طلبات بانتظار العرض');let p=$('#print');if(!p){p=document.createElement('div');p.id='print';document.body.appendChild(p)}
+ p.innerHTML=`<div class="prbar"><b>كشف العرض على اللجنة العليا</b><input class="inp" id="cms-no" placeholder="رقم الجلسة" value="${esc(CMS.no)}" style="max-width:130px"><input class="inp" type="date" id="cms-d" value="${CMS.date||''}" style="max-width:160px"><span style="flex:1"></span><button class="btn pri" data-drprint>طباعة / حفظ PDF</button><button class="btn" data-drclose>إغلاق</button></div><div class="prwrap">${cmPages(chosen).replace(/ · /g,'<span class="csep"></span>')}</div>`;
+ p.querySelectorAll('.cmpg').forEach(clmArab);p.hidden=false;document.body.classList.add('pon');const upd=()=>{CMS.no=$('#cms-no').value.trim();CMS.date=$('#cms-d').value;cmPrint()};$('#cms-no').onchange=upd;$('#cms-d').onchange=upd}
+
 /* بطاقة داخل ملف الطلب */
 function vrCard(r){const v=vrs()[r.id];if(v)return `<div class="card vrcard"><h3>المتغيرات المكانية والمطالبة المالية ${vrStPill(v)}<button class="btn sm ghost" data-vrinfo="${r.id}" style="margin-inline-start:auto">السجل</button></h3>${vrSteps(v)}${v.from?`<div class="kv"><div><span>فترة المتغيرات</span><b>${fD(v.from)} ← ${fD(v.to)}</b></div><div><span>متوسط المساحة</span><b class="num">${vrFed(v.area)}</b></div>${v.amt?`<div><span>المطالبة <bdi dir="ltr">${esc(v.cno||'')}</bdi></span><b class="num">${vrMoney(v.amt)}</b></div>`:''}</div>`:''}${v.clm?`<div style="margin-top:8px"><button class="btn sm ghost" data-clmpr="${r.id}">🖨 المطالبة المالية</button></div>`:''}${v.rcpt?`<div style="margin-top:8px">${rcBtns(v)}</div>`:''}${canVrBack(v)?`<div style="margin-top:8px"><button class="btn sm ghost" data-vrback="${r.id}">↩ إعادة لقسم المتغيرات لإعادة الاحتساب</button></div>`:''}<div class="muted" style="font-size:12px;margin-top:6px">مسار موازٍ لا يوقف إجراءات الطلب في منظومة التراخيص · يلزم السداد قبل عرض الملف على اللجنة العليا.</div></div>`;
  if(r.stage>=2&&r.status!=='rejected'&&canSendVar())return `<div class="card vrcard"><h3>المتغيرات المكانية</h3><div class="filters"><span class="muted" style="font-size:13px">لم تُرسل نسخة من هذا الطلب لقسم المتغيرات.</span><button class="btn sm pri" data-vrnew="${r.id}" style="margin-inline-start:auto">إرسال نسخة لقسم المتغيرات</button></div></div>`;return ''}
 function vrClick(t){let el;
+ if(t.closest('[data-cmprint]')){cmPrint();return true}
+ if(el=t.closest('[data-asgsave]')){asgSave(+el.dataset.asgsave||el.dataset.asgsave);return true}
  if(t.closest('[data-scrun]')){scanRun();return true}
  if(t.closest('[data-scstop]')){SC.stop=true;toast('جارٍ الإيقاف…');return true}
  if(t.closest('[data-monsave]')){monSave();return true}
@@ -4102,7 +4200,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.16-0209';
+const APP_VER='2026.11.16-1957';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */
@@ -4113,10 +4211,10 @@ let PDF_BUSY=0;
 async function prPdf(btn){if(PDF_BUSY)return;const box=$('#print');const P=box?[...box.querySelectorAll('.a4')]:[];if(!P.length)return;PDF_BUSY=1;const t0=btn.textContent;btn.disabled=true;btn.textContent='جارٍ تجهيز PDF…';box.classList.add('pdfing');
  try{if(!window.htmlToImage)await ldJs(window.__H2I||PDFLIB.h);if(!(window.jspdf&&window.jspdf.jsPDF))await ldJs(window.__JSPDF||PDFLIB.j);
   if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-  const doc=new jspdf.jsPDF({unit:'mm',format:'a4',orientation:'portrait',compress:true});
+  const LD=e=>e.classList.contains('land');const doc=new jspdf.jsPDF({unit:'mm',format:'a4',orientation:LD(P[0])?'landscape':'portrait',compress:true});
   for(let i=0;i<P.length;i++){btn.textContent=P.length>1?`جارٍ تجهيز PDF… ${i+1}/${P.length}`:'جارٍ تجهيز PDF…';
-   const url=await htmlToImage.toJpeg(P[i],{quality:.93,pixelRatio:2.4,backgroundColor:'#ffffff',width:794,height:1123,style:{zoom:'1',margin:'0',boxShadow:'none',transform:'none'}});
-   if(i)doc.addPage('a4','portrait');doc.addImage(url,'JPEG',0,0,210,297,undefined,'FAST')}
+   const url=await htmlToImage.toJpeg(P[i],{quality:.93,pixelRatio:2.4,backgroundColor:'#ffffff',width:LD(P[i])?1123:794,height:LD(P[i])?794:1123,style:{zoom:'1',margin:'0',boxShadow:'none',transform:'none'}});
+   if(i)doc.addPage('a4',LD(P[i])?'landscape':'portrait');doc.addImage(url,'JPEG',0,0,LD(P[i])?297:210,LD(P[i])?210:297,undefined,'FAST')}
   const nm=((box.querySelector('.prbar b')||{}).textContent||'تقرير').replace(/[\\/:*?"<>|]+/g,' ').trim().slice(0,90);
   const blob=doc.output('blob'),file=new File([blob],nm+'.pdf',{type:'application/pdf'});
   let shared=false;if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:nm});shared=true}catch(e){if(e&&e.name==='AbortError')shared=true}}
@@ -5156,7 +5254,7 @@ async function sha(x){const h=await crypto.subtle.digest('SHA-256',new TextEncod
 async function openData(raw){const k=await crypto.subtle.importKey('raw',raw,'AES-GCM',false,['decrypt']);const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(ENC.iv)},k,b64(ENC.ct));const ds=new Blob([pt]).stream().pipeThrough(new DecompressionStream('gzip'));return JSON.parse(await new Response(ds).text())}
 async function boot(raw){const p=await openData(raw);KRAW=raw;RAW=p.req;WREG=p.reg;PUSERS=p.users;init();accInit();roleInit();repInit();inspInit();initReg();BOOTED=true}
 function allowed(u){if(!u)return 'هذا الحساب لم يعد موجوداً. تواصل مع المطوّر.';if(!u.on)return 'هذا الحساب موقوف. تواصل مع المطوّر لإعادة تفعيله.';if(u.exp&&u.exp<todayISO())return 'انتهت مدة صلاحية الحساب في '+fD(u.exp)+'. تواصل مع المطوّر للتجديد.';return ''}
-function enter(u){setTimeout(()=>{try{drfOffer()}catch(_){}},1600);setTimeout(()=>{try{mrAuto();if(pushOn())pushSubscribe(true)}catch(_){}},4000);setTimeout(()=>{try{permPrime()}catch(_){}},1800);setTimeout(()=>{try{noticeUI()}catch(_){}},400);(S.auth=S.auth||[]).unshift({ts:Date.now(),u:u.n,t:'تسجيل دخول',dev:(devs().find(d=>d.self)||{}).n||''});S.auth=S.auth.slice(0,200);setTimeout(()=>pill(),50);setTimeout(()=>autoBackup(true),1500);S.cur=u.u;u.last=fD(todayISO())+' · '+nowT();saveRaw();setTimeout(()=>{pill();flush()},800);try{sessionStorage.setItem('wl-k',ub64(KRAW));sessionStorage.setItem('wl-u',u.u)}catch(_){}if(u.r===5)R=R.filter(r=>r.stage===4&&r.status==='pending');$('#login').hidden=true;document.body.classList.remove('locked');UE=null;NAV=[];go(firstPage());const h=(location.hash||'').slice(1);if(h&&h!=='dash'&&PAGES.some(x=>x[0]===h))go(h)}
+function enter(u){setTimeout(()=>{try{drfOffer()}catch(_){}},1600);setTimeout(()=>{try{mrAuto();if(pushOn())pushSubscribe(true)}catch(_){}},4000);setTimeout(()=>{try{permPrime()}catch(_){}},1800);setTimeout(()=>{try{noticeUI()}catch(_){}},400);(S.auth=S.auth||[]).unshift({ts:Date.now(),u:u.n,t:'تسجيل دخول',dev:(devs().find(d=>d.self)||{}).n||''});S.auth=S.auth.slice(0,200);setTimeout(()=>pill(),50);setTimeout(()=>autoBackup(true),1500);S.cur=u.u;u.last=fD(todayISO())+' · '+nowT();saveRaw();setTimeout(()=>{pill();flush()},800);try{sessionStorage.setItem('wl-k',ub64(KRAW));sessionStorage.setItem('wl-u',u.u)}catch(_){}if(u.r===5){R=R.filter(r=>r.stage===4&&r.status==='pending');try{secApply()}catch(_){}}$('#login').hidden=true;document.body.classList.remove('locked');UE=null;NAV=[];go(firstPage());const h=(location.hash||'').slice(1);if(h&&h!=='dash'&&PAGES.some(x=>x[0]===h))go(h)}
 $('#sTheme').onclick=()=>$('#themeBtn').click();$('#sOut').onclick=()=>$('#logoutBtn').click();
 $('#logoutBtn').onclick=()=>{try{sessionStorage.removeItem('wl-k');sessionStorage.removeItem('wl-u')}catch(_){}if(!(S.q||[]).length)clClear();location.reload()};
 $('#lpEye').onclick=()=>{const i=$('#lp');i.type=i.type==='password'?'text':'password'};

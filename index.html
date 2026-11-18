@@ -1579,6 +1579,7 @@ tr.spsame td{background:color-mix(in srgb,var(--gold) 8%,transparent)}tr.spbad t
 .vlth{width:46px;height:46px;object-fit:cover;border-radius:8px;float:right;margin-inline-end:8px;cursor:zoom-in}.vlbadge{display:inline-block;font-size:11px;margin-inline-end:6px}
 .vlbig{position:fixed;inset:0;background:rgb(0 0 0/.8);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:8px;color:#fff}.vlbig img{max-width:94vw;max-height:84vh;border-radius:10px}
 @media (max-width:600px){.vlchk li{flex-direction:column;gap:0}}
+.znauto{display:grid;gap:8px}.znsec{border:1px solid var(--line);border-radius:12px;padding:8px 10px}.znsec h4{margin:0 0 6px;font-size:13.5px}.znsec h4 small{font-weight:500;color:var(--muted)}.znrow{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:4px 0}.znadm{margin-top:8px;padding:8px;border:1px dashed var(--gold);border-radius:10px}
 </style>
 
 <div class="login" id="login" hidden>
@@ -4539,13 +4540,9 @@ const ZN_EV={sat:'صورة قمر صناعي',insp:'محضر معاينة',lic:'
 function zoneCard(r){const z=reqZone(r);const nz=zoneNear(r);if(z!=='in'&&!(r.zn&&r.zn.t))return nz?zoneNearCard(r,nz):'';const b=zoneBlock(r,'close');const zn=r.zn||{};const ed=canZn(r)&&r.status!=='closed'&&r.status!=='rejected';
  return `<div class="card zcard ${b?'bad':''}"><h3>منطقة الحظر المائي ${zoneTag(z)}${nz?` <span class="tag" style="color:var(--gold)">⚠ ${nz} م من الحدود</span>`:''}</h3>
  ${r.kind==='جديد'&&z==='in'?`<div class="note bad" style="margin:0">⛔ ${esc(zoneBlock(r,'accept'))}.</div>${canRejectAny()&&r.status==='pending'?`<button class="btn sm danger" data-znrej="${r.id}" style="margin-top:8px">رفض الطلب لوقوعه في منطقة الحظر المائي</button>`:''}`:
- `<p class="muted" style="margin:0 0 8px">يُسمح داخل منطقة الحظر بتقنين الآبار القائمة قبل صدور القانون (قبل ${fD(ZONE_CUT)}) فقط. حدد موقف البئر والدليل عليه — تظهر البيانات في عمود «ملاحظات» بجدول العرض على اللجنة العليا.</p>
- ${ed?`<div class="form" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))"><div class="fld"><label for="zn-t">موقف البئر</label><select class="inp" id="zn-t" style="width:100%"><option value="">— اختر —</option><option value="lic" ${zn.t==='lic'?'selected':''}>مرخص سابقاً</option><option value="pre" ${zn.t==='pre'?'selected':''}>محفور بالمخالفة قبل أكتوبر 2021</option><option value="post" ${zn.t==='post'?'selected':''}>محفور بعد أكتوبر 2021 (لا يُقنن)</option></select></div>
-  <div class="fld"><label for="zn-d">تاريخ الحفر / أول ظهور</label><input class="inp" type="month" id="zn-d" value="${esc(zn.d||'')}" max="${todayISO().slice(0,7)}"></div>
-  <div class="fld"><label for="zn-ev">الدليل</label><select class="inp" id="zn-ev" style="width:100%">${Object.entries(ZN_EV).map(([k,v])=>`<option value="${k}" ${zn.ev===k?'selected':''}>${v}</option>`).join('')}</select></div>
-  <div class="fld" style="grid-column:1/-1"><label for="zn-nt">ملاحظات (رقم الترخيص السابق / رقم وتاريخ قرار اللجنة السابقة / وصف الدليل)</label><input class="inp" id="zn-nt" value="${esc(zn.nt||'')}"></div></div>
-  <div class="filters" style="margin-top:6px"><button class="btn sm pri" data-znsave="${r.id}">حفظ موقف البئر</button><button class="btn sm" data-satba="${r.id}">🛰 صور القمر الصناعي: قبل القانون وبعده</button></div>`:
-  `<div class="kv"><div><span>موقف البئر</span><b>${zn.t==='lic'?'مرخص سابقاً':zn.t==='pre'?'محفور قبل أكتوبر 2021':zn.t==='post'?'محفور بعد أكتوبر 2021':'لم يُحدد'}</b></div><div><span>تاريخ الحفر</span><b>${esc(zn.d||'—')}</b></div><div><span>الدليل</span><b>${esc(ZN_EV[zn.ev]||'—')}</b></div></div>${zn.nt?`<p class="muted" style="margin:6px 0 0">${esc(zn.nt)}</p>`:''}<button class="btn sm" data-satba="${r.id}" style="margin-top:8px">🛰 صور القمر الصناعي: قبل القانون وبعده</button>`}
+ `<p class="muted" style="margin:0 0 8px">يُسمح داخل منطقة الحظر بتقنين الآبار القائمة قبل صدور القانون (قبل ${fD(ZONE_CUT)}) فقط. موقف البئر يُعتمد من سجل الآبار المرخصة أو من فحص القمر الصناعي — تظهر البيانات في عمود «ملاحظات» بجدول العرض على اللجنة العليا.</p>
+ ${ed?`${znAuto(r)}<div class="filters" style="margin-top:6px"><button class="btn sm" data-satba="${r.id}">🛰 صور القمر الصناعي: قبل القانون وبعده</button></div>`:
+  `<div class="kv"><div><span>موقف البئر</span><b>${zn.t==='lic'?'مرخص سابقاً':zn.t==='pre'?'محفور قبل أكتوبر 2021':zn.t==='post'?'محفور بعد أكتوبر 2021':'لم يُحدد'}</b></div><div><span>تاريخ الحفر</span><b>${esc(zn.d||'—')}</b></div><div><span>الدليل</span><b>${esc(ZN_EV[zn.ev]||'—')}</b></div></div>${znSrcLine(zn)}${zn.nt?`<p class="muted" style="margin:6px 0 0">${esc(zn.nt)}</p>`:''}<button class="btn sm" data-satba="${r.id}" style="margin-top:8px">🛰 صور القمر الصناعي: قبل القانون وبعده</button>`}
  ${b?`<div class="note bad" style="margin:8px 0 0">${esc(b)}</div>`:zn.t?'<div class="note" style="margin:8px 0 0;background:color-mix(in srgb,var(--ok) 12%,transparent)">✓ مسموح بالتقنين · يُعرض في جدول «'+(zn.t==='lic'?'آبار مرخصة سابقاً':'آبار تم حفرها بالمخالفة')+' (داخل منطقة الحظر المائي)»</div>':''}`}
  <div class="satba" hidden></div></div>`}
 function znSave(id){const r=findReq(+id);if(!r||!canZn(r))return;const t=$('#zn-t').value,d=$('#zn-d').value,ev=$('#zn-ev').value,nt=$('#zn-nt').value.trim();if(!t)return toast('اختر موقف البئر');if(t==='pre'&&!d)return toast('اكتب تاريخ الحفر أو أول ظهور للبئر');if(t==='pre'&&d+'-01'>=ZONE_CUT)return toast('التاريخ بعد أكتوبر 2021 · اختر «محفور بعد أكتوبر 2021»');
@@ -4843,11 +4840,11 @@ const dcPreHTML=x=>x&&x.lv!=='ok'&&x.pre&&x.pre.length?`<div class="dcpre"><span
 const dcV1=x=>esc(x.v1||String(x.v).split(' · ')[0]),dcV2=x=>esc(x.v2||String(x.v).split(' · ').slice(1).join(' · ')).replace(/ · /g,'<span class="dsep"></span>');
 function dcView(x,rid){if(!x)return '';if(x.err&&!x.M)return `<div class="note bad" style="margin:8px 0 0">تعذر الفحص · ${esc(x.err)}</div>`;const col={ok:'var(--ok)',warn:'var(--warn)',bad:'var(--bad)'}[x.lv];
  return `<div class="dcres" style="--c:${col}"><b class="dcv">${x.lv==='ok'?'✓':x.lv==='bad'?'⛔':'!'} ${dcV1(x)}</b><div class="dcv2">${dcV2(x)}</div>${dcChart(x)}${dcPreHTML(x)}<small class="muted">المساحة المزروعة شهرياً (فدان) داخل حدود ${x.landF} فدان${x.edge?' بعد استبعاد شريط '+x.edge+' م على الحدود':''} · الخط البرتقالي = حد الزراعة المستمرة (${x.thr} فدان: ${x.thrMan?'حد يدوي':'١٥٪ من الأرض أو نصف فدان'}) · أول ظهور = 3 شهور على الأقل من 4 فوق الحد${x.gaps?' · '+x.gaps+' شهر بدون صور صالحة (سحب)':''}${x.err?' · جزء من الفترة تعذر حسابه':''} · Sentinel-2 · تقدير داعم يُعتمد مع المعاينة والمستندات</small>
- ${rid&&x.lv==='ok'&&x.start&&findReq(+rid)&&reqZone(findReq(+rid))==='in'&&!(findReq(+rid).zn&&findReq(+rid).zn.t)&&canZn(findReq(+rid))?`<button class="btn sm pri" data-dcuse="${rid}" style="margin-top:6px">اعتماد النتيجة: محفور قبل أكتوبر 2021 · الدليل صورة قمر صناعي</button>`:''}</div>`}
+ ${rid&&x.lv==='ok'&&x.start&&findReq(+rid)&&reqZone(findReq(+rid))==='in'&&!x.thrMan&&!(findReq(+rid).zn&&findReq(+rid).zn.t)&&canZn(findReq(+rid))?`<button class="btn sm pri" data-dcuse="${rid}" style="margin-top:6px">اعتماد النتيجة: محفور قبل أكتوبر 2021 · الدليل صورة قمر صناعي</button>`:''}</div>`}
 async function dcRun(id,btn){const r=findReq(+id);if(!r||!canDchk())return toast('ليس لديك صلاحية فحص تاريخ الحفر');const P=reqPoly(r);if(!P)return toast('لا توجد إحداثيات للطلب');if(!window.__satFetch&&!clActive())return toast('الفحص يحتاج اتصالاً بالسحابة');const box=btn.closest('.card').querySelector('.dcbox');
  box.innerHTML='<div class="satld"><i></i>جارٍ تحليل صور القمر الصناعي منذ 2016 (قد يستغرق دقيقة)… <span class="dcp"></span></div>';const th=+(($('#dc-thr')||{}).value||'').replace(',','.')||0;const x=await drillCheck(P,(d,n)=>{const e=box.querySelector('.dcp');if(e)e.textContent=d+' / '+n},{thr:th});
  if(!(r.poly&&r.poly.length>=3))x.buf=1;r.dchk=x;persist(r);syncPulse();renderDrawer()}
-function dcUse(id){const r=findReq(+id);if(!r||!r.dchk||!r.dchk.start||!canZn(r))return;r.zn={t:'pre',d:r.dchk.start,ev:'sat',nt:'أول ظهور زراعات مستمرة بالقمر الصناعي في '+r.dchk.start+' (فحص '+fD(new Date(r.dchk.at).toISOString().slice(0,10))+')',by:me().n,at:Date.now()};
+function dcUse(id){const r=findReq(+id);if(!r||!r.dchk||!r.dchk.start||!canZn(r))return;if(r.dchk.thrMan)return toast('الفحص بحد يدوي لا يُعتمد · أعد الفحص بالحد التلقائي');if(r.dchk.lv!=='ok'||r.dchk.start>=ZONE_CUT.slice(0,7))return toast('نتيجة الفحص لا تثبت الحفر قبل أكتوبر 2021');r.zn={t:'pre',d:r.dchk.start,ev:'sat',src:'dchk',ref:r.dchk.ref||'',nt:'أول ظهور زراعات مستمرة بالقمر الصناعي في '+r.dchk.start+' (فحص '+fD(new Date(r.dchk.at).toISOString().slice(0,10))+')',by:me().n,at:Date.now()};
  r.log.push({d:todayISO(),t:'منطقة الحظر المائي · اعتماد نتيجة فحص القمر الصناعي: البئر محفور قبل أكتوبر 2021 (أول ظهور '+r.dchk.start+')',u:me().n,ts:Date.now()});persist(r);syncPulse();toast('✓ تم اعتماد موقف البئر');renderDrawer()}
 /* أداة مستقلة: إحداثيات بئر + حدود أرض (أو ملف) بدون طلب */
 const DCT={P:null,pt:null,res:null,run:false};
@@ -5674,11 +5671,37 @@ function vlSrc(){return VLP.ph&&VLP.ph.la!=null&&$('#vl-la')&&Math.abs(numIn($('
 function vlChkRender(){const box=$('#vl-chk');if(!box)return;const la=numIn(($('#vl-la')||{}).value),lo=numIn(($('#vl-lo')||{}).value);if(!(la>21&&la<32&&lo>24&&lo<37)){box.innerHTML='';return}
  const c=vlCheck(la,lo,vlSrc());const V=VLV[c.v];box.innerHTML=`<div class="vlchk" style="--c:${V[1]}"><b>المطابقة التلقائية: ${V[0]}</b><ul>${c.items.map(x=>`<li class="${x.t}"><span>${x.s}</span>${x.d}</li>`).join('')}</ul></div>`}
 
+/* موقف البئر داخل منطقة الحظر: من المصادر فقط (سجل الآبار المرخصة أو فحص القمر الصناعي) · لا يُكتب تاريخ باليد */
+const ZN_LICC=['valid','soon','expired','gov'];
+function znLicNear(r){const p=reqPt(r);if(!p)return [];return WB.filter(o=>o.la!=null&&ZN_LICC.includes(o._c)).map(o=>({o,d:distM(p,o)})).filter(x=>x.d<=150).sort((a,b)=>a.d-b.d).slice(0,5)}
+const znSrcLine=zn=>zn.src==='reg'?`<small class="muted">المصدر: سجل الآبار المرخصة · ${esc(zn.ref||'')}</small>`:zn.src==='dchk'?`<small class="muted">المصدر: فحص تاريخ الحفر بالقمر الصناعي ${esc(zn.ref||'')}</small>`:zn.src==='adm'?`<small class="muted">قرار الأدمن ${esc(zn.by||'')}: ${esc(zn.rs||'')}</small>`:(zn.t?'<small class="muted" style="color:var(--warn)">⚠ مُدخل قبل نظام الاعتماد التلقائي · يُفضل إعادة اعتماده من المصادر</small>':'');
+function znAuto(r){const zn=r.zn||{};const L=znLicNear(r);const x=r.dchk;const cut=ZONE_CUT.slice(0,7);const adm=[0,1].includes(me().r);let h='';
+ h+=`<div class="znsec"><h4>1) ترخيص سابق مسجل في سجل الآبار <small>في نطاق 150 م من البئر</small></h4>${L.length?L.map(({o,d})=>`<div class="znrow"><div><b>${esc(o.n)}</b><small class="muted"> · ${fmtM(d)} · ${esc((WCAT[o._c]||{}).t||'')}${o.lic?' · ترخيص '+esc(o.lic):''}${o.st0?' · من '+esc(String(o.st0).slice(0,10)):''}${o.end?' حتى '+esc(String(o.end).slice(0,10)):''}${o.yr?' · سنة الحفر '+esc(o.yr):''}</small></div><button class="btn sm pri" data-znlic="${r.id}|${o._i}">اعتماد: مرخص سابقاً</button></div>`).join(''):'<p class="muted" style="margin:0">لا يوجد بئر مرخص مسجل في نطاق 150 م</p>'}</div>`;
+ h+=`<div class="znsec"><h4>2) تاريخ الحفر بالقمر الصناعي <small>من بطاقة «فحص تاريخ حفر البئر»</small></h4>`;
+ if(!x||!x.M)h+=`<p class="muted" style="margin:0">${canDchk()?'شغّل «فحص تاريخ حفر البئر» من البطاقة الخاصة به في ملف الطلب، ثم ارجع هنا للاعتماد':'بانتظار فحص تاريخ الحفر من منظومة التراخيص'}</p>`;
+ else if(x.thrMan)h+=`<div class="note bad" style="margin:0">الفحص الحالي تم بحد يدوي للزراعة، ولا يُعتمد لمنطقة الحظر · أعد الفحص بالحد التلقائي</div>`;
+ else{h+=`<div class="znrow"><div><b>${dcV1(x)}</b><small class="muted"> · ${dcV2(x).replace(/<[^>]+>/g,' · ')}${x.ref?' · مرجع '+esc(x.ref):''}</small></div>`;
+  if(x.lv==='ok'&&x.start&&x.start<cut)h+=`<button class="btn sm pri" data-dcuse="${r.id}">اعتماد: محفور قبل أكتوبر 2021</button>`;
+  else if(x.lv==='bad')h+=`<button class="btn sm danger" data-znpost="${r.id}">اعتماد: محفور بعد أكتوبر 2021</button>`;
+  h+='</div>';
+  if(x.lv==='warn')h+=adm?`<div class="znadm"><b>حالة حدية · قرار الأدمن بمستند</b><div class="form" style="grid-template-columns:1fr;margin-top:6px"><input class="inp" id="zn-rs" placeholder="رقم وتاريخ المستند المؤيد ووصفه (إلزامي)"></div><div class="filters" style="margin-top:6px"><button class="btn sm pri" data-znadm="${r.id}|pre">قبل أكتوبر 2021</button><button class="btn sm danger" data-znadm="${r.id}|post">بعد أكتوبر 2021</button></div></div>`:`<div class="note warn" style="margin:6px 0 0">حالة حدية · القرار للأدمن بمستند مؤيد</div>`}
+ h+='</div>';if(zn.t&&adm)h+=`<button class="lnk" data-znclr="${r.id}" style="margin-top:4px">إلغاء الاعتماد الحالي (للأدمن)</button>`;
+ return `<div class="znauto"><p class="muted" style="margin:0 0 6px">موقف البئر يُعتمد من المصادر فقط · لا يُكتب تاريخ الحفر باليد</p>${h}</div>`}
+function znSet(r,o,msg){r.zn=Object.assign({by:me().n,at:Date.now()},o);r.log.push({d:todayISO(),t:'منطقة الحظر المائي · '+msg,u:me().n,ts:Date.now()});persist(r);syncPulse();toast('✓ تم اعتماد موقف البئر');renderDrawer()}
+function znClick(t){let el;
+ if(el=t.closest('[data-znlic]')){const [rid,wi]=el.dataset.znlic.split('|');const r=findReq(+rid),o=WB[+wi];if(!r||!o||!canZn(r))return true;const ref=`${o.n}${o.lic?' · ترخيص '+o.lic:''}${o.st0?' · من '+String(o.st0).slice(0,10):''}${o.end?' حتى '+String(o.end).slice(0,10):''}`;
+  znSet(r,{t:'lic',d:o.yr?String(o.yr):'',ev:'lic',src:'reg',wi:+wi,ref,nt:'مرخص سابقاً حسب سجل الآبار: '+ref},'اعتماد موقف البئر: مرخص سابقاً من سجل الآبار ('+ref+')');return true}
+ if(el=t.closest('[data-znpost]')){const r=findReq(+el.dataset.znpost);if(!r||!r.dchk||r.dchk.lv!=='bad'||r.dchk.thrMan||!canZn(r))return true;znSet(r,{t:'post',d:r.dchk.start||'',ev:'sat',src:'dchk',ref:r.dchk.ref||'',nt:'فحص القمر الصناعي: '+String(r.dchk.v||'')},'اعتماد نتيجة فحص القمر الصناعي: محفور بعد أكتوبر 2021');return true}
+ if(el=t.closest('[data-znadm]')){const [rid,k]=el.dataset.znadm.split('|');const r=findReq(+rid);if(!r||![0,1].includes(me().r))return true;const rs=($('#zn-rs').value||'').trim();if(rs.length<6)return toast('اكتب رقم وتاريخ المستند المؤيد'),true;
+  znSet(r,{t:k,d:(r.dchk&&r.dchk.start)||'',ev:'doc',src:'adm',rs,ref:(r.dchk&&r.dchk.ref)||'',nt:'حالة حدية · قرار الأدمن: '+rs},'قرار الأدمن في حالة حدية: '+(k==='pre'?'قبل':'بعد')+' أكتوبر 2021 · '+rs);return true}
+ if(el=t.closest('[data-znclr]')){const r=findReq(+el.dataset.znclr);if(!r||![0,1].includes(me().r))return true;r.zn=null;r.log.push({d:todayISO(),t:'منطقة الحظر المائي · إلغاء اعتماد موقف البئر',u:me().n,ts:Date.now()});persist(r);syncPulse();renderDrawer();return true}
+ return false}
+
 /* بطاقة داخل ملف الطلب */
 function vrCard(r){const v=vrs()[r.id];if(v)return `<div class="card vrcard"><h3>المتغيرات المكانية والمطالبة المالية ${vrStPill(v)}<button class="btn sm ghost" data-vrinfo="${r.id}" style="margin-inline-start:auto">السجل</button></h3>${vrSteps(v)}${v.from?`<div class="kv"><div><span>فترة المتغيرات</span><b>${fD(v.from)} ← ${fD(v.to)}</b></div><div><span>متوسط المساحة</span><b class="num">${vrFed(v.area)}</b></div>${v.amt?`<div><span>المطالبة <bdi dir="ltr">${esc(v.cno||'')}</bdi></span><b class="num">${vrMoney(v.amt)}</b></div>`:''}</div>`:''}${v.clm?`<div style="margin-top:8px"><button class="btn sm ghost" data-clmpr="${r.id}">🖨 المطالبة المالية</button></div>`:''}${v.rcpt?`<div style="margin-top:8px">${rcBtns(v)}</div>`:''}${canVrBack(v)?`<div style="margin-top:8px"><button class="btn sm ghost" data-vrback="${r.id}">↩ إعادة لقسم المتغيرات لإعادة الاحتساب</button></div>`:''}<div class="muted" style="font-size:12px;margin-top:6px">مسار موازٍ لا يوقف إجراءات الطلب في منظومة التراخيص · يلزم السداد قبل عرض الملف على اللجنة العليا.</div></div>`;
  if(r.stage>=2&&r.status!=='rejected'&&canSendVar())return `<div class="card vrcard"><h3>المتغيرات المكانية</h3><div class="filters"><span class="muted" style="font-size:13px">لم تُرسل نسخة من هذا الطلب لقسم المتغيرات.</span><button class="btn sm pri" data-vrnew="${r.id}" style="margin-inline-start:auto">إرسال نسخة لقسم المتغيرات</button></div></div>`;return ''}
 function vrClick(t){let el;
- if(f6Click(t)||f7Click(t)||f8Click(t)||f14Click(t)||f15Click(t)||f16Click(t)||f17Click(t))return true;
+ if(f6Click(t)||f7Click(t)||f8Click(t)||f14Click(t)||f15Click(t)||f16Click(t)||f17Click(t)||znClick(t))return true;
  if(el=t.closest('[data-ids]')){IDS=el.dataset.ids;rerender();return true}
  if(t.closest('[data-cmprint]')){cmPrint();return true}
  if(el=t.closest('[data-asgsave]')){asgSave(+el.dataset.asgsave||el.dataset.asgsave);return true}
@@ -5733,7 +5756,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.18-1631';
+const APP_VER='2026.11.18-1712';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

@@ -1294,7 +1294,7 @@ tr.xyrow td{background:color-mix(in srgb,var(--bad) 8%,transparent)}
 .cmpg .cmtb td:first-child{font-weight:900;color:var(--g);font-size:11px}
 .cmpg .cmtb td:nth-child(2){text-align:right}
 .cmpg .cmtb td:nth-child(2) b{font-size:9.8px;color:var(--t)}
-.cmpg .cmtb td.ll{direction:ltr;font-size:8.2px;font-family:"Cairo",sans-serif;letter-spacing:.1px}
+.cmpg .cmtb td.llar{direction:rtl!important}.ll{direction:ltr;font-size:8.2px;font-family:"Cairo",sans-serif;letter-spacing:.1px}
 .cmpg .cmtb .ok{color:#1e7a46}.cmpg .cmtb .bad{color:#b23b2e}
 .cmpg .cmtb td.dec{text-align:right;font-size:8.6px;line-height:1.55;padding-right:2mm}
 .cmpg .cmtb td.dec span{display:block;white-space:nowrap}
@@ -4699,7 +4699,7 @@ function cmRowData(r,t){const A=cmFed(r)?areaFrom(cmFed(r)*FED):{f:0,q:0,sh:0};c
 function cmTblRows(L,t){const C=cmCols();const rows=L.map(r=>cmRowData(r,t));const SP=['aq','use'];const span={};
  const SPX=k=>k==='crop';SP.forEach(k=>{const S_=new Array(rows.length).fill(1);for(let i=0;i<rows.length;){let j=i+1;while(j<rows.length&&rows[j][k]===rows[i][k]&&rows[i][k])j++;S_[i]=j-i;for(let x=i+1;x<j;x++)S_[x]=0;i=j}span[k]=S_});
  return rows.map((x,i)=>'<tr>'+C.map(([k])=>{if(SP.includes(k)){const n=span[k][i];return n?(k==='crop'&&x.crop?`<td rowspan="${n}" class="cr">${esc(x.crop)}${x.csrc==='sat'?'<sup>*</sup>':''}</td>`:`<td rowspan="${n}">${esc(x[k])}</td>`):''}
-  if(k==='crop')return cropCell(x.r);if(k==='n')return `<td>${i+1}</td>`;if(k==='name')return `<td class="nm">${nameCellHTML(x.r)}</td>`;if(k==='E')return `<td class="ll" data-lat>${x.E.join('<br>')||'—'}${x.more?'<br>+'+x.more:''}</td>`;if(k==='N')return `<td class="ll" data-lat>${x.N.join('<br>')||'—'}</td>`;if(k==='nt')return `<td class="nt">${esc(x.nt)}</td>`;return `<td>${esc(String(x[k]))}</td>`}).join('')+'</tr>').join('')}
+  if(k==='crop')return cropCell(x.r);if(k==='n')return `<td>${i+1}</td>`;if(k==='name')return `<td class="nm">${nameCellHTML(x.r)}</td>`;if(k==='E')return `<td class="ll llar">${x.E.map(v=>'<span dir="rtl">'+v+'</span>').join('<br>')||'—'}${x.more?'<br>+'+x.more:''}</td>`;if(k==='N')return `<td class="ll llar">${x.N.map(v=>'<span dir="rtl">'+v+'</span>').join('<br>')||'—'}</td>`;if(k==='nt')return `<td class="nt">${esc(x.nt)}</td>`;return `<td>${esc(String(x[k]))}</td>`}).join('')+'</tr>').join('')}
 function cmTblHead(t){const C=cmCols();let h1='',h2='',i=0;while(i<C.length){const g=C[i][3];if(g){let j=i;while(j<C.length&&C[j][3]===g)j++;h1+=`<th colspan="${j-i}">${CM_GRP[g]}</th>`;for(let x=i;x<j;x++)h2+=`<th>${C[x][1]}</th>`;i=j}else{h1+=`<th rowspan="2">${C[i][1]}${C[i][0]==='nt'&&t.endsWith('_in')?'<br><small>(اللجنة العليا السابقة)</small>':''}</th>`;i++}}
  return `<colgroup>${C.map(c=>c[2]?`<col style="width:${c[2]}mm">`:'<col>').join('')}</colgroup><thead><tr>${h1}</tr><tr>${h2}</tr></thead>`}
 function cmTblPage(s,t,L,pi,tot){const sg=cmSig(),T=CMT_T.find(x=>x[0]===t);const nc=cmCols().length;
@@ -6174,7 +6174,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.19-0036';
+const APP_VER='2026.11.19-0040';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

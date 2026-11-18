@@ -1575,6 +1575,10 @@ tr.spsame td{background:color-mix(in srgb,var(--gold) 8%,transparent)}tr.spbad t
 .basg{display:grid;gap:8px}.basopt{display:flex;gap:10px;align-items:center;text-align:start;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);cursor:pointer}.basopt i{width:16px;height:16px;border-radius:50%;border:2px solid var(--muted);flex:none}.basopt.on{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 7%,var(--surface))}.basopt.on i{border-color:var(--teal);background:radial-gradient(var(--teal) 45%,transparent 50%)}
 .basman{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;align-items:end;margin-top:10px;padding:10px;border:1px dashed var(--gold);border-radius:12px}.basres{margin-top:10px;font-size:13.5px}
 .vlphb{display:inline-flex;gap:6px;align-items:center;cursor:pointer}.vlphv img{max-width:220px;max-height:160px;border-radius:10px;margin-top:8px;border:1px solid var(--line)}
+.gctabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}.gctabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer;color:var(--ink)}.gctabs button.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.gcres table{width:100%;border-collapse:collapse;font-size:13.5px}.gcres td,.gcres th{padding:7px 10px;border-bottom:1px solid var(--line);text-align:start}.gcres tr.gcg td{background:color-mix(in srgb,var(--teal) 8%,var(--surface));font-weight:800;color:var(--teal);font-size:12.5px}.gcres tr.src td{background:color-mix(in srgb,var(--gold) 14%,var(--surface))}.gcres td.num{font-family:ui-monospace,Consolas,monospace;white-space:nowrap}.gcres bdi{unicode-bidi:isolate;direction:ltr;display:inline-block}.gcres{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px;margin:0 0 12px}
+.gcinfo{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:0 0 12px}.gcinfo>div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:3px}.gcinfo span{font-size:12px;color:var(--muted)}
+.gcmap{min-height:320px}.gcdrop{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-style:dashed}.gcnote{font-size:12px;color:var(--muted);margin:12px 0 0;line-height:1.7}.gcauto tr.best td{background:color-mix(in srgb,var(--ok) 8%,var(--surface))}
 .vlchk{border:1.5px solid var(--c);border-radius:12px;padding:10px 12px;background:color-mix(in srgb,var(--c) 6%,var(--surface))}.vlchk b{color:var(--c)}.vlchk ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;font-size:13px}.vlchk li{display:flex;gap:8px}.vlchk li span{font-weight:700;min-width:150px}.vlchk li.ok span::before{content:'✓ ';color:var(--ok)}.vlchk li.warn span::before{content:'⚠ ';color:var(--warn)}.vlchk li.bad span::before{content:'⛔ ';color:var(--bad)}.vlchk li.info span::before{content:'ℹ ';color:var(--teal)}
 .vlth{width:46px;height:46px;object-fit:cover;border-radius:8px;float:right;margin-inline-end:8px;cursor:zoom-in}.vlbadge{display:inline-block;font-size:11px;margin-inline-end:6px}
 .vlbig{position:fixed;inset:0;background:rgb(0 0 0/.8);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:8px;color:#fff}.vlbig img{max-width:94vw;max-height:84vh;border-radius:10px}
@@ -1781,8 +1785,8 @@ function lvOk(l,i){if(l==='full'||i===7||i===10)return true;if(l==='view')return
 const RA_DEF=[{lic:'edit',lsec:'edit',vr:'edit',db:'edit',rep:1,set:1,pd:1},{lic:'edit',lsec:'edit',vr:'edit',db:'edit',rep:1,set:1,pd:1},{lic:'edit',lsec:'none',vr:'view',db:'view',rep:1,set:0,pd:1},{lic:'none',lsec:'view',vr:'view',db:'edit',rep:1,set:0,pd:1},{lic:'view',lsec:'edit',vr:'view',db:'view',rep:1,set:0,pd:1},{lic:'view',lsec:'none',vr:'none',db:'view',rep:1,set:0,pd:1},{lic:'view',lsec:'view',vr:'view',db:'view',rep:1,set:0,pd:0},{lic:'none',lsec:'none',vr:'edit',db:'view',rep:0,set:0,pd:1},{lic:'view',lsec:'view',vr:'view',db:'view',rep:1,set:0,pd:0}];
 const SECN={lic:'منظومة التراخيص',lsec:'قسم التراخيص',vr:'المتغيرات المكانية',db:'قاعدة البيانات'};const ACCN={edit:'إضافة وتعديل',view:'مشاهدة فقط',none:'بدون وصول'};
 function ra(u){u=u||me();if(u.r===0)return RA_DEF[0];const d=RA_DEF[u.r]||RA_DEF[6];return Object.assign({},d,(S.ra&&S.ra[u.r])||{})}
-const PSEC={dpl:'db',viol:'lsec',recon:'lsec',ybook:'rep',kpi:'rep',wbal:'db',dq2:'lic',smon:'set',cms:'lic',dchk:'lic',idash:'lic',cal:'lic',audit:'set',dash:'lic',requests:'lic',new:'lic',map:'lic',whatsapp:'lic',portal:'lic',inspq:'lic',registry:'db',cmte:'db',drill:'lsec',drills:'lsec',vars:'lsec',claims:'lsec',lcm:'lsec',rnw:'lsec',gm:'lic',prefs:'set',wellform:'db',wmap:'db',monitor:'db',reports:'rep',users:'set',backup:'set'};
-function pageOK(p){const u=me();if(pageHidden(p,u))return false;if(p==='smon')return u.r===0||u.r===1;if(p==='coll')return u.r===0||ra(u).lsec!=='none'||ra(u).vr!=='none';if(p==='monthly')return canRep(u);if(p==='tv')return [0,1,6,8].includes(u.r);if(p==='route')return [0,1,2,5].includes(u.r);if(p==='vmap')return u.r===0||ra(u).db!=='none';if(p==='lcm'&&u.r===2)return true;if(p==='fcam')return [0,1,4,5].includes(u.r)||ra(u).lsec!=='none';if(p==='gm')return [0,1,6,8].includes(u.r);if(p==='inspq')return [0,1,5].includes(u.r);if(p==='cms')return [0,1,2,3,4].includes(u.r);if(p==='dchk')return canDchk(u);if(p==='dpl')return [0,1,2,3,6,8].includes(u.r);if(p==='viol')return [0,1,4].includes(u.r);if(p==='recon')return u.r===0||u.r===1||canClaim();if(p==='kpi')return canRep(u);if(p==='ybook')return canRep(u);if(p==='wbal')return [0,1,2,3].includes(u.r);if(p==='dq2')return [0,1,2].includes(u.r)||(typeof dqMine==='function'&&R.some(r=>r.dqa&&r.dqa.u===String(u.u||'').toLowerCase()));if(p==='idash')return u.r===0||u.r===1||(u.r===5&&isHead(u));if(p==='vars')return u.r===0||ra(u).vr!=='none';if(PSEC[p]==='lsec')return u.r===0||ra(u).lsec!=='none';if(u.r===0)return true;if(u.r===5&&PSEC[p]==='lic'&&!['requests','map'].includes(p))return false;if(u.r===5&&p==='cmte')return false;const sc_=PSEC[p];if(!sc_)return true;const a=ra(u);if(sc_==='lic'||sc_==='db')return a[sc_]!=='none'&&(p!=='new'||can(0))&&(p!=='wellform'||canAddWell());if(sc_==='rep')return canRep(u);if(sc_==='set')return !!a.set;return true}
+const PSEC={conv:'lic',dpl:'db',viol:'lsec',recon:'lsec',ybook:'rep',kpi:'rep',wbal:'db',dq2:'lic',smon:'set',cms:'lic',dchk:'lic',idash:'lic',cal:'lic',audit:'set',dash:'lic',requests:'lic',new:'lic',map:'lic',whatsapp:'lic',portal:'lic',inspq:'lic',registry:'db',cmte:'db',drill:'lsec',drills:'lsec',vars:'lsec',claims:'lsec',lcm:'lsec',rnw:'lsec',gm:'lic',prefs:'set',wellform:'db',wmap:'db',monitor:'db',reports:'rep',users:'set',backup:'set'};
+function pageOK(p){const u=me();if(pageHidden(p,u))return false;if(p==='smon')return u.r===0||u.r===1;if(p==='coll')return u.r===0||ra(u).lsec!=='none'||ra(u).vr!=='none';if(p==='monthly')return canRep(u);if(p==='tv')return [0,1,6,8].includes(u.r);if(p==='route')return [0,1,2,5].includes(u.r);if(p==='vmap')return u.r===0||ra(u).db!=='none';if(p==='lcm'&&u.r===2)return true;if(p==='fcam')return [0,1,4,5].includes(u.r)||ra(u).lsec!=='none';if(p==='gm')return [0,1,6,8].includes(u.r);if(p==='inspq')return [0,1,5].includes(u.r);if(p==='cms')return [0,1,2,3,4].includes(u.r);if(p==='dchk')return canDchk(u);if(p==='conv')return [0,1,2].includes(u.r);if(p==='dpl')return [0,1,2,3,6,8].includes(u.r);if(p==='viol')return [0,1,4].includes(u.r);if(p==='recon')return u.r===0||u.r===1||canClaim();if(p==='kpi')return canRep(u);if(p==='ybook')return canRep(u);if(p==='wbal')return [0,1,2,3].includes(u.r);if(p==='dq2')return [0,1,2].includes(u.r)||(typeof dqMine==='function'&&R.some(r=>r.dqa&&r.dqa.u===String(u.u||'').toLowerCase()));if(p==='idash')return u.r===0||u.r===1||(u.r===5&&isHead(u));if(p==='vars')return u.r===0||ra(u).vr!=='none';if(PSEC[p]==='lsec')return u.r===0||ra(u).lsec!=='none';if(u.r===0)return true;if(u.r===5&&PSEC[p]==='lic'&&!['requests','map'].includes(p))return false;if(u.r===5&&p==='cmte')return false;const sc_=PSEC[p];if(!sc_)return true;const a=ra(u);if(sc_==='lic'||sc_==='db')return a[sc_]!=='none'&&(p!=='new'||can(0))&&(p!=='wellform'||canAddWell());if(sc_==='rep')return canRep(u);if(sc_==='set')return !!a.set;return true}
 function firstPage(){return (me().r===5?['inspq']:me().r===7?['vars']:[]).concat(['dash','registry','reports','mobile']).find(pageOK)||'mobile'}
 const can=i=>{const u=me();if(u.r===0)return true;const a=ra(u);let ok=i<=6?a.lic==='edit':i===7?canRep(u):i===8?!!a.set:i===9?a.db==='edit':i===10?!!a.pd:false;return ok&&lvOk(lvOf(u),i)};
 const can_old=i=>{const u=me();if(u.r===0)return true;if(!(S.perm[u.r]&&S.perm[u.r][i]))return false;return lvOk(lvOf(u),i)};
@@ -1850,6 +1854,7 @@ const I={
  drills:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',
  dpl:'<path d="M4 4v16h16"/><path d="M7 8l4 3 3-2 5 6"/><path d="M19 15v-3h-3"/>',viol:'<path d="M12 3l9 16H3z"/><path d="M12 10v4"/><path d="M12 17h.01"/>',recon:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M8 15l2 2 4-4"/>',ybook:'<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/><path d="M9 8h6"/>',kpi:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/><path d="M16 4l2 2 3-3"/>',
  wbal:'<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/><path d="M8 15h8"/>',
+ conv:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/><path d="M17 17l3 3"/>',
  dq2:'<path d="M9 11l2 2 4-4"/><rect x="4" y="3" width="16" height="18" rx="2"/>',
  dchk:'<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5 19 19"/>',
  cms:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5M16 4v5M7 13h4M7 16h7"/>',
@@ -1873,7 +1878,7 @@ const I={
  audit:'<path d="M9 5h10M9 12h10M9 19h10M4.5 5l.5.5 1-1M4.5 12l.5.5 1-1M4.5 19l.5.5 1-1"/>',
  mobile:'<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/>'};
 const ico=k=>`<svg class="ico" viewBox="0 0 24 24">${I[k]}</svg>`;
-const PAGES=[['sep','منظومة التراخيص','lic'],['gm','لوحة الإدارة العليا'],['inspq','مهام المعاينة'],['idash','لوحة متابعة التفتيش'],['dash','لوحة المتابعة'],['requests','الطلبات'],['route','مشوار المعاينات'],['new','طلب جديد'],['map','خريطة الطلبات'],['dchk','فحص تاريخ حفر بئر'],['dq2','جودة البيانات'],['cal','التقويم والمواعيد'],['whatsapp','إشعارات واتساب'],['portal','بوابة المواطن'],['sep','قسم التراخيص','lsec'],['fcam','المعاينة الميدانية'],['viol','سجل المخالفات الميدانية'],['drill','طلب إقرار حفر'],['drills','سجل إقرارات الحفر'],['lcm','العرض على اللجنة العليا'],['cms','ملفات العرض على اللجنة العليا'],['vars','المتغيرات المكانية'],['claims','المطالبات المالية'],['recon','مطابقة السداد'],['rnw','تذكيرات تجديد الرخص'],['sep','قاعدة البيانات','db'],['registry','سجل الآبار والتراخيص'],['cmte','المحوّل من التراخيص'],['wellform','إضافة بئر'],['wmap','خريطة قاعدة الآبار'],['vmap','خريطة المخالفات'],['monitor','آبار المراقبة'],['wbal','الميزان المائي'],['dpl','توقع الاستنزاف'],['sep','التقارير','rep'],['tv','شاشة متابعة المدير'],['coll','لوحة التحصيل'],['monthly','التقرير الشهري'],['ybook','الكتاب الإحصائي السنوي'],['kpi','مؤشرات أداء الموظفين'],['reports','التقارير'],['sep','الإعدادات','set'],['prefs','إعدادات المنظومة'],['users','المستخدمون والصلاحيات'],['smon','رصد الآبار (قمر صناعي وعدادات)'],['backup','النسخ الاحتياطي'],['audit','سجل العمليات'],['system','البنية والمزامنة'],['mobile','تطبيق الموبايل']];
+const PAGES=[['sep','منظومة التراخيص','lic'],['gm','لوحة الإدارة العليا'],['inspq','مهام المعاينة'],['idash','لوحة متابعة التفتيش'],['dash','لوحة المتابعة'],['requests','الطلبات'],['route','مشوار المعاينات'],['new','طلب جديد'],['map','خريطة الطلبات'],['dchk','فحص تاريخ حفر بئر'],['dq2','جودة البيانات'],['conv','محول الإحداثيات'],['cal','التقويم والمواعيد'],['whatsapp','إشعارات واتساب'],['portal','بوابة المواطن'],['sep','قسم التراخيص','lsec'],['fcam','المعاينة الميدانية'],['viol','سجل المخالفات الميدانية'],['drill','طلب إقرار حفر'],['drills','سجل إقرارات الحفر'],['lcm','العرض على اللجنة العليا'],['cms','ملفات العرض على اللجنة العليا'],['vars','المتغيرات المكانية'],['claims','المطالبات المالية'],['recon','مطابقة السداد'],['rnw','تذكيرات تجديد الرخص'],['sep','قاعدة البيانات','db'],['registry','سجل الآبار والتراخيص'],['cmte','المحوّل من التراخيص'],['wellform','إضافة بئر'],['wmap','خريطة قاعدة الآبار'],['vmap','خريطة المخالفات'],['monitor','آبار المراقبة'],['wbal','الميزان المائي'],['dpl','توقع الاستنزاف'],['sep','التقارير','rep'],['tv','شاشة متابعة المدير'],['coll','لوحة التحصيل'],['monthly','التقرير الشهري'],['ybook','الكتاب الإحصائي السنوي'],['kpi','مؤشرات أداء الموظفين'],['reports','التقارير'],['sep','الإعدادات','set'],['prefs','إعدادات المنظومة'],['users','المستخدمون والصلاحيات'],['smon','رصد الآبار (قمر صناعي وعدادات)'],['backup','النسخ الاحتياطي'],['audit','سجل العمليات'],['system','البنية والمزامنة'],['mobile','تطبيق الموبايل']];
 
 /* ---------- routing ---------- */
 let cur='dash';
@@ -5697,11 +5702,225 @@ function znClick(t){let el;
  if(el=t.closest('[data-znclr]')){const r=findReq(+el.dataset.znclr);if(!r||![0,1].includes(me().r))return true;r.zn=null;r.log.push({d:todayISO(),t:'منطقة الحظر المائي · إلغاء اعتماد موقف البئر',u:me().n,ts:Date.now()});persist(r);syncPulse();renderDrawer();return true}
  return false}
 
+/* =====================================================================
+   محول الإحداثيات المتكامل — النواة الحسابية
+   مركاتور المستعرض بمتسلسلة Krüger من الرتبة السادسة (دقة أقل من مليمتر داخل الحزام)
+   + تحويل المرجع الجيوديسي بمعاملات Helmert (3 أو 7 معاملات) عبر الإحداثيات الكارتيزية
+   ===================================================================== */
+const GC_ELL={wgs84:{a:6378137,f:1/298.257223563,t:'WGS 84'},hel1906:{a:6378200,f:1/298.3,t:'Helmert 1906'}};
+/* Egypt 1907 → WGS 84 (EPSG:1148 · دقة ±6 م تقريباً) · يمكن استبدالها بمعاملات محلية معتمدة من الإعدادات */
+const GC_EG07_DEF={dx:-130,dy:110,dz:-13,rx:0,ry:0,rz:0,s:0};
+const GC_SYS={
+ wgs_dd:{t:'WGS 84 · درجات عشرية',g:1,d:'wgs84'},
+ wgs_dms:{t:'WGS 84 · درجات ودقائق وثواني',g:1,d:'wgs84'},
+ wgs_dm:{t:'WGS 84 · درجات ودقائق عشرية',g:1,d:'wgs84'},
+ utm36:{t:'UTM 36 شمال (WGS 84)',d:'wgs84',lat0:0,lon0:33,k0:0.9996,fe:500000,fn:0,epsg:32636},
+ utm35:{t:'UTM 35 شمال (WGS 84)',d:'wgs84',lat0:0,lon0:27,k0:0.9996,fe:500000,fn:0,epsg:32635},
+ red:{t:'الحزام الأحمر (مصر 1907)',d:'eg07',lat0:30,lon0:31,k0:1,fe:615000,fn:810000,epsg:22992},
+ purple:{t:'الحزام البنفسجي (مصر 1907)',d:'eg07',lat0:30,lon0:27,k0:1,fe:700000,fn:200000,epsg:22993},
+ xpurple:{t:'الحزام البنفسجي الممتد (مصر 1907)',d:'eg07',lat0:30,lon0:27,k0:1,fe:700000,fn:1200000,epsg:22994},
+ blue:{t:'الحزام الأزرق (مصر 1907)',d:'eg07',lat0:30,lon0:35,k0:1,fe:300000,fn:1100000,epsg:22991},
+ utm36e:{t:'UTM 36 شمال (مصر 1907)',d:'eg07',lat0:0,lon0:33,k0:0.9996,fe:500000,fn:0,epsg:22996},
+ utm35e:{t:'UTM 35 شمال (مصر 1907)',d:'eg07',lat0:0,lon0:27,k0:0.9996,fe:500000,fn:0,epsg:22995}};
+const GC_RAD=Math.PI/180;
+function gcKr(e){if(e._k)return e._k;const n=e.f/(2-e.f),n2=n*n,n3=n2*n,n4=n3*n,n5=n4*n,n6=n5*n;
+ const A=e.a/(1+n)*(1+n2/4+n4/64+n6/256);
+ const al=[0,n/2-2*n2/3+5*n3/16+41*n4/180-127*n5/288+7891*n6/37800,13*n2/48-3*n3/5+557*n4/1440+281*n5/630-1983433*n6/1935360,61*n3/240-103*n4/140+15061*n5/26880+167603*n6/181440,49561*n4/161280-179*n5/168+6601661*n6/7257600,34729*n5/80640-3418889*n6/1995840,212378941*n6/319334400];
+ const be=[0,n/2-2*n2/3+37*n3/96-n4/360-81*n5/512+96199*n6/604800,n2/48+n3/15-437*n4/1440+46*n5/105-1118711*n6/3870720,17*n3/480-37*n4/840-209*n5/4480+5569*n6/90720,4397*n4/161280-11*n5/504-830251*n6/7257600,4583*n5/161280-108847*n6/3991680,20648693*n6/638668800];
+ const es=Math.sqrt(e.f*(2-e.f));return e._k={A,al,be,es}}
+function gcTmFwd(lat,lon,p,e){const K=gcKr(e);const ph=lat*GC_RAD,dl=(lon-p.lon0)*GC_RAD;
+ const sp=Math.sin(ph);const t=Math.sinh(Math.atanh(sp)-K.es*Math.atanh(K.es*sp));const xi0=Math.atan2(t,Math.cos(dl)),et0=Math.atanh(Math.sin(dl)/Math.sqrt(1+t*t));
+ let xi=xi0,et=et0;for(let j=1;j<=6;j++){xi+=K.al[j]*Math.sin(2*j*xi0)*Math.cosh(2*j*et0);et+=K.al[j]*Math.cos(2*j*xi0)*Math.sinh(2*j*et0)}
+ return {x:p.fe+p.k0*K.A*et,y:p.fn+p.k0*(K.A*xi-gcM0(p,e))}}
+function gcM0(p,e){if(!p.lat0)return 0;const K=gcKr(e);const sp=Math.sin(p.lat0*GC_RAD);const t=Math.sinh(Math.atanh(sp)-K.es*Math.atanh(K.es*sp));const x0=Math.atan(t);let xi=x0;for(let j=1;j<=6;j++)xi+=K.al[j]*Math.sin(2*j*x0);return K.A*xi}
+function gcTmInv(x,y,p,e){const K=gcKr(e);const xi=(y-p.fn+p.k0*gcM0(p,e))/(p.k0*K.A),et=(x-p.fe)/(p.k0*K.A);
+ let xi1=xi,et1=et;for(let j=1;j<=6;j++){xi1-=K.be[j]*Math.sin(2*j*xi)*Math.cosh(2*j*et);et1-=K.be[j]*Math.cos(2*j*xi)*Math.sinh(2*j*et)}
+ const tp=Math.sin(xi1)/Math.sqrt(Math.sinh(et1)**2+Math.cos(xi1)**2);let ta=tp;const e2=K.es*K.es;
+ for(let i=0;i<8;i++){const si=Math.sinh(K.es*Math.atanh(K.es*ta/Math.sqrt(1+ta*ta)));const tpi=ta*Math.sqrt(1+si*si)-si*Math.sqrt(1+ta*ta);
+  const d=(tp-tpi)/Math.sqrt(1+tpi*tpi)*(1+(1-e2)*ta*ta)/((1-e2)*Math.sqrt(1+ta*ta));ta+=d;if(Math.abs(d)<1e-14)break}
+ return {lat:Math.atan(ta)/GC_RAD,lon:p.lon0+Math.atan2(Math.sinh(et1),Math.cos(xi1))/GC_RAD}}
+/* جيوديسي ↔ كارتيزي */
+function gcToXYZ(lat,lon,h,e){const ph=lat*GC_RAD,l=lon*GC_RAD,e2=e.f*(2-e.f);const N=e.a/Math.sqrt(1-e2*Math.sin(ph)**2);return [(N+h)*Math.cos(ph)*Math.cos(l),(N+h)*Math.cos(ph)*Math.sin(l),(N*(1-e2)+h)*Math.sin(ph)]}
+function gcFromXYZ(X,Y,Z,e){const e2=e.f*(2-e.f),b=e.a*(1-e.f),p=Math.hypot(X,Y);let ph=Math.atan2(Z,p*(1-e2)),h=0;
+ for(let i=0;i<10;i++){const N=e.a/Math.sqrt(1-e2*Math.sin(ph)**2);h=p/Math.cos(ph)-N;const n=Math.atan2(Z,p*(1-e2*N/(N+h)));if(Math.abs(n-ph)<1e-13){ph=n;break}ph=n}
+ return {lat:ph/GC_RAD,lon:Math.atan2(Y,X)/GC_RAD,h}}
+/* Helmert (Position Vector · EPSG:9606) */
+function gcHelm(v,P,inv){const s=1+(inv?-1:1)*P.s*1e-6,k=(inv?-1:1)*Math.PI/648000,rx=P.rx*k,ry=P.ry*k,rz=P.rz*k,d=inv?-1:1;const [X,Y,Z]=v;
+ return [d*P.dx+s*(X-rz*Y+ry*Z),d*P.dy+s*(rz*X+Y-rx*Z),d*P.dz+s*(-ry*X+rx*Y+Z)]}
+function gcEg07P(){const o=(typeof S!=='undefined'&&S.org&&S.org.gcP)||null;return o&&isFinite(o.dx)?o:GC_EG07_DEF}
+/* تحويل جيوديسي بين المرجعين */
+function gcDatum(lat,lon,from,to){if(from===to)return {lat,lon};const P=gcEg07P();
+ if(from==='eg07'&&to==='wgs84'){const v=gcHelm(gcToXYZ(lat,lon,0,GC_ELL.hel1906),P,false);const g=gcFromXYZ(...v,GC_ELL.wgs84);return {lat:g.lat,lon:g.lon}}
+ if(from==='wgs84'&&to==='eg07'){let v=gcToXYZ(lat,lon,0,GC_ELL.wgs84);v=gcHelm(v,P,true);const g=gcFromXYZ(...v,GC_ELL.hel1906);return {lat:g.lat,lon:g.lon}}
+ throw new Error('datum')}
+const gcEll=d=>d==='eg07'?GC_ELL.hel1906:GC_ELL.wgs84;
+/* أي نظام → WGS 84 جيوديسي */
+function gcToWgs(sys,a,b){const S_=GC_SYS[sys];if(!S_)throw new Error('sys');if(S_.g)return {lat:a,lon:b};const g=gcTmInv(a,b,S_,gcEll(S_.d));return gcDatum(g.lat,g.lon,S_.d,'wgs84')}
+/* WGS 84 → أي نظام */
+function gcFromWgs(sys,lat,lon){const S_=GC_SYS[sys];if(S_.g)return {lat,lon};const g=gcDatum(lat,lon,'wgs84',S_.d);return gcTmFwd(g.lat,g.lon,S_,gcEll(S_.d))}
+/* قراءة درجات بأي صيغة: 25.45 · 25 26 60 · 25°26'60"N · ٢٥°٢٦' · 25:26:60 · 30°33.5'E */
+function gcParseAng(s,isLon){if(s==null)return NaN;let t=String(s).trim().replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[٫]/g,'.').replace(/،/g,',');if(!t)return NaN;
+ let neg=/^-/.test(t)||/[SWsw]|جنوب|غرب/.test(t);t=t.replace(/[NnSsEeWw]|شمال|جنوب|شرق|غرب|ش|ق|ج|غ/g,' ');
+ const nums=(t.match(/\d+(?:\.\d+)?/g)||[]).map(Number);if(!nums.length)return NaN;let v=nums[0]+(nums[1]||0)/60+(nums[2]||0)/3600;if(nums.length===1&&/\d\.\d/.test(t)===false&&nums[0]>360)return NaN;return neg?-v:v}
+function gcDMS(v,isLon,dec){dec=dec??2;const s=v<0?-1:1;let a=Math.abs(v);let d=Math.floor(a),m=Math.floor((a-d)*60),x=((a-d)*60-m)*60;x=+x.toFixed(dec);if(x>=60){x=0;m++}if(m>=60){m=0;d++}
+ return `${d}°${String(m).padStart(2,'0')}'${x.toFixed(dec).padStart(dec+3,'0')}"${isLon?(s<0?'W':'E'):(s<0?'S':'N')}`}
+function gcDM(v,isLon){const s=v<0?-1:1,a=Math.abs(v),d=Math.floor(a),m=(a-d)*60;return `${d}°${m.toFixed(4).padStart(7,'0')}'${isLon?(s<0?'W':'E'):(s<0?'S':'N')}`}
+/* كل الأنظمة لنقطة واحدة (WGS 84) */
+function gcAll(lat,lon){const o={};Object.keys(GC_SYS).forEach(k=>{const S_=GC_SYS[k];if(S_.g){o[k]=k==='wgs_dd'?[lat.toFixed(7),lon.toFixed(7)]:k==='wgs_dms'?[gcDMS(lat,false,3),gcDMS(lon,true,3)]:[gcDM(lat,false),gcDM(lon,true)]}else{const p=gcFromWgs(k,lat,lon);o[k]=[p.x.toFixed(3),p.y.toFixed(3)]}});return o}
+
+/* =====================================================================
+   محول الإحداثيات المتكامل — الواجهة (نقطة واحدة · ملفات Excel/CSV/KML/KMZ في الاتجاهين · التعرف التلقائي على النظام)
+   ===================================================================== */
+const GC={tab:'pt',src:'wgs_dd',a:'',b:'',tgt:'red',F:null,file:'',map:null,auto:'',T:null};
+const GC_GROUPS=[['الإحداثيات الجغرافية',['wgs_dd','wgs_dms','wgs_dm']],['الأحزمة المصرية (مصر 1907)',['red','purple','xpurple','blue']],['UTM',['utm36','utm35','utm36e','utm35e']]];
+const gcOpts=sel=>GC_GROUPS.map(([g,L])=>`<optgroup label="${g}">${L.map(k=>`<option value="${k}" ${k===sel?'selected':''}>${GC_SYS[k].t}</option>`).join('')}</optgroup>`).join('');
+const canGC=()=>{const u=me();return [0,1,2].includes(u.r)};
+const gcLbl=k=>GC_SYS[k].g?['خط العرض','خط الطول']:['الشرقي (E / X)','الشمالي (N / Y)'];
+const gcNum=v=>parseFloat(String(v??'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[٫,]/g,'.').replace(/\s/g,''));
+function gcRead(sys,a,b){if(GC_SYS[sys].g){const la=gcParseAng(a),lo=gcParseAng(b,1);if(!isFinite(la)||!isFinite(lo)||Math.abs(la)>90||Math.abs(lo)>180)return null;return {lat:la,lon:lo}}
+ const x=gcNum(a),y=gcNum(b);if(!isFinite(x)||!isFinite(y))return null;try{return gcToWgs(sys,x,y)}catch(_){return null}}
+function gcNearW(p){let b=null,bd=1e15;WB.forEach(w=>{if(w.la==null)return;const d=distM(p,w);if(d<bd){bd=d;b=w}});return b?{w:b,d:bd}:null}
+const gcFmt=(k,v)=>GC_SYS[k].g?v:[(+v[0]).toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3}),(+v[1]).toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3})];
+/* التعرف التلقائي: كل الأنظمة بالترتيبين ← النتائج التي تقع في الوادي الجديد مرتبة بقربها من الآبار المسجلة */
+function gcDetect(txt){const n=(String(txt).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).match(/-?\d+(?:[.٫]\d+)?/g)||[]).map(Number);if(n.length<2)return [];const [u,v]=n;const C=[];
+ const tryp=(sys,a,b,ord)=>{try{const g=GC_SYS[sys].g?(Math.abs(a)<=90&&Math.abs(b)<=180?{lat:a,lon:b}:null):gcToWgs(sys,a,b);if(g&&inNV(g.lat,g.lon)){const nw=gcNearW({la:g.lat,lo:g.lon});C.push({sys,ord,a,b,g,nw})}}catch(_){}};
+ if(n.length>=4&&n.every(x=>Math.abs(x)<200)){const la=n[0]+n[1]/60+(n.length>=6?n[2]/3600:0);const lo=n.length>=6?n[3]+n[4]/60+n[5]/3600:n[2]+n[3]/60;tryp('wgs_dd',la,lo,'');tryp('wgs_dd',lo,la,'معكوس')}
+ else{tryp('wgs_dd',u,v,'');tryp('wgs_dd',v,u,'معكوس');Object.keys(GC_SYS).filter(k=>!GC_SYS[k].g).forEach(k=>{tryp(k,u,v,'');tryp(k,v,u,'معكوس')})}
+ const sc=c=>(c.nw?c.nw.d:5e4)+(c.ord?1500:0);return C.sort((x,y)=>sc(x)-sc(y)).slice(0,6)}
+/* ---------- الصفحة ---------- */
+VIEWS.conv=()=>{const T=[['pt','📍 نقطة واحدة'],['file','📂 ملفات Excel · CSV · KML · KMZ'],['cfg','⚙ معاملات التحويل']];
+ return `<div class="ph"><div><h2>محول الإحداثيات المتكامل</h2><p>تحويل بين الإحداثيات الجغرافية وUTM والأحزمة المصرية (مصر 1907) لنقطة واحدة أو لملفات كاملة، وتحويل KML وKMZ في الاتجاهين، مع التعرف التلقائي على النظام وحساب المساحات.</p></div></div>
+ <div class="gctabs">${T.map(([k,t])=>`<button class="${GC.tab===k?'on':''}" data-gctab="${k}">${t}</button>`).join('')}</div>
+ ${GC.tab==='pt'?gcPtView():GC.tab==='file'?gcFileView():gcCfgView()}
+ <p class="gcnote">التحويل بين WGS 84 ومصر 1907 بمعاملات ${S.org&&S.org.gcP?'محلية محفوظة في الإعدادات':'EPSG العامة'} · الدقة المتوقعة ${S.org&&S.org.gcP?'حسب المعاملات المعتمدة':'±1 إلى 6 م'} · مناسبة للمطابقة والحظر وليست لرفع حدود الملكية بالسنتيمتر · الحسابات بمتسلسلة Krüger ومطابقة لمكتبة PROJ القياسية</p>`};
+function gcPtView(){const L=gcLbl(GC.src);const g=gcRead(GC.src,GC.a,GC.b);let res='';
+ if(g){const all=gcAll(g.lat,g.lon);const nw=gcNearW({la:g.lat,lo:g.lon});const inn=inNV(g.lat,g.lon);const z=inZone(g.lat,g.lon);
+  res=`${inn?'':'<div class="note bad">⚠ النقطة خارج محافظة الوادي الجديد · غالباً النظام أو الحزام غلط، أو الإحداثيات معكوسة · جرّب «التعرف التلقائي» بالأسفل</div>'}
+  <div class="gcres"><table><thead><tr><th>النظام</th><th>خط العرض · الشرقي (E)</th><th>خط الطول · الشمالي (N)</th><th></th></tr></thead><tbody>${GC_GROUPS.map(([gn,K])=>`<tr class="gcg"><td colspan="4">${gn}</td></tr>`+K.map(k=>{const v=gcFmt(k,all[k]);return `<tr class="${k===GC.src?'src':''}"><td>${GC_SYS[k].t}${GC_SYS[k].epsg?` <small class="muted">EPSG:${GC_SYS[k].epsg}</small>`:''}</td><td class="num"><bdi dir="ltr">${esc(v[0])}</bdi></td><td class="num"><bdi dir="ltr">${esc(v[1])}</bdi></td><td><button class="btn sm ghost" data-gccp="${esc(all[k][0]+(GC_SYS[k].g?', ':' , ')+all[k][1])}" title="نسخ">⧉</button></td></tr>`}).join('')).join('')}</tbody></table></div>
+  <div class="gcinfo"><div><span>الموقع</span><b>${inn?'داخل الوادي الجديد':'خارج الوادي الجديد'}</b></div><div><span>منطقة الحظر المائي</span><b style="color:${z?'var(--bad)':'var(--ok)'}">${z?'⛔ داخل منطقة الحظر':'خارج منطقة الحظر'}</b></div>${nw?`<div><span>أقرب بئر مسجل</span><b>${esc(nw.w.n)} · ${fmtM(nw.d)}</b></div>`:''}<div><span>خرائط جوجل</span><b><a href="https://www.google.com/maps?q=${g.lat.toFixed(7)},${g.lon.toFixed(7)}" target="_blank" rel="noopener">فتح الموقع ↗</a></b></div></div>
+  <div class="card"><div id="gcmap" class="gcmap"></div></div>
+  ${canGC()?`<div class="card gcsend"><h3>حفظ في طلب <small>كنقطة البئر · يُسجل في سجل الطلب</small></h3><div class="filters"><input class="inp num" id="gc-rid" placeholder="رقم الطلب" style="max-width:140px"><button class="btn pri" data-gcsend>حفظ كموقع البئر</button></div></div>`:''}`}
+ else if(String(GC.a).trim()||String(GC.b).trim())res='<div class="note warn">اكتب الإحداثيين بشكل صحيح</div>';
+ const D=GC.auto?gcDetect(GC.auto):null;
+ return `<div class="card gcin"><div class="form" style="grid-template-columns:minmax(220px,1.3fr) 1fr 1fr auto"><div class="fld"><label for="gc-src">نظام الإحداثيات المُدخلة</label><select class="inp" id="gc-src">${gcOpts(GC.src)}</select></div>
+  <div class="fld"><label for="gc-a">${L[0]}</label><input class="inp num" id="gc-a" dir="ltr" value="${esc(GC.a)}" placeholder="${GC_SYS[GC.src].g?'25.4500 أو 25°27\'00"N':'569589.55'}"></div>
+  <div class="fld"><label for="gc-b">${L[1]}</label><input class="inp num" id="gc-b" dir="ltr" value="${esc(GC.b)}" placeholder="${GC_SYS[GC.src].g?'30.5500 أو 30°33\'00"E':'305834.36'}"></div>
+  <div class="fld" style="align-self:end"><button class="btn" data-gcswap title="تبديل الإحداثيين">⇄</button></div></div>
+  ${GC_SYS[GC.src].g?'<small class="muted">يقبل أي صيغة: درجات عشرية · درجات ودقائق وثواني (25 27 00) · رموز ° \' " · حروف N E · أرقام عربية</small>':''}</div>
+ ${res}
+ <div class="card gcauto"><h3>🔎 التعرف التلقائي على النظام <small>الصق الرقمين كما هما في الكروكي أو اللوحة</small></h3><input class="inp" id="gc-auto" dir="ltr" value="${esc(GC.auto)}" placeholder="569589.55  305834.36">
+ ${D?(D.length?`<div class="tw" style="margin-top:8px"><table><thead><tr><th>النظام المحتمل</th><th>النتيجة WGS 84</th><th>أقرب بئر مسجل</th><th></th></tr></thead><tbody>${D.map((c,i)=>`<tr${i===0?' class="best"':''}><td>${GC_SYS[c.sys].t}${c.ord?' <small class="muted">(ترتيب معكوس)</small>':''}${i===0?' <span class="tag" style="color:var(--ok)">الأرجح</span>':''}</td><td dir="ltr" class="num">${c.g.lat.toFixed(6)}, ${c.g.lon.toFixed(6)}</td><td>${c.nw?esc(c.nw.w.n)+' · '+fmtM(c.nw.d):'—'}</td><td><button class="btn sm" data-gcuse="${c.sys}|${c.a}|${c.b}">استخدام</button></td></tr>`).join('')}</tbody></table></div><small class="muted">الترتيب حسب القرب من آبار سجل الإدارة · اختر الأرجح وراجعه</small>`:'<p class="muted" style="margin:8px 0 0">لا يوجد نظام يضع هذه الأرقام داخل الوادي الجديد</p>'):''}</div>`}
+/* ---------- الملفات ---------- */
+function gcFileView(){const F=GC.F;let body='';
+ if(F&&F.need){body=gcMapView(F)}
+ else if(F&&F.feats){const N=F.feats.reduce((a,f)=>a+f.pts.length,0);const tg=GC.tgt;
+  body=`<div class="card"><div class="filters"><b>${esc(GC.file)}</b><span class="tag">${F.feats.length} عنصر · ${N} نقطة</span><span class="muted">${F.src?'المصدر: '+GC_SYS[F.src].t:''}</span><span style="flex:1"></span><label class="muted" for="gc-tgt">التحويل إلى</label><select class="inp" id="gc-tgt" style="max-width:280px">${gcOpts(tg)}</select></div>
+  <div class="filters" style="margin-top:8px"><button class="btn pri" data-gcx="xlsx">📊 Excel (كل الأنظمة)</button><button class="btn" data-gcx="csv">CSV (${esc(GC_SYS[tg].t)})</button><button class="btn" data-gcx="kml">🌍 KML</button><button class="btn" data-gcx="kmz">🌍 KMZ</button></div></div>
+  ${F.feats.filter(f=>f.type==='poly').length?`<div class="card"><h3>المساحات والمحيط</h3><div class="tw"><table><thead><tr><th>العنصر</th><th>النقط</th><th>المساحة</th><th>م²</th><th>المحيط</th>${canGC()?'<th></th>':''}</tr></thead><tbody>${F.feats.map((f,i)=>({f,i})).filter(x=>x.f.type==='poly').map(({f,i})=>{const A=gcArea(f.pts),A_=areaFrom(A.m2);return `<tr><td><b>${esc(f.name||'مضلع '+(i+1))}</b></td><td class="num">${f.pts.length}</td><td class="num">${A_.f} ف ${A_.q} ط ${A_.sh} س</td><td class="num">${n0(A.m2)}</td><td class="num">${fmtM(A.per)}</td>${canGC()?`<td><button class="btn sm" data-gcpoly="${i}">حفظ كحدود أرض لطلب</button></td>`:''}</tr>`}).join('')}</tbody></table></div><small class="muted">المساحة محسوبة على مسقط UTM 36 (WGS 84) بدقة تفوق دقة الإحداثيات نفسها</small></div>`:''}
+  <div class="card"><div id="gcmap" class="gcmap"></div></div>
+  <div class="card"><h3>المعاينة <small>${esc(GC_SYS[tg].t)}${N>300?' · أول 300 نقطة (الملف المُصدَّر كامل)':''}</small></h3><div class="tw"><table><thead><tr><th>العنصر</th><th>م</th><th>${gcLbl(tg)[0]}</th><th>${gcLbl(tg)[1]}</th><th>WGS 84</th></tr></thead><tbody>${gcRows(F,tg).slice(0,300).map(r=>`<tr><td>${esc(r.n)}</td><td class="num">${r.i}</td><td dir="ltr" class="num">${esc(r.a)}</td><td dir="ltr" class="num">${esc(r.b)}</td><td dir="ltr" class="num"><small>${r.lat.toFixed(6)}, ${r.lon.toFixed(6)}</small></td></tr>`).join('')}</tbody></table></div></div>`}
+ return `<div class="card gcdrop"><label class="btn pri">📂 اختيار ملف<input type="file" id="gc-file" accept=".kml,.kmz,.xlsx,.xls,.csv,.txt" hidden></label><span class="muted">KML · KMZ · Excel · CSV · من أي نظام إحداثيات</span>${F?'<button class="btn sm ghost" data-gcclr style="margin-inline-start:auto">ملف جديد</button>':''}</div>${body}`}
+function gcMapView(F){const H=F.head;const g=k=>`<select class="inp" id="gc-c-${k}"><option value="-1">—</option>${H.map((h,i)=>`<option value="${i}" ${F.guess[k]===i?'selected':''}>${esc(h||('عمود '+(i+1)))}</option>`).join('')}</select>`;
+ return `<div class="card"><h3>ربط أعمدة الملف <small>${esc(GC.file)} · ${F.rows.length} صف</small></h3><div class="form" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+ <div class="fld"><label for="gc-fsrc">نظام إحداثيات الملف</label><select class="inp" id="gc-fsrc">${gcOpts(F.src||'red')}</select>${F.det?`<small style="color:var(--ok)">✓ اكتُشف تلقائياً: ${GC_SYS[F.det].t}</small>`:''}</div>
+ <div class="fld"><label for="gc-c-a">العمود الأول (عرض / شرقي)</label>${g('a')}</div><div class="fld"><label for="gc-c-b">العمود الثاني (طول / شمالي)</label>${g('b')}</div><div class="fld"><label for="gc-c-n">اسم النقطة</label>${g('n')}</div><div class="fld"><label for="gc-c-g">المجموعة / اسم الأرض</label>${g('g')}</div>
+ <div class="fld" style="align-self:end"><label class="ack"><input type="checkbox" id="gc-poly" ${F.guess.poly?'checked':''}> كل مجموعة نقط = حدود أرض (مضلع)</label></div></div>
+ <div class="tw" style="margin-top:8px"><table><thead><tr>${H.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${F.rows.slice(0,5).map(r=>`<tr>${H.map((_,i)=>`<td dir="ltr">${esc(r[i]??'')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+ <button class="btn pri" data-gcmapok style="margin-top:10px">تحويل</button></div>`}
+function gcCfgView(){const P=gcEg07P();const ed=me().r<=1;const f=(k,t)=>`<div class="fld"><label for="gp-${k}">${t}</label><input class="inp num" id="gp-${k}" dir="ltr" value="${P[k]}" ${ed?'':'disabled'}></div>`;
+ return `<div class="card"><h3>معاملات تحويل مصر 1907 ← WGS 84 <small>Helmert · Position Vector (EPSG:9606)</small></h3><p class="muted" style="margin:0 0 8px">القيم الافتراضية هي معاملات EPSG العامة لمصر (−130، 110، −13) بدقة ±6 م تقريباً. لو عند الإدارة معاملات محلية معتمدة من هيئة المساحة لمنطقة الخارجة، اكتبها هنا لدقة أعلى.</p>
+ <div class="form" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">${f('dx','ΔX (م)')}${f('dy','ΔY (م)')}${f('dz','ΔZ (م)')}${f('rx','دوران X (ثانية)')}${f('ry','دوران Y (ثانية)')}${f('rz','دوران Z (ثانية)')}${f('s','المقياس (ppm)')}</div>
+ ${ed?`<div class="filters" style="margin-top:8px"><button class="btn pri" data-gcpsave>حفظ</button><button class="btn ghost" data-gcpdef>استرجاع الافتراضي</button></div>`:''}</div>
+ <div class="card"><h3>الأنظمة المدعومة</h3><div class="tw"><table><thead><tr><th>النظام</th><th>EPSG</th><th>المرجع</th><th>خط الطول المركزي</th><th>عرض الأصل</th><th>المقياس</th><th>الإزاحة الشرقية / الشمالية</th></tr></thead><tbody>${Object.entries(GC_SYS).filter(([,s])=>!s.g).map(([k,s])=>`<tr><td>${s.t}</td><td class="num">${s.epsg||''}</td><td>${s.d==='eg07'?'Egypt 1907 (Helmert 1906)':'WGS 84'}</td><td class="num">${s.lon0}°</td><td class="num">${s.lat0}°</td><td class="num">${s.k0}</td><td class="num" dir="ltr">${n0(s.fe)} / ${n0(s.fn)}</td></tr>`).join('')}</tbody></table></div></div>`}
+/* ---------- حسابات الملفات ---------- */
+function gcArea(P){const Q=P.map(p=>gcFromWgs('utm36',p[0],p[1]));let a=0,per=0;for(let i=0;i<Q.length;i++){const p=Q[i],q=Q[(i+1)%Q.length];a+=p.x*q.y-q.x*p.y;per+=Math.hypot(q.x-p.x,q.y-p.y)}return {m2:Math.abs(a)/2,per}}
+function gcRows(F,tg){const out=[];F.feats.forEach(f=>f.pts.forEach((p,i)=>{let a,b;if(GC_SYS[tg].g){const v=gcAll(p[0],p[1])[tg];a=v[0];b=v[1]}else{const q=gcFromWgs(tg,p[0],p[1]);a=q.x.toFixed(3);b=q.y.toFixed(3)}out.push({n:f.name||'',t:f.type,i:i+1,a,b,lat:p[0],lon:p[1]})}));return out}
+/* ---------- KML / KMZ ---------- */
+function gcKmlParse(txt){const d=new DOMParser().parseFromString(txt,'text/xml');const F=[];const cs=s=>String(s||'').trim().split(/\s+/).map(t=>t.split(',').map(Number)).filter(c=>c.length>=2&&isFinite(c[0])&&isFinite(c[1])).map(c=>[c[1],c[0]]);
+ [...d.getElementsByTagName('Placemark')].forEach(pm=>{const nm=(pm.getElementsByTagName('name')[0]||{}).textContent||'';const ds=(pm.getElementsByTagName('description')[0]||{}).textContent||'';
+  [...pm.getElementsByTagName('Point')].forEach(g=>{const c=cs((g.getElementsByTagName('coordinates')[0]||{}).textContent);if(c.length)F.push({name:nm,type:'pt',pts:[c[0]],desc:ds})});
+  [...pm.getElementsByTagName('LineString')].forEach(g=>{const c=cs((g.getElementsByTagName('coordinates')[0]||{}).textContent);if(c.length)F.push({name:nm,type:'line',pts:c,desc:ds})});
+  [...pm.getElementsByTagName('Polygon')].forEach(g=>{const ob=g.getElementsByTagName('outerBoundaryIs')[0]||g;let c=cs((ob.getElementsByTagName('coordinates')[0]||{}).textContent);if(c.length>1&&c[0][0]===c[c.length-1][0]&&c[0][1]===c[c.length-1][1])c=c.slice(0,-1);if(c.length>=3)F.push({name:nm,type:'poly',pts:c,desc:ds})})});
+ return F}
+async function gcUnzip(buf){const u=new Uint8Array(buf),dv=new DataView(buf);let e=-1;for(let i=u.length-22;i>=Math.max(0,u.length-65557);i--)if(dv.getUint32(i,true)===0x06054b50){e=i;break}if(e<0)throw new Error('zip');
+ const n=dv.getUint16(e+10,true);let p=dv.getUint32(e+16,true);const files=[];for(let k=0;k<n;k++){const m=dv.getUint16(p+10,true),cs=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),lo=dv.getUint32(p+42,true);const name=new TextDecoder().decode(u.subarray(p+46,p+46+nl));files.push({name,m,cs,lo});p+=46+nl+xl+cl}
+ const f=files.find(x=>/\.kml$/i.test(x.name));if(!f)throw new Error('nokml');const ln=dv.getUint16(f.lo+26,true),lx=dv.getUint16(f.lo+28,true);const data=u.subarray(f.lo+30+ln+lx,f.lo+30+ln+lx+f.cs);
+ if(f.m===0)return new TextDecoder().decode(data);return await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text()}
+const GC_CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const gcCrc=u=>{let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=GC_CRC[(c^u[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0};
+async function gcZip(name,text){const raw=new TextEncoder().encode(text);const comp=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer());const nm=new TextEncoder().encode(name);const crc=gcCrc(raw);
+ const d=new Date(),dt=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate(),tm=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1);
+ const lh=new DataView(new ArrayBuffer(30));[[0,0x04034b50,4],[4,20,2],[6,0x0800,2],[8,8,2],[10,tm,2],[12,dt,2],[14,crc,4],[18,comp.length,4],[22,raw.length,4],[26,nm.length,2],[28,0,2]].forEach(([o,v,s])=>s===4?lh.setUint32(o,v,true):lh.setUint16(o,v,true));
+ const ch=new DataView(new ArrayBuffer(46));[[0,0x02014b50,4],[4,20,2],[6,20,2],[8,0x0800,2],[10,8,2],[12,tm,2],[14,dt,2],[16,crc,4],[20,comp.length,4],[24,raw.length,4],[28,nm.length,2],[30,0,2],[32,0,2],[34,0,2],[36,0,2],[38,0,4],[42,0,4]].forEach(([o,v,s])=>s===4?ch.setUint32(o,v,true):ch.setUint16(o,v,true));
+ const off=30+nm.length+comp.length;const ed=new DataView(new ArrayBuffer(22));[[0,0x06054b50,4],[4,0,2],[6,0,2],[8,1,2],[10,1,2],[12,46+nm.length,4],[16,off,4],[20,0,2]].forEach(([o,v,s])=>s===4?ed.setUint32(o,v,true):ed.setUint16(o,v,true));
+ return new Blob([lh,nm,comp,ch,nm,ed],{type:'application/vnd.google-earth.kmz'})}
+function gcKmlBuild(F,tg){const x=s=>String(s??'').replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&apos;'}[c]));const L=gcLbl(tg);
+ const c=p=>`${(+p[1]).toFixed(8)},${(+p[0]).toFixed(8)},0`;const cv=p=>{if(GC_SYS[tg].g){const v=gcAll(p[0],p[1])[tg];return `${L[0]}: ${v[0]}<br>${L[1]}: ${v[1]}`}const q=gcFromWgs(tg,p[0],p[1]);return `${L[0]}: ${q.x.toFixed(3)}<br>${L[1]}: ${q.y.toFixed(3)}`};
+ const pm=F.feats.map((f,i)=>{const nm=x(f.name||(f.type==='poly'?'مضلع ':f.type==='line'?'خط ':'نقطة ')+(i+1));let geo,ds;
+  if(f.type==='pt'){geo=`<Point><coordinates>${c(f.pts[0])}</coordinates></Point>`;ds=`${x(GC_SYS[tg].t)}<br>${cv(f.pts[0])}<br>WGS 84: ${f.pts[0][0].toFixed(7)}, ${f.pts[0][1].toFixed(7)}`}
+  else if(f.type==='line'){geo=`<LineString><tessellate>1</tessellate><coordinates>${f.pts.map(c).join(' ')}</coordinates></LineString>`;ds=`${f.pts.length} نقطة`}
+  else{const A=gcArea(f.pts),A_=areaFrom(A.m2);geo=`<Polygon><outerBoundaryIs><LinearRing><coordinates>${[...f.pts,f.pts[0]].map(c).join(' ')}</coordinates></LinearRing></outerBoundaryIs></Polygon>`;ds=`المساحة: ${A_.f} ف ${A_.q} ط ${A_.sh} س (${n0(A.m2)} م²)<br>المحيط: ${A.per.toFixed(1)} م<br>${f.pts.map((p,j)=>`${j+1}) ${cv(p).replace('<br>',' · ')}`).join('<br>')}`}
+  return `<Placemark><name>${nm}</name><description><![CDATA[${ds}${f.desc?'<br>'+x(f.desc):''}]]></description><styleUrl>#${f.type}</styleUrl>${geo}</Placemark>`}).join('');
+ return `<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>${x(GC.file||'تحويل إحداثيات')}</name><description>منظومة تراخيص الآبار بالخارجة · محول الإحداثيات · ${todayISO()} · جميع الحقوق محفوظة للمصمم والمطور - م/ أسامه حسن بدري - 01145060007</description>
+<Style id="pt"><IconStyle><color>ff2fa6d4</color><scale>0.9</scale><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon></IconStyle></Style><Style id="line"><LineStyle><color>ff2fa6d4</color><width>2.5</width></LineStyle></Style><Style id="poly"><LineStyle><color>ff2fa6d4</color><width>2</width></LineStyle><PolyStyle><color>402fa6d4</color></PolyStyle></Style>
+<Folder><name>${x(GC_SYS[tg].t)}</name>${pm}</Folder></Document></kml>`}
+/* ---------- قراءة الملفات ---------- */
+async function gcLoad(f){GC.file=f.name;const ext=f.name.split('.').pop().toLowerCase();try{
+ if(ext==='kml'||ext==='kmz'){const t=ext==='kmz'?await gcUnzip(await f.arrayBuffer()):await f.text();const feats=gcKmlParse(t);if(!feats.length)throw new Error('empty');GC.F={feats,src:'wgs_dd'};GC.tgt=GC.tgt||'red';toast('✓ '+feats.length+' عنصر من '+ext.toUpperCase());return rerender()}
+ let rows;if(ext==='csv'||ext==='txt'){const t=await f.text();rows=t.split(/\r?\n/).filter(l=>l.trim()).map(l=>l.split(/[,;\t]/).map(s=>s.trim()))}else{if(typeof XLSX==='undefined')throw new Error('xlsx');const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:''})}
+ rows=rows.filter(r=>r.some(c=>String(c).trim()!==''));if(!rows.length)throw new Error('empty');const hasHead=rows[0].filter(c=>isFinite(gcNum(c))&&String(c).trim()!=='').length<2;const head=hasHead?rows[0].map(String):rows[0].map((_,i)=>'عمود '+(i+1));const body=hasHead?rows.slice(1):rows;
+ const hn=head.map(h=>String(h).trim().toLowerCase().replace(/[()\[\]_.:-]/g,' ').replace(/\s+/g,' '));const fi=L=>hn.findIndex(h=>L.some(k=>h===k||h.startsWith(k+' ')||(k.length>3&&h.startsWith(k))));const guess={a:fi(['lat','latitude','عرض','خط العرض','e','east','easting','x','شرقي','الشرقي','شرق']),b:fi(['lon','long','lng','longitude','طول','خط الطول','n','north','northing','y','شمالي','الشمالي','شمال'])};guess.n=fi(['name','اسم','الاسم','نقطة','النقطة','point','id','رقم','م']);guess.g=fi(['group','polygon','parcel','أرض','ارض','الأرض','قطعة','مجموعة','طلب','رقم الطلب']);[guess.n,guess.g]=[guess.n,guess.g].map(i=>i===guess.a||i===guess.b?-1:i);
+ const num=head.map((_,i)=>body.slice(0,30).filter(r=>isFinite(gcNum(r[i]))).length);if(guess.a<0||guess.b<0){const ix=num.map((n,i)=>[n,i]).filter(x=>x[0]>=Math.min(3,body.length)).map(x=>x[1]).filter(i=>i!==guess.n);if(guess.a<0)guess.a=ix[0]??-1;if(guess.b<0)guess.b=ix.find(i=>i!==guess.a)??-1}
+ if(/lat|عرض/i.test(head[guess.b]||'')&&/lon|طول/i.test(head[guess.a]||'')){const t=guess.a;guess.a=guess.b;guess.b=t}
+ let det=null;if(guess.a>=0&&guess.b>=0){const smp=body.slice(0,5).map(r=>r[guess.a]+' '+r[guess.b]);const cnt={};smp.forEach(s=>{const d=gcDetect(s)[0];if(d){const k=d.sys+'|'+(d.ord?1:0);cnt[k]=(cnt[k]||0)+1}});det=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];if(det){const [sy,o]=det[0].split('|');if(o==='1'){const t=guess.a;guess.a=guess.b;guess.b=t}det=sy}else det=null}
+ guess.poly=guess.g>=0||body.length>=3;GC.F={need:1,head,rows:body,guess,src:det||'red',det};rerender()}
+ catch(e){toast(String(e.message)==='xlsx'?'تعذر تحميل قارئ Excel · جرّب CSV':String(e.message)==='nokml'?'ملف KMZ لا يحتوي على KML':'تعذرت قراءة الملف');GC.F=null;rerender()}}
+function gcMapOk(){const F=GC.F;const c=k=>+$('#gc-c-'+k).value;const src=$('#gc-fsrc').value,ia=c('a'),ib=c('b'),inm=c('n'),ig=c('g'),poly=$('#gc-poly').checked;if(ia<0||ib<0)return toast('حدد عمودي الإحداثيات');
+ const groups=new Map();let bad=0;F.rows.forEach((r,j)=>{const g=gcRead(src,r[ia],r[ib]);if(!g){bad++;return}const key=ig>=0?String(r[ig]||'').trim()||'—':(poly?'الأرض':'p'+j);if(!groups.has(key))groups.set(key,[]);groups.get(key).push({p:[g.lat,g.lon],n:inm>=0?String(r[inm]||''):''})});
+ const feats=[];groups.forEach((L,k)=>{if(poly&&L.length>=3)feats.push({name:k,type:'poly',pts:L.map(x=>x.p)});else L.forEach((x,i)=>feats.push({name:x.n||(ig>=0?k+' '+(i+1):'نقطة '+(feats.length+1)),type:'pt',pts:[x.p]}))});
+ if(!feats.length)return toast('لم تُقرأ أي نقطة صحيحة · راجع الأعمدة والنظام');const out=feats.reduce((a,f)=>a+f.pts.filter(p=>!inNV(p[0],p[1])).length,0);
+ GC.F={feats,src};toast(`✓ ${feats.length} عنصر${bad?' · '+bad+' صف غير صالح':''}${out?' · ⚠ '+out+' نقطة خارج الوادي الجديد (راجع النظام)':''}`,6000);rerender()}
+async function gcExport(kind){const F=GC.F;if(!F||!F.feats)return;const tg=GC.tgt,base=(GC.file||'coords').replace(/\.[^.]+$/,'')+' - '+GC_SYS[tg].t;
+ if(kind==='xlsx'){const K=Object.keys(GC_SYS);const head=['العنصر','النوع','م',...K.flatMap(k=>{const l=gcLbl(k);return [GC_SYS[k].t+' · '+l[0],GC_SYS[k].t+' · '+l[1]]})];const rows=[head];F.feats.forEach(f=>f.pts.forEach((p,i)=>{const a=gcAll(p[0],p[1]);rows.push([f.name||'',{pt:'نقطة',line:'خط',poly:'مضلع'}[f.type],i+1,...K.flatMap(k=>GC_SYS[k].g&&k==='wgs_dd'?[+a[k][0],+a[k][1]]:GC_SYS[k].g?a[k]:[+a[k][0],+a[k][1]])])}));
+  const ar=[['العنصر','عدد النقط','فدان','قيراط','سهم','م²','المحيط م']];F.feats.filter(f=>f.type==='poly').forEach(f=>{const A=gcArea(f.pts),A_=areaFrom(A.m2);ar.push([f.name||'',f.pts.length,A_.f,A_.q,A_.sh,+A.m2.toFixed(2),+A.per.toFixed(2)])});
+  return exportX(base,[{n:'الإحداثيات',rows},...(ar.length>1?[{n:'المساحات',rows:ar}]:[])])}
+ if(kind==='csv'){const L=gcLbl(tg);const R_=gcRows(F,tg);const t='﻿'+[['العنصر','م',L[0],L[1],'WGS84 Lat','WGS84 Lon'].join(','),...R_.map(r=>[`"${String(r.n).replace(/"/g,'""')}"`,r.i,`"${r.a}"`,`"${r.b}"`,r.lat.toFixed(8),r.lon.toFixed(8)].join(','))].join('\r\n');return saveFile(base+'.csv',new Blob([t],{type:'text/csv;charset=utf-8'}))}
+ const k=gcKmlBuild(F,tg);if(kind==='kml')return saveFile(base+'.kml',new Blob([k],{type:'application/vnd.google-earth.kml+xml'}));saveFile(base+'.kmz',await gcZip('doc.kml',k))}
+/* ---------- الحفظ في الطلبات ---------- */
+function gcSendPt(){if(!canGC())return;const g=gcRead(GC.src,GC.a,GC.b);const r=findReq(+gcNum($('#gc-rid').value));if(!g)return toast('اكتب الإحداثيات أولاً');if(!r)return toast('رقم الطلب غير موجود');if(r.status!=='pending')return toast('الطلب مغلق');if(!inNV(g.lat,g.lon))return toast('النقطة خارج الوادي الجديد');
+ const old=reqPt(r);r.coords=[[+g.lat.toFixed(7),+g.lon.toFixed(7)],...(r.coords||[]).slice(1)];r.log.push({d:todayISO(),t:`تحديث موقع البئر من محول الإحداثيات: ${GC_SYS[GC.src].t} (${GC.a} · ${GC.b}) ← ${g.lat.toFixed(6)}, ${g.lon.toFixed(6)}${old?' · كان '+old.la.toFixed(6)+', '+old.lo.toFixed(6):''}`,u:me().n,ts:Date.now()});persist(r);syncPulse();toast('✓ تم حفظ موقع البئر في الطلب م '+r.id)}
+function gcSendPoly(i){if(!canGC())return;const f=GC.F&&GC.F.feats[i];if(!f)return;const id=prompt('رقم الطلب لحفظ حدود الأرض');if(!id)return;const r=findReq(+gcNum(id));if(!r)return toast('رقم الطلب غير موجود');if(r.status!=='pending')return toast('الطلب مغلق');
+ const A=gcArea(f.pts),A_=areaFrom(A.m2);if(r.poly&&r.poly.length&&!confirm('الطلب له حدود أرض مسجلة بالفعل · استبدالها بالحدود الجديدة؟'))return;r.poly=f.pts.map(p=>[+p[0].toFixed(7),+p[1].toFixed(7)]);
+ r.log.push({d:todayISO(),t:`تحديث حدود الأرض من محول الإحداثيات (${esc(GC.file)} · ${f.pts.length} نقطة · ${GC.F.src?GC_SYS[GC.F.src].t:''}) · المساحة ${A_.f} ف ${A_.q} ط ${A_.sh} س`,u:me().n,ts:Date.now()});persist(r);syncPulse();try{OVL_C=null}catch(_){}toast('✓ تم حفظ حدود الأرض في الطلب م '+r.id)}
+/* ---------- الخريطة ---------- */
+AFTER.conv=()=>{const el=$('#gcmap');if(!el)return;let pts=[],polys=[];
+ if(GC.tab==='pt'){const g=gcRead(GC.src,GC.a,GC.b);if(g)pts=[{la:g.lat,lo:g.lon,c:'#d4a017',t:'النقطة'}];WB.forEach(w=>{if(w.la!=null&&g&&distM({la:g.lat,lo:g.lon},w)<3000)pts.push({la:w.la,lo:w.lo,c:'#1f6f78',t:w.n})})}
+ else if(GC.F&&GC.F.feats){GC.F.feats.forEach((f,i)=>{if(f.type==='poly')polys.push({pts:f.pts,i});else f.pts.forEach(p=>pts.push({la:p[0],lo:p[1],c:'#d4a017',t:f.name}))});if(!pts.length&&polys.length)polys.forEach(p=>p.pts.forEach(q=>pts.push({la:q[0],lo:q[1],c:'transparent'})))}
+ if(pts.length)geoMap(el,pts,{polys,open:()=>{}});else el.innerHTML='<div class="empty">لا توجد نقط داخل الوادي الجديد لعرضها</div>'};
+/* ---------- أحداث ---------- */
+function gcClick(t){let el;
+ if(el=t.closest('[data-gctab]')){GC.tab=el.dataset.gctab;rerender();return true}
+ if(t.closest('[data-gcswap]')){const a=GC.a;GC.a=GC.b;GC.b=a;rerender();return true}
+ if(el=t.closest('[data-gccp]')){const v=el.dataset.gccp;(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(()=>toast('✓ تم النسخ: '+v)).catch(()=>prompt('انسخ القيمة',v));return true}
+ if(el=t.closest('[data-gcuse]')){const [s,a,b]=el.dataset.gcuse.split('|');GC.src=s;GC.a=a;GC.b=b;GC.auto='';rerender();window.scrollTo({top:0,behavior:'smooth'});return true}
+ if(t.closest('[data-gcsend]')){gcSendPt();return true}
+ if(el=t.closest('[data-gcpoly]')){gcSendPoly(+el.dataset.gcpoly);return true}
+ if(el=t.closest('[data-gcx]')){gcExport(el.dataset.gcx);return true}
+ if(t.closest('[data-gcclr]')){GC.F=null;GC.file='';rerender();return true}
+ if(t.closest('[data-gcmapok]')){gcMapOk();return true}
+ if(t.closest('[data-gcpsave]')){if(me().r>1)return true;const P={};for(const k of ['dx','dy','dz','rx','ry','rz','s']){const v=gcNum($('#gp-'+k).value);if(!isFinite(v)||Math.abs(v)>1000)return toast('قيمة غير صحيحة: '+k),true;P[k]=v}S.org=S.org||{};S.org.gcP=P;enqueue('p:org','معاملات تحويل الإحداثيات','إعدادات');save();syncPulse();toast('✓ تم حفظ المعاملات');rerender();return true}
+ if(t.closest('[data-gcpdef]')){if(me().r>1)return true;S.org=S.org||{};delete S.org.gcP;enqueue('p:org','معاملات تحويل الإحداثيات','إعدادات');save();syncPulse();toast('✓ تم استرجاع المعاملات الافتراضية');rerender();return true}
+ return false}
+let GC_T=null;const gcLive=(f)=>{clearTimeout(GC_T);GC_T=setTimeout(()=>{const ae=document.activeElement&&document.activeElement.id,ps=ae&&$('#'+ae)?$('#'+ae).selectionStart:null;f();rerender();if(ae&&$('#'+ae)){const i=$('#'+ae);i.focus();try{if(ps!=null)i.setSelectionRange(ps,ps)}catch(_){}}},380)};
+document.addEventListener('input',e=>{const t=e.target;if(!t||!t.id)return;if(t.id==='gc-a'||t.id==='gc-b'){GC[t.id==='gc-a'?'a':'b']=t.value;gcLive(()=>{})}else if(t.id==='gc-auto'){GC.auto=t.value;gcLive(()=>{})}});
+document.addEventListener('change',e=>{const t=e.target;if(!t||!t.id)return;if(t.id==='gc-src'){const g=gcRead(GC.src,GC.a,GC.b);GC.src=t.value;if(g){if(GC_SYS[GC.src].g){const v=gcAll(g.lat,g.lon)[GC.src];GC.a=v[0];GC.b=v[1]}else{const q=gcFromWgs(GC.src,g.lat,g.lon);GC.a=q.x.toFixed(3);GC.b=q.y.toFixed(3)}}rerender()}
+ else if(t.id==='gc-tgt'){GC.tgt=t.value;rerender()}else if(t.id==='gc-file'&&t.files[0]){gcLoad(t.files[0]);t.value=''}});
+
 /* بطاقة داخل ملف الطلب */
 function vrCard(r){const v=vrs()[r.id];if(v)return `<div class="card vrcard"><h3>المتغيرات المكانية والمطالبة المالية ${vrStPill(v)}<button class="btn sm ghost" data-vrinfo="${r.id}" style="margin-inline-start:auto">السجل</button></h3>${vrSteps(v)}${v.from?`<div class="kv"><div><span>فترة المتغيرات</span><b>${fD(v.from)} ← ${fD(v.to)}</b></div><div><span>متوسط المساحة</span><b class="num">${vrFed(v.area)}</b></div>${v.amt?`<div><span>المطالبة <bdi dir="ltr">${esc(v.cno||'')}</bdi></span><b class="num">${vrMoney(v.amt)}</b></div>`:''}</div>`:''}${v.clm?`<div style="margin-top:8px"><button class="btn sm ghost" data-clmpr="${r.id}">🖨 المطالبة المالية</button></div>`:''}${v.rcpt?`<div style="margin-top:8px">${rcBtns(v)}</div>`:''}${canVrBack(v)?`<div style="margin-top:8px"><button class="btn sm ghost" data-vrback="${r.id}">↩ إعادة لقسم المتغيرات لإعادة الاحتساب</button></div>`:''}<div class="muted" style="font-size:12px;margin-top:6px">مسار موازٍ لا يوقف إجراءات الطلب في منظومة التراخيص · يلزم السداد قبل عرض الملف على اللجنة العليا.</div></div>`;
  if(r.stage>=2&&r.status!=='rejected'&&canSendVar())return `<div class="card vrcard"><h3>المتغيرات المكانية</h3><div class="filters"><span class="muted" style="font-size:13px">لم تُرسل نسخة من هذا الطلب لقسم المتغيرات.</span><button class="btn sm pri" data-vrnew="${r.id}" style="margin-inline-start:auto">إرسال نسخة لقسم المتغيرات</button></div></div>`;return ''}
 function vrClick(t){let el;
- if(f6Click(t)||f7Click(t)||f8Click(t)||f14Click(t)||f15Click(t)||f16Click(t)||f17Click(t)||znClick(t))return true;
+ if(f6Click(t)||f7Click(t)||f8Click(t)||f14Click(t)||f15Click(t)||f16Click(t)||f17Click(t)||gcClick(t)||znClick(t))return true;
  if(el=t.closest('[data-ids]')){IDS=el.dataset.ids;rerender();return true}
  if(t.closest('[data-cmprint]')){cmPrint();return true}
  if(el=t.closest('[data-asgsave]')){asgSave(+el.dataset.asgsave||el.dataset.asgsave);return true}
@@ -5756,7 +5975,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.18-1712';
+const APP_VER='2026.11.18-2328';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

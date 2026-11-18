@@ -4694,7 +4694,7 @@ function cmCols(){const C=[['n','م',6],['name','الاسم',47],['city','الم
  if(CMS_OPT.q)C.push(['q','التصرف م³/يوم/بئر',15]);if(CMS_OPT.swl)C.push(['swl','المنسوب الإستاتيكي',14]);if(CMS_OPT.tds)C.push(['tds','الملوحة',13]);C.push(['use','الغرض',13],['crop','نوع الزراعات',24],['nt','ملاحظات',0]);return C}
 const CM_GRP={area:'المساحة محل الطلب',xy:'الإحداثيات <bdi dir="ltr" data-lat>WGS 84</bdi>',sp:'مواصفات البئر'};
 function cmRowData(r,t){const A=cmFed(r)?areaFrom(cmFed(r)*FED):{f:0,q:0,sh:0};const w_=WB.find(o=>o.rq==r.id)||(r.wi!=null?WB.find(o=>o.i==r.wi):null)||(r.dbw!=null?WB.find(o=>o.i==r.dbw):null);const t0=r.tech||{};const tk={dep:t0.dep||(w_&&+w_.dep>0?w_.dep:''),dia:t0.dia||(w_&&+w_.dia>0?w_.dia:''),q:t0.q||(w_&&+w_.q>0?w_.q:''),swl:t0.swl||(w_&&+w_.sl>0?w_.sl:''),tds:t0.tds||(w_&&+w_.tds>0?w_.tds:'')};const P=(r.coords||[]).filter(c=>c&&c[0]>20&&c[0]<30);const pts=P.length?P:(reqPt(r)?[[reqPt(r).la,reqPt(r).lo]]:[]);
- return {r,name:r.name,city:r.city||'',sh:cmFed(r)?A.sh:'',q_:cmFed(r)?A.q:'',f:cmFed(r)?A.f:'',nw:nwOf(r),E:pts.slice(0,3).map(p=>dmsT(p[1])),N:pts.slice(0,3).map(p=>dmsT(p[0])),more:Math.max(0,pts.length-3),dep:tk.dep?tk.dep+' م':'',dia:tk.dia?tk.dia+' بوصة':'',aq:AQ_DEF,q:tk.q||'',swl:tk.swl||'',tds:tk.tds||'',use:r.use==='زراعي'?'زراعة':(r.use||''),crop:cropOf(r).t,csrc:cropOf(r).src,np:nameParts(r),
+ return {r,name:r.name,city:r.city||'',sh:A.sh||'-',q_:A.q||'-',f:A.f||'-',nw:nwOf(r),E:pts.slice(0,3).map(p=>dmsT(p[1])),N:pts.slice(0,3).map(p=>dmsT(p[0])),more:Math.max(0,pts.length-3),dep:tk.dep?tk.dep+' م':'',dia:tk.dia?tk.dia+' بوصة':'',aq:AQ_DEF,q:tk.q||'',swl:tk.swl||'',tds:tk.tds||'',use:r.use==='زراعي'?'زراعة':(r.use||''),crop:cropOf(r).t,csrc:cropOf(r).src,np:nameParts(r),
   nt:t.endsWith('_in')?[r.zn&&r.zn.nt,r.zn&&r.zn.d?'تاريخ الحفر '+r.zn.d:''].filter(Boolean).join(' · '):''}}
 function cmTblRows(L,t){const C=cmCols();const rows=L.map(r=>cmRowData(r,t));const SP=['aq','use'];const span={};
  const SPX=k=>k==='crop';SP.forEach(k=>{const S_=new Array(rows.length).fill(1);for(let i=0;i<rows.length;){let j=i+1;while(j<rows.length&&rows[j][k]===rows[i][k]&&rows[i][k])j++;S_[i]=j-i;for(let x=i+1;x<j;x++)S_[x]=0;i=j}span[k]=S_});
@@ -6174,7 +6174,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.19-0035';
+const APP_VER='2026.11.19-0036';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

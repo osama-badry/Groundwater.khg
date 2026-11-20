@@ -3420,7 +3420,7 @@ let LOGO_IMG=null;function logoImg(){if(!LOGO_IMG){LOGO_IMG=new Image();LOGO_IMG
 /* GPS-camera style stamp; maxPx=0 keeps the photo's native resolution */
 function stampCanvas(img,m,maxPx){const W0=img.naturalWidth,H0=img.naturalHeight,lim=maxPx||8000,sc_=Math.min(1,lim/Math.max(W0,H0));const W=Math.round(W0*sc_),H=Math.round(H0*sc_);const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(img,0,0,W,H);drawStamp(x,W,H,m);return c}
 function sealCode(m){const t=[m.rid||'',m.slot||'',m.ts||'',m.iu||m.insp||''].join('|');let h1=0x811c9dc5,h2=0x1b873593;for(let i=0;i<t.length;i++){const c=t.charCodeAt(i);h1=Math.imul(h1^c,16777619)>>>0;h2=Math.imul(h2^c,2246822507)>>>0}const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let o='';for(let i=0;i<8;i++){o+=A[(i<4?h1>>>(i*7):h2>>>((i-4)*7))&31]}return 'WK-'+o.slice(0,4)+'-'+o.slice(4)}
-const SEAL_ST={round:'دائري أزرق كلاسيكي',oval:'بيضاوي أحمر رسمي',card:'بطاقة رقمية حديثة',gold:'وردة ذهبية'};
+const SEAL_ST={round:'دائري أزرق كلاسيكي',oval:'بيضاوي أحمر رسمي',card:'بطاقة رقمية حديثة',gold:'وردة ذهبية',aqua:'الخزان الجوفي (مقطع بئر وطبقات)',drop:'قطرة المياه الجوفية'};
 function drawSeal(x,W,H,m,bottom){if(!m.insp)return;const st=m.sst||((S.org||{}).sealStyle)||'round';const R_=Math.max(34,Math.min(W,H)*0.125),F=`"Cairo",Tahoma,sans-serif`;
  const fit=(t,w,fs,wt)=>{let f=fs;x.font=`${wt} ${f}px ${F}`;while(x.measureText(t).width>w&&f>6){f-=1;x.font=`${wt} ${f}px ${F}`}return f};
  const dt=new Date(m.ts||Date.now());const ds=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'})+'  '+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});const code=m.sc||sealCode(m),role=m.ir||'مهندس معاينة';const li=logoImg(),lok=li.complete&&li.naturalWidth;
@@ -3446,6 +3446,26 @@ function drawSeal(x,W,H,m,bottom){if(!m.insp)return;const st=m.sst||((S.org||{})
   x.beginPath();x.arc(0,0,R_*0.84,0,Math.PI*2);x.strokeStyle=ink;x.lineWidth=R_*0.02;x.stroke();x.beginPath();x.arc(0,0,R_*0.78,0,Math.PI*2);x.setLineDash([R_*0.04,R_*0.03]);x.stroke();x.setLineDash([]);
   if(lok){x.globalAlpha=.12;x.drawImage(li,-R_*0.65,-R_*0.65,R_*1.3,R_*1.3);x.globalAlpha=1}
   T('★ ختم معاينة ★',-R_*0.45,R_*1.2,R_*0.14,800,ink);T(m.insp,-R_*0.1,R_*1.45,R_*0.23,800,ink);T(role,R_*0.13,R_*1.3,R_*0.12,600,ink);T(ds,R_*0.36,R_*1.2,R_*0.11,700,ink,'ltr');T((m.gpv?'GPS ✓  ':'')+code,R_*0.55,R_*1.05,R_*0.09,700,ink,'ltr')}
+ else if(st==='aqua'){const cx=R_*1.25,cy=bottom-R_*1.15;const ink='rgba(12,84,112,.92)',ink2='rgba(12,84,112,.5)';x.translate(cx,cy);
+  x.beginPath();x.arc(0,0,R_,0,Math.PI*2);x.fillStyle='rgba(255,255,255,.36)';x.fill();
+  x.save();x.beginPath();x.arc(0,0,R_*0.84,0,Math.PI*2);x.clip();
+  const lay=[[0.30,'rgba(214,180,120,.30)'],[0.45,'rgba(170,130,80,.28)'],[0.58,'rgba(40,140,190,.30)'],[0.72,'rgba(20,105,160,.36)'],[0.86,'rgba(120,95,70,.30)']];
+  lay.forEach(([y0,c],k)=>{x.beginPath();x.moveTo(-R_,R_);for(let t=-R_;t<=R_;t+=R_*0.05)x.lineTo(t,R_*y0+Math.sin(t/R_*6+k)*R_*0.025);x.lineTo(R_,R_);x.closePath();x.fillStyle=c;x.fill()});
+  x.strokeStyle='rgba(12,84,112,.45)';x.lineWidth=R_*0.012;for(let k=0;k<6;k++){const yy=R_*(0.6+k*0.04);x.beginPath();for(let t=-R_*0.8;t<=R_*0.8;t+=R_*0.04)x.lineTo(t,yy+Math.sin(t/R_*14+k)*R_*0.01);x.stroke()}
+  x.fillStyle='rgba(12,84,112,.55)';x.fillRect(R_*0.66,R_*0.24,R_*0.045,R_*0.5);x.fillRect(R_*0.6,R_*0.22,R_*0.16,R_*0.03);x.restore();
+  x.lineWidth=R_*0.06;x.strokeStyle=ink;x.beginPath();x.arc(0,0,R_,0,Math.PI*2);x.stroke();x.beginPath();x.arc(0,0,R_*0.86,0,Math.PI*2);x.lineWidth=R_*0.02;x.stroke();
+  for(let k=0;k<36;k++){const a=k/36*Math.PI*2;x.beginPath();x.arc(Math.cos(a)*R_*0.93,Math.sin(a)*R_*0.93,R_*0.012,0,7);x.fillStyle=ink2;x.fill()}
+  x.beginPath();x.moveTo(0,-R_*0.8);x.bezierCurveTo(R_*0.1,-R_*0.66,R_*0.1,-R_*0.58,0,-R_*0.56);x.bezierCurveTo(-R_*0.1,-R_*0.58,-R_*0.1,-R_*0.66,0,-R_*0.8);x.fillStyle='rgba(30,130,190,.9)';x.fill();
+  T('المياه الجوفية · ختم معاينة',-R_*0.4,R_*1.35,R_*0.12,700,ink);T(m.insp,-R_*0.12,R_*1.5,R_*0.23,800,ink);T(role,R_*0.1,R_*1.35,R_*0.12,600,ink);
+  T(ds,R_*0.3,R_*1.2,R_*0.105,700,ink,'ltr');T((m.gpv?'GPS ✓  ':'')+code,R_*0.48,R_*1.05,R_*0.09,700,'rgba(255,255,255,.95)','ltr')}
+ else if(st==='drop'){const h=R_*2.25,w=R_*1.7;const cx=w*0.62,cy=bottom-h*0.58;const ink='rgba(10,90,140,.92)';x.translate(cx,cy);
+  const dropP=k=>{x.beginPath();x.moveTo(0,-h*0.55*k);x.bezierCurveTo(w*0.42*k,-h*0.15*k,w*0.55*k,h*0.12*k,w*0.5*k,h*0.2*k);x.arc(0,h*0.2*k,w*0.5*k,0,Math.PI,false);x.bezierCurveTo(-w*0.55*k,h*0.12*k,-w*0.42*k,-h*0.15*k,0,-h*0.55*k);x.closePath()};
+  dropP(1);const g=x.createLinearGradient(0,-h*0.55,0,h*0.7);g.addColorStop(0,'rgba(255,255,255,.34)');g.addColorStop(1,'rgba(120,190,230,.34)');x.fillStyle=g;x.fill();x.lineWidth=R_*0.055;x.strokeStyle=ink;x.stroke();
+  dropP(0.9);x.lineWidth=R_*0.018;x.stroke();
+  x.save();dropP(0.9);x.clip();x.strokeStyle='rgba(10,90,140,.35)';x.lineWidth=R_*0.015;for(let k=0;k<5;k++){const yy=h*(0.42+k*0.055);x.beginPath();for(let t=-w*0.5;t<=w*0.5;t+=R_*0.04)x.lineTo(t,yy+Math.sin(t/R_*9+k)*R_*0.02);x.stroke()}
+  if(lok){x.globalAlpha=.10;x.drawImage(li,-w*0.4,-h*0.2,w*0.8,w*0.8);x.globalAlpha=1}x.restore();
+  T('ختم معاينة إلكتروني',-h*0.2,w*0.55,R_*0.11,700,ink);T('المياه الجوفية بالخارجة',-h*0.1,w*0.7,R_*0.1,600,ink);
+  T(m.insp,h*0.06,w*0.88,R_*0.25,800,ink);T(role,h*0.17,w*0.8,R_*0.115,600,ink);T(ds,h*0.28,w*0.75,R_*0.1,700,ink,'ltr');T((m.gpv?'GPS ✓  ':'')+code,h*0.38,w*0.65,R_*0.085,700,ink,'ltr')}
  else {const cx=R_*1.25,cy=bottom-R_*1.15;const ink='rgba(16,74,138,.9)',ink2='rgba(16,74,138,.5)';x.translate(cx,cy);x.rotate(-0.12);
   x.beginPath();x.arc(0,0,R_,0,Math.PI*2);x.fillStyle='rgba(255,255,255,.38)';x.fill();
   x.lineWidth=R_*0.06;x.strokeStyle=ink;x.stroke();x.beginPath();x.arc(0,0,R_*0.86,0,Math.PI*2);x.lineWidth=R_*0.022;x.stroke();
@@ -7005,7 +7025,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.20-0212';
+const APP_VER='2026.11.20-0221';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

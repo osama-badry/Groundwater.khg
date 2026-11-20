@@ -3421,23 +3421,23 @@ let LOGO_IMG=null;function logoImg(){if(!LOGO_IMG){LOGO_IMG=new Image();LOGO_IMG
 function stampCanvas(img,m,maxPx){const W0=img.naturalWidth,H0=img.naturalHeight,lim=maxPx||8000,sc_=Math.min(1,lim/Math.max(W0,H0));const W=Math.round(W0*sc_),H=Math.round(H0*sc_);const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(img,0,0,W,H);drawStamp(x,W,H,m);return c}
 function sealCode(m){const t=[m.rid||'',m.slot||'',m.ts||'',m.iu||m.insp||''].join('|');let h1=0x811c9dc5,h2=0x1b873593;for(let i=0;i<t.length;i++){const c=t.charCodeAt(i);h1=Math.imul(h1^c,16777619)>>>0;h2=Math.imul(h2^c,2246822507)>>>0}const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let o='';for(let i=0;i<8;i++){o+=A[(i<4?h1>>>(i*7):h2>>>((i-4)*7))&31]}return 'WK-'+o.slice(0,4)+'-'+o.slice(4)}
 const SEAL_ST={round:'دائري أزرق كلاسيكي',oval:'بيضاوي أحمر رسمي',card:'بطاقة رقمية حديثة',gold:'وردة ذهبية',aqua:'الخزان الجوفي (مقطع بئر وطبقات)',drop:'قطرة المياه الجوفية'};
-function drawSeal(x,W,H,m,bottom){if(!m.insp)return;const st=m.sst||((S.org||{}).sealStyle)||'round';const R_=Math.max(34,Math.min(W,H)*0.125),F=`"Cairo",Tahoma,sans-serif`;
+function drawSeal(x,W,H,m,bottom){if(!m.insp)return;const st=m.sst||(m.ihs==='معاينة الشركات'?((S.org||{}).sealStyleCiv||'oval'):((S.org||{}).sealStyle||'round'));const R_=Math.max(34,Math.min(W,H)*0.125),F=`"Cairo",Tahoma,sans-serif`;
  const fit=(t,w,fs,wt)=>{let f=fs;x.font=`${wt} ${f}px ${F}`;while(x.measureText(t).width>w&&f>6){f-=1;x.font=`${wt} ${f}px ${F}`}return f};
- const dt=new Date(m.ts||Date.now());const ds=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'})+'  '+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});const code=m.sc||sealCode(m),role=m.ir||'مهندس معاينة';const li=logoImg(),lok=li.complete&&li.naturalWidth;
+ const dt=new Date(m.ts||Date.now());const ds=dt.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'})+'  '+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});const code=m.sc||sealCode(m),role=m.ir||'مهندس معاينة',H1=m.ih||'ختم معاينة إلكتروني',H2=m.ihs||'ختم معاينة';const li=logoImg(),lok=li.complete&&li.naturalWidth;
  const T=(t,y,w,fs,wt,col,dir)=>{x.direction=dir||'rtl';x.fillStyle=col;fit(t,w,fs,wt);x.fillText(t,0,y)};
  x.save();x.textAlign='center';
  if(st==='oval'){const a=R_*1.45,b=R_*0.95;const cx=a*1.08,cy=bottom-b*1.15;const ink='rgb(150,16,24)',ink2='rgba(150,16,24,.85)';x.translate(cx,cy);x.rotate(-0.08);
   x.beginPath();x.ellipse(0,0,a,b,0,0,Math.PI*2);x.fillStyle='rgba(255,255,255,.62)';x.fill();x.lineWidth=R_*0.07;x.strokeStyle=ink;x.stroke();x.beginPath();x.ellipse(0,0,a*0.9,b*0.86,0,0,Math.PI*2);x.lineWidth=R_*0.02;x.stroke();
   if(lok){x.globalAlpha=.09;x.drawImage(li,-b*0.75,-b*0.75,b*1.5,b*1.5);x.globalAlpha=1}
   T('الإدارة العامة للمياه الجوفية بالخارجة',-b*0.5,a*1.4,R_*0.12,700,ink);x.fillStyle=ink2;x.fillRect(-a*0.6,-b*0.38,a*1.2,R_*0.018);
-  T(m.insp,-b*0.06,a*1.5,R_*0.24,800,ink);T(role+' · معاينة إلكترونية',b*0.24,a*1.4,R_*0.12,700,ink);
+  T(m.insp,-b*0.06,a*1.5,R_*0.24,800,ink);T(role+(m.ihs&&m.ihs!=='ختم معاينة'?' · '+m.ihs:' · معاينة إلكترونية'),b*0.24,a*1.4,R_*0.12,700,ink);
   T(ds+(m.gpv?'  ✓GPS':''),b*0.48,a*1.2,R_*0.11,700,ink,'ltr');T(code,b*0.68,a*0.9,R_*0.095,700,ink2,'ltr')}
  else if(st==='card'){const w=R_*3.1,h=R_*1.5;const x0=R_*0.35,y0=bottom-h-R_*0.15;x.translate(x0,y0);
   x.fillStyle='rgba(8,46,52,.78)';x.beginPath();x.roundRect?x.roundRect(0,0,w,h,R_*0.16):x.rect(0,0,w,h);x.fill();x.strokeStyle='rgba(229,189,99,.75)';x.lineWidth=R_*0.025;x.stroke();
   x.fillStyle='rgba(229,189,99,.9)';x.fillRect(w-R_*0.08,R_*0.18,R_*0.035,h-R_*0.36);
   if(lok){x.drawImage(li,R_*0.15,(h-R_*0.95)/2,R_*0.95,R_*0.95)}
   x.save();x.translate(w-R_*0.25,0);x.textAlign='right';x.direction='rtl';const tw=w-R_*1.5;
-  x.fillStyle='#E5BD63';fit('ختم معاينة إلكتروني ✓',tw,R_*0.13,700);x.fillText('ختم معاينة إلكتروني'+(m.gpv?' · GPS ✓':''),0,h*0.24);
+  x.fillStyle='#E5BD63';fit(H1+' · GPS ✓',tw,R_*0.13,700);x.fillText(H1+(m.gpv?' · GPS ✓':''),0,h*0.24);
   x.fillStyle='#fff';fit(m.insp,tw,R_*0.26,800);x.fillText(m.insp,0,h*0.52);x.fillStyle='rgba(255,255,255,.85)';fit(role,tw,R_*0.13,600);x.fillText(role,0,h*0.7);
   x.direction='ltr';x.fillStyle='rgba(255,255,255,.75)';fit(ds+'   '+code,tw,R_*0.11,600);x.fillText(ds+'   '+code,0,h*0.88);x.restore()}
  else if(st==='gold'){const cx=R_*1.3,cy=bottom-R_*1.2;const ink='rgb(98,64,4)';x.translate(cx,cy);
@@ -3445,7 +3445,7 @@ function drawSeal(x,W,H,m,bottom){if(!m.insp)return;const st=m.sst||((S.org||{})
   const g=x.createRadialGradient(0,-R_*0.3,R_*0.1,0,0,R_*1.05);g.addColorStop(0,'rgba(255,240,190,.8)');g.addColorStop(1,'rgba(212,160,23,.75)');x.fillStyle=g;x.fill();x.strokeStyle='rgba(160,112,10,.85)';x.lineWidth=R_*0.025;x.stroke();
   x.beginPath();x.arc(0,0,R_*0.84,0,Math.PI*2);x.strokeStyle=ink;x.lineWidth=R_*0.02;x.stroke();x.beginPath();x.arc(0,0,R_*0.78,0,Math.PI*2);x.setLineDash([R_*0.04,R_*0.03]);x.stroke();x.setLineDash([]);
   if(lok){x.globalAlpha=.12;x.drawImage(li,-R_*0.65,-R_*0.65,R_*1.3,R_*1.3);x.globalAlpha=1}
-  T('★ ختم معاينة ★',-R_*0.45,R_*1.2,R_*0.14,800,ink);T(m.insp,-R_*0.1,R_*1.45,R_*0.23,800,ink);T(role,R_*0.13,R_*1.3,R_*0.12,700,ink);T(ds,R_*0.36,R_*1.2,R_*0.11,700,ink,'ltr');T((m.gpv?'GPS ✓  ':'')+code,R_*0.55,R_*1.05,R_*0.09,700,ink,'ltr')}
+  T('★ '+H2+' ★',-R_*0.45,R_*1.2,R_*0.14,800,ink);T(m.insp,-R_*0.1,R_*1.45,R_*0.23,800,ink);T(role,R_*0.13,R_*1.3,R_*0.12,700,ink);T(ds,R_*0.36,R_*1.2,R_*0.11,700,ink,'ltr');T((m.gpv?'GPS ✓  ':'')+code,R_*0.55,R_*1.05,R_*0.09,700,ink,'ltr')}
  else if(st==='aqua'){const cx=R_*1.25,cy=bottom-R_*1.15;const ink='rgb(6,58,84)',ink2='rgba(6,58,84,.8)';x.translate(cx,cy);
   x.beginPath();x.arc(0,0,R_,0,Math.PI*2);x.fillStyle='rgba(255,255,255,.62)';x.fill();
   x.save();x.beginPath();x.arc(0,0,R_*0.84,0,Math.PI*2);x.clip();
@@ -3456,7 +3456,7 @@ function drawSeal(x,W,H,m,bottom){if(!m.insp)return;const st=m.sst||((S.org||{})
   x.lineWidth=R_*0.075;x.strokeStyle=ink;x.beginPath();x.arc(0,0,R_,0,Math.PI*2);x.stroke();x.beginPath();x.arc(0,0,R_*0.86,0,Math.PI*2);x.lineWidth=R_*0.028;x.stroke();
   for(let k=0;k<36;k++){const a=k/36*Math.PI*2;x.beginPath();x.arc(Math.cos(a)*R_*0.93,Math.sin(a)*R_*0.93,R_*0.012,0,7);x.fillStyle=ink2;x.fill()}
   x.beginPath();x.moveTo(0,-R_*0.8);x.bezierCurveTo(R_*0.1,-R_*0.66,R_*0.1,-R_*0.58,0,-R_*0.56);x.bezierCurveTo(-R_*0.1,-R_*0.58,-R_*0.1,-R_*0.66,0,-R_*0.8);x.fillStyle='rgb(20,110,175)';x.fill();
-  T('المياه الجوفية · ختم معاينة',-R_*0.4,R_*1.35,R_*0.12,700,ink);T(m.insp,-R_*0.12,R_*1.5,R_*0.23,800,ink);T(role,R_*0.1,R_*1.35,R_*0.12,700,ink);
+  T('المياه الجوفية · '+H2,-R_*0.4,R_*1.35,R_*0.12,700,ink);T(m.insp,-R_*0.12,R_*1.5,R_*0.23,800,ink);T(role,R_*0.1,R_*1.35,R_*0.12,700,ink);
   T(ds,R_*0.3,R_*1.2,R_*0.105,700,ink,'ltr');T((m.gpv?'GPS ✓  ':'')+code,R_*0.48,R_*1.05,R_*0.09,700,'rgba(255,255,255,.95)','ltr')}
  else if(st==='drop'){const h=R_*2.25,w=R_*1.7;const cx=w*0.62,cy=bottom-h*0.58;const ink='rgb(6,62,104)';x.translate(cx,cy);
   const dropP=k=>{x.beginPath();x.moveTo(0,-h*0.55*k);x.bezierCurveTo(w*0.42*k,-h*0.15*k,w*0.55*k,h*0.12*k,w*0.5*k,h*0.2*k);x.arc(0,h*0.2*k,w*0.5*k,0,Math.PI,false);x.bezierCurveTo(-w*0.55*k,h*0.12*k,-w*0.42*k,-h*0.15*k,0,-h*0.55*k);x.closePath()};
@@ -3464,14 +3464,14 @@ function drawSeal(x,W,H,m,bottom){if(!m.insp)return;const st=m.sst||((S.org||{})
   dropP(0.9);x.lineWidth=R_*0.018;x.stroke();
   x.save();dropP(0.9);x.clip();x.strokeStyle='rgba(6,62,104,.6)';x.lineWidth=R_*0.015;for(let k=0;k<5;k++){const yy=h*(0.42+k*0.055);x.beginPath();for(let t=-w*0.5;t<=w*0.5;t+=R_*0.04)x.lineTo(t,yy+Math.sin(t/R_*9+k)*R_*0.02);x.stroke()}
   if(lok){x.globalAlpha=.10;x.drawImage(li,-w*0.4,-h*0.2,w*0.8,w*0.8);x.globalAlpha=1}x.restore();
-  T('ختم معاينة إلكتروني',-h*0.2,w*0.55,R_*0.11,700,ink);T('المياه الجوفية بالخارجة',-h*0.1,w*0.7,R_*0.1,700,ink);
+  T(H1,-h*0.2,w*0.55,R_*0.11,700,ink);T('المياه الجوفية بالخارجة',-h*0.1,w*0.7,R_*0.1,700,ink);
   T(m.insp,h*0.06,w*0.88,R_*0.25,800,ink);T(role,h*0.17,w*0.8,R_*0.115,700,ink);T(ds,h*0.28,w*0.75,R_*0.1,700,ink,'ltr');T((m.gpv?'GPS ✓  ':'')+code,h*0.38,w*0.65,R_*0.085,700,ink,'ltr')}
  else {const cx=R_*1.25,cy=bottom-R_*1.15;const ink='rgb(10,52,110)',ink2='rgba(10,52,110,.8)';x.translate(cx,cy);x.rotate(-0.12);
   x.beginPath();x.arc(0,0,R_,0,Math.PI*2);x.fillStyle='rgba(255,255,255,.62)';x.fill();
   x.lineWidth=R_*0.075;x.strokeStyle=ink;x.stroke();x.beginPath();x.arc(0,0,R_*0.86,0,Math.PI*2);x.lineWidth=R_*0.022;x.stroke();
   for(let k=0;k<48;k++){const a=k/48*Math.PI*2;x.beginPath();x.moveTo(Math.cos(a)*R_*0.9,Math.sin(a)*R_*0.9);x.lineTo(Math.cos(a)*R_*0.95,Math.sin(a)*R_*0.95);x.lineWidth=R_*0.012;x.strokeStyle=ink2;x.stroke()}
   if(lok){x.globalAlpha=.10;x.drawImage(li,-R_*0.7,-R_*0.7,R_*1.4,R_*1.4);x.globalAlpha=1}
-  T('ختم معاينة إلكتروني',-R_*0.52,R_*1.3,R_*0.15,700,ink);x.fillStyle=ink2;x.fillRect(-R_*0.62,-R_*0.42,R_*1.24,R_*0.02);
+  T(H1,-R_*0.52,R_*1.3,R_*0.15,700,ink);x.fillStyle=ink2;x.fillRect(-R_*0.62,-R_*0.42,R_*1.24,R_*0.02);
   T(m.insp,-R_*0.12,R_*1.55,R_*0.24,800,ink);T(role,R_*0.12,R_*1.4,R_*0.13,700,ink);T(ds,R_*0.34,R_*1.3,R_*0.12,700,ink,'ltr');
   if(m.gpv)T('✓ موقع مُتحقق GPS',R_*0.52,R_*1.2,R_*0.1,700,'rgb(16,110,50)');T(code,R_*(m.gpv?0.69:0.58),R_*1.1,R_*0.1,700,ink,'ltr')}
  x.restore()}
@@ -3500,7 +3500,13 @@ const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(
 async function readPhoto(f){const buf=await f.arrayBuffer();const ex=readExif(buf)||{};const url=URL.createObjectURL(f);const img=await loadImg(url);return {f,img,url,ex,ts:ex.dt?new Date(ex.dt).toISOString():new Date(f.lastModified||Date.now()).toISOString()}}
 /* stored record: stamped preview inside the request + encrypted full-res stamped & original copies */
 const sealOn=u=>{const o=S.org||{};if(o.sealOn===0)return false;return !((o.sealU||{})[String(u&&u.u||'').toLowerCase()]===0)};
-const sealMeta=()=>{const u=me()||{};return sealOn(u)?{insp:u.n||'',iu:u.u||'',ir:ROLES[u.r]||''}:{}};
+const SEAL_T={auto:'تلقائي حسب الحساب',kh:'تفتيش الخارجة',pa:'تفتيش باريس',civ:'مهندس مدني · معاينة الشركات (قسم التراخيص)',lic:'قسم التراخيص',st:'قسم الدراسات'};
+function sealUnit(u,force){u=u||{};const t=force||((S.org||{}).sealT||{})[String(u.u||'').toLowerCase()]||'auto';const D={ih:'ختم معاينة إلكتروني',ihs:'ختم معاينة'};
+ const k=t!=='auto'?t:u.r===5?((uposOf(u).sec==='pa')?'pa':(uposOf(u).sec==='kh')?'kh':'insp'):u.r===4?'lic':u.r===3?'st':'';
+ if(k==='kh')return Object.assign(D,{ir:'تفتيش الخارجة'});if(k==='pa')return Object.assign(D,{ir:'تفتيش باريس'});if(k==='insp')return Object.assign(D,{ir:'تفتيش المياه الجوفية'});
+ if(k==='civ')return {ih:'ختم معاينة الشركات',ihs:'معاينة الشركات',ir:'مهندس مدني · قسم التراخيص'};if(k==='lic')return Object.assign(D,{ir:'قسم التراخيص'});if(k==='st')return Object.assign(D,{ir:'قسم الدراسات'});
+ return Object.assign(D,{ir:ROLES[u.r]||''})}
+const sealMeta=()=>{const u=me()||{};return sealOn(u)?Object.assign({insp:u.n||'',iu:u.u||''},sealUnit(u)):{}};
 async function buildPhoto(r,slot,p,m){const meta=Object.assign({},m,sealMeta(),{rid:r.id,ts:p.ts,slot:slotName(r,slot),owner:r.name,rg:r.city});if(meta.insp)meta.sc=sealCode(meta);
  const thumb=await cBlob(stampCanvas(p.img,meta,520),0.7);const med=await cBlob(stampCanvas(p.img,meta,1600),0.85);
  const full=await cBlob(stampCanvas(p.img,meta,0),0.95);const hk=r.id+':'+slot+':'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
@@ -3665,7 +3671,7 @@ function geoToForm(ap,g,rg=true){if(!g||!ap)return;const s=(id,v)=>{const e=ap.q
  const pl=ap.querySelector('#ip-place');if(pl&&!pl._man&&rg){revGeo(g.la,g.lo).then(a=>{if(a&&!pl._man){pl.value=a;ap._paint&&ap._paint()}})}}
 function camGpsTxt(){const g=CAM.geo;const off=navigator.onLine?'':' · بدون إنترنت';if(g&&!g.man)return g.old?`<i class="gmid"></i>آخر موقع معروف ± ${g.acc} م · جارٍ التحديث من GPS${off}`:g.acc>100?`<i class="gmid"></i>موقع تقريبي ± ${g.acc} م · جارٍ تحسين الدقة من GPS${off}`:g.acc>50?`<i class="gmid"></i>GPS ± ${g.acc} م · جارٍ تحسين الدقة${off}`:`<i class="gok"></i>GPS من الهاتف ± ${g.acc} م${off}`;if(g&&g.man)return `<i class="gman"></i>إحداثيات يدوية <button data-camgeo>تعديل</button>`;if(CAM.gerr)return `<i class="gbad"></i>${CAM.gerr} <button data-camgeo>إدخال يدوي</button>`;const sec=GEO.t0?Math.round((Date.now()-GEO.t0)/1000):0;const mm=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');return `<i class="gwait"></i>جارٍ تحديد الموقع ${mm}${GEO.warn?' · '+GEO.warn:sec>20?' · قف بجوار شباك أو في مكان مفتوح':''} ${sec>15?'<button data-geodiag>تشخيص</button>':''}<button data-camgeo>يدوي</button>`}
 function camGpsUpd(){const e=$('#cam-gps');if(e)e.innerHTML=camGpsTxt()}
-function camMeta(){const ap=CAM.ap,r=CAM.r,m=inspMeta(ap);if(CAM.geo){m.la=CAM.geo.la;m.lo=CAM.geo.lo;if(m.alt==='')m.alt=CAM.geo.alt}return Object.assign(m,{ts:new Date().toISOString(),slot:slotName(r,CAM.slot),free:!!CAM.free,owner:r.name,rg:r.city,pre:false})}
+function camMeta(){const ap=CAM.ap,r=CAM.r,m=inspMeta(ap);if(CAM.geo){m.la=CAM.geo.la;m.lo=CAM.geo.lo;if(m.alt==='')m.alt=CAM.geo.alt}return Object.assign(m,sealMeta(),{rid:r.id,ts:new Date().toISOString(),slot:slotName(r,CAM.slot),free:!!CAM.free,owner:r.name,rg:r.city,pre:false})}
 function camHTML(){const r=CAM.r,S_=CAM.free?[['free',fcLbl()]]:ISLOTS(r),ap=CAM.ap;return `<div class="camw"><canvas id="cam-cv"></canvas><video id="cam-v" playsinline muted autoplay></video>
  <div class="camhd"><button class="camx" data-camx aria-label="إغلاق الكاميرا"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button><div class="camsl">${S_.map(([k,t])=>`<button data-camslot="${k}" class="${k===CAM.slot?'on':''} ${ap._ip[k]?'ok':''}">${ap._ip[k]?'✓ ':''}${t}</button>`).join('')}</div></div>
  <div class="camgps" id="cam-gps">${camGpsTxt()}</div>
@@ -6936,10 +6942,10 @@ VIEWS.dsig=()=>gAdm()?`<div class="ph"><div><h2>الختم الرقمي للتر
 
 
 function sealAdm(){const o=S.org||{};const on=o.sealOn!==0;const U=S.users.filter(u=>u.r!==0);
- return `<div class="card"><h3>🔵 الختم الإلكتروني على صور المعاينات <small>ختم دائري باسم المهندس ووظيفته والتاريخ وكود تحقق على كل صورة</small></h3><div class="filters"><label class="ack" style="margin:0"><input type="checkbox" data-sealall ${on?'checked':''}> تفعيل الختم الإلكتروني في المنظومة</label><label for="seal-st" class="muted">شكل الختم</label><select class="inp" id="seal-st" data-sealst style="max-width:220px">${Object.entries(SEAL_ST).map(([k,t],i)=>`<option value="${k}" ${(o.sealStyle||'round')===k?'selected':''}>${i+1}) ${t}</option>`).join('')}</select></div>
- <div class="tw" style="margin-top:8px;${on?'':'opacity:.5;pointer-events:none'}"><table><thead><tr><th>المهندس</th><th>الوظيفة</th><th>الختم</th></tr></thead><tbody>${U.map(u=>`<tr><td>${esc(u.n)}</td><td>${esc(ROLES[u.r]||'')}</td><td><label class="ack" style="margin:0"><input type="checkbox" data-sealu="${esc(u.u.toLowerCase())}" ${sealOn(u)||!on?((o.sealU||{})[u.u.toLowerCase()]===0?'':'checked'):''}> ${(o.sealU||{})[u.u.toLowerCase()]===0?'<span style="color:var(--bad)">موقوف</span>':'<span style="color:var(--ok)">مفعّل</span>'}</label></td></tr>`).join('')}</tbody></table></div>
+ return `<div class="card"><h3>🔵 الختم الإلكتروني على صور المعاينات <small>ختم دائري باسم المهندس ووظيفته والتاريخ وكود تحقق على كل صورة</small></h3><div class="filters"><label class="ack" style="margin:0"><input type="checkbox" data-sealall ${on?'checked':''}> تفعيل الختم الإلكتروني في المنظومة</label><label for="seal-st" class="muted">شكل الختم</label><select class="inp" id="seal-st" data-sealst style="max-width:220px">${Object.entries(SEAL_ST).map(([k,t],i)=>`<option value="${k}" ${(o.sealStyle||'round')===k?'selected':''}>${i+1}) ${t}</option>`).join('')}</select><label for="seal-stc" class="muted">شكل ختم معاينة الشركات</label><select class="inp" id="seal-stc" data-sealstc style="max-width:220px">${Object.entries(SEAL_ST).map(([k,t],i)=>`<option value="${k}" ${(o.sealStyleCiv||'oval')===k?'selected':''}>${i+1}) ${t}</option>`).join('')}</select></div>
+ <div class="tw" style="margin-top:8px;${on?'':'opacity:.5;pointer-events:none'}"><table><thead><tr><th>المهندس</th><th>الوظيفة</th><th>الجهة المكتوبة على الختم</th><th>الختم</th></tr></thead><tbody>${U.map(u=>`<tr><td>${esc(u.n)}</td><td>${esc(posTitle(u)||ROLES[u.r]||'')}</td><td><select class="inp" data-sealt="${esc(u.u.toLowerCase())}" style="min-width:200px">${Object.entries(SEAL_T).map(([k,t])=>`<option value="${k}" ${(((o.sealT||{})[u.u.toLowerCase()])||'auto')===k?'selected':''}>${k==='auto'?t+' ← '+esc(sealUnit(u,'auto').ir):t}</option>`).join('')}</select></td><td><label class="ack" style="margin:0"><input type="checkbox" data-sealu="${esc(u.u.toLowerCase())}" ${sealOn(u)||!on?((o.sealU||{})[u.u.toLowerCase()]===0?'':'checked'):''}> ${(o.sealU||{})[u.u.toLowerCase()]===0?'<span style="color:var(--bad)">موقوف</span>':'<span style="color:var(--ok)">مفعّل</span>'}</label></td></tr>`).join('')}</tbody></table></div>
  <p class="gcnote">الختم بيتطبع على الصورة وقت الحفظ · الصور القديمة مش بتتغير · إيقاف الختم لمهندس معناه إن صوره الجديدة هتتحفظ بالختم العادي بدون اسمه</p></div>`}
-document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||!gAdm())return;if(t.dataset.sealall!=null){S.org=S.org||{};S.org.sealOn=t.checked?1:0}else if(t.dataset.sealst!=null){S.org=S.org||{};S.org.sealStyle=t.value}else if(t.dataset.sealu){S.org=S.org||{};S.org.sealU=Object.assign({},S.org.sealU||{});if(t.checked)delete S.org.sealU[t.dataset.sealu];else S.org.sealU[t.dataset.sealu]=0}else return;enqueue('p:org','إعدادات الختم الإلكتروني للمعاينات','إعدادات');save();syncPulse();toast('✓ تم الحفظ');rerender()});
+document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||!gAdm())return;if(t.dataset.sealall!=null){S.org=S.org||{};S.org.sealOn=t.checked?1:0}else if(t.dataset.sealst!=null){S.org=S.org||{};S.org.sealStyle=t.value}else if(t.dataset.sealstc!=null){S.org=S.org||{};S.org.sealStyleCiv=t.value}else if(t.dataset.sealt){S.org=S.org||{};S.org.sealT=Object.assign({},S.org.sealT||{});if(t.value==='auto')delete S.org.sealT[t.dataset.sealt];else S.org.sealT[t.dataset.sealt]=t.value}else if(t.dataset.sealu){S.org=S.org||{};S.org.sealU=Object.assign({},S.org.sealU||{});if(t.checked)delete S.org.sealU[t.dataset.sealu];else S.org.sealU[t.dataset.sealu]=0}else return;enqueue('p:org','إعدادات الختم الإلكتروني للمعاينات','إعدادات');save();syncPulse();toast('✓ تم الحفظ');rerender()});
 /* ---------- تغيير كلمة المرور للموظف + تنبيه المطوّر ---------- */
 function pwAlert(u){if(me().r!==0)return;const t='🔑 '+u.n+' غيّر كلمة المرور بتاعته';toast(t+' · الجديدة ظاهرة في المستخدمين',8000);try{(S.lgev=S.lgev||[]);}catch(_){}try{if(typeof bellPush==='function')bellPush(t)}catch(_){}if(cur==='users')rerender()}
 function pwLogCard(){if(me().r!==0)return '';const L=(S.pwlog||[]).filter(x=>/blocked|self/.test(x.kind)&&Date.now()-Date.parse(x.at)<30*864e5);if(!L.length)return '';const nm=id=>{const u=S.users.find(x=>x._id===id);return u?u.n:'—'};const K={blocked_pw:['⛔ محاولة تغيير كلمة المرور من بره المنظومة · اتمنعت','var(--bad)'],blocked_email:['⛔ محاولة تغيير الإيميل من بره المنظومة · اتمنعت','var(--bad)'],self:['🔑 تغيير كلمة المرور من المنظومة','var(--ok)']};
@@ -7025,7 +7031,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.20-0233';
+const APP_VER='2026.11.20-0241';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

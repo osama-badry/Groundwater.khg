@@ -7474,15 +7474,19 @@ async function omDownload(reg){if(OMD.run)return;if(!navigator.onLine)return toa
   meta[reg]={ver:man.ver,at:new Date().toISOString(),n:L.length,err,bytes};meta.z=man.z;await omPut('k','meta',meta);OMD.meta=meta;toast(`✓ خريطة ${reg==='kh'?'الخارجة':'باريس'} اتحملت · تشتغل دلوقتي بدون إنترنت`,6000)}
  catch(e){toast('تعذر التحميل: '+e.message,6000)}OMD.run=false;rerender()}
 /* ---------- شبكة الطرق والمسار (على الجهاز) ---------- */
-let RNET=null;const SPD=[90,80,70,60,50,40,30,20,25,20,30,8];
+let RNET=null,RNET_HEAL=0;const SPD=[90,80,70,60,50,40,30,20,25,20,30,8];
 async function rnet(){if(RNET)return RNET;const t=await omGet('k','roads');if(!t)return null;const j=JSON.parse(t);const N=new Map(),W=[],G={};
- const nid=(a,b)=>{const k=a*1e7+b;let i=N.get(k);if(i==null){i=W.length;N.set(k,i);W.push({a,b,e:[]});const gk=Math.floor(a/1000)+':'+Math.floor(b/1000);(G[gk]=G[gk]||[]).push(i)}return i};
+ const nid=(a,b)=>{const k=a*1e7+b;let i=N.get(k);if(i==null){for(let da=-1;da<=1&&i==null;da++)for(let db=-1;db<=1&&i==null;db++){if(da||db){const j=N.get((a+da)*1e7+b+db);if(j!=null)i=j}}if(i!=null){N.set(k,i);return i}}if(i==null){i=W.length;N.set(k,i);W.push({a,b,e:[]});const gk=Math.floor(a/1000)+':'+Math.floor(b/1000);(G[gk]=G[gk]||[]).push(i)}return i};
  const ways=[];j.w.forEach(([ti,nm,c,ow,sf],wi)=>{let a=0,b=0,pa=null,pb=null;const ids=[];for(let i=0;i<c.length;i+=2){a+=c[i];b+=c[i+1];if(pa!=null){const d=fdist(pa/1e5,pb/1e5,a/1e5,b/1e5);if(d>250){const n=Math.ceil(d/200);for(let k=1;k<n;k++)ids.push(nid(Math.round(pa+(a-pa)*k/n),Math.round(pb+(b-pb)*k/n)))}}ids.push(nid(a,b));pa=a;pb=b}const un=sf===1||(!sf&&(ti===9||ti===11));ways.push({ti,nm,ids,sf:sf||0,un});
   for(let i=1;i<ids.length;i++){const p=W[ids[i-1]],q=W[ids[i]];const d=fdist(p.a/1e5,p.b/1e5,q.a/1e5,q.b/1e5);p.e.push([ids[i],d,wi]);if(!ow)q.e.push([ids[i-1],d,wi]);else q.e.push([ids[i-1],d,wi,1])}});
+ {const C=new Map();W.forEach((w,i)=>{const k=Math.floor(w.a/15)+':'+Math.floor(w.b/15);let l=C.get(k);if(!l)C.set(k,l=[]);l.push(i)});let healed=0;
+  W.forEach((w,i)=>{if(w.e.length>1)return;const ca=Math.floor(w.a/15),cb=Math.floor(w.b/15);let best=-1,bd=15;const nb=new Set(w.e.map(e=>e[0]));
+   for(let da=-1;da<=1;da++)for(let db=-1;db<=1;db++)(C.get((ca+da)+':'+(cb+db))||[]).forEach(j=>{if(j===i||nb.has(j))return;const d=fdist(w.a/1e5,w.b/1e5,W[j].a/1e5,W[j].b/1e5);if(d<bd){bd=d;best=j}});
+   if(best>=0){const wi=w.e.length?w.e[0][2]:0;w.e.push([best,bd,wi]);W[best].e.push([i,bd,wi]);healed++}});RNET_HEAL=healed}
  RNET={N,W,G,ways,T:j.T,at:j.at};return RNET}
 function fdist(la1,lo1,la2,lo2){const k=Math.cos((la1+la2)/2*Math.PI/180);const dx=(lo2-lo1)*111320*k,dy=(la2-la1)*110574;return Math.sqrt(dx*dx+dy*dy)}
 function rnNear(net,la,lo,maxM){const a=Math.round(la*1e5),b=Math.round(lo*1e5);const ga=Math.floor(a/1000),gb=Math.floor(b/1000);let best=-1,bd=1e12;for(let r=0;r<=4;r++){for(let i=-r;i<=r;i++)for(let j=-r;j<=r;j++){if(Math.max(Math.abs(i),Math.abs(j))!==r)continue;(net.G[(ga+i)+':'+(gb+j)]||[]).forEach(id=>{const w=net.W[id];if(!w.e.length)return;const d=fdist(la,lo,w.a/1e5,w.b/1e5);if(d<bd){bd=d;best=id}})}if(best>=0&&bd<r*1000)break}return best>=0&&bd<=(maxM||8000)?{id:best,d:bd}:null}
-function rnCost(net,d,wi,mode,rv){if(mode==='xp'||mode==='xs'){const w=net.ways[wi];const base=mode==='xs'?d:d/((SPD[w.ti]||25)/3.6)*(w.un?2.6:1);return base*(rv?10:1)*(w.ti===11?6:1)}if(mode==='f'){const w=net.ways[wi];return d*(w.ti===0||w.ti===1?1.6:1)}if(rv)return Infinity;if(net.ways[wi].ti===11)return Infinity;if(mode==='s')return d;const w=net.ways[wi];const sp=SPD[w.ti]||25;let pen=1;if(w.un)pen=w.ti===11?5:2.6;else if(w.ti===5&&!w.sf)pen=1.2;return d/(sp/3.6)*pen}
+function rnCost(net,d,wi,mode,rv){if(mode==='xp'||mode==='xs'){const w=net.ways[wi];const base=mode==='xs'?d:d/((SPD[w.ti]||25)/3.6)*(w.un?2.6:1);return base*(rv?10:1)*(w.ti===11?6:1)}if(mode==='f'){const w=net.ways[wi];return d*(w.ti===0||w.ti===1?1.15:1)}if(rv)return Infinity;if(net.ways[wi].ti===11)return Infinity;if(mode==='s')return d;const w=net.ways[wi];const sp=SPD[w.ti]||25;let pen=1;if(w.un)pen=w.ti===11?5:2.6;else if(w.ti===5&&!w.sf)pen=1.2;return d/(sp/3.6)*pen}
 function rnRoute(net,s,t,mode){const H=[[0,s]],g=new Float64Array(net.W.length).fill(Infinity),pr=new Int32Array(net.W.length).fill(-1),pw=new Int32Array(net.W.length).fill(-1);g[s]=0;const T=net.W[t];const h=i=>fdist(net.W[i].a/1e5,net.W[i].b/1e5,T.a/1e5,T.b/1e5)/(mode==='s'||mode==='f'||mode==='xs'?1:25);
  const push=x=>{H.push(x);let i=H.length-1;while(i>0){const p=(i-1)>>1;if(H[p][0]<=H[i][0])break;[H[p],H[i]]=[H[i],H[p]];i=p}};const pop=()=>{const top=H[0],l=H.pop();if(H.length){H[0]=l;let i=0;for(;;){const a=2*i+1,b=a+1;let m=i;if(a<H.length&&H[a][0]<H[m][0])m=a;if(b<H.length&&H[b][0]<H[m][0])m=b;if(m===i)break;[H[m],H[i]]=[H[i],H[m]];i=m}}return top};
  let it=0;while(H.length&&it++<2e6){const [,u]=pop();if(u===t)break;const gu=g[u];for(const [v,d,wi,rv] of net.W[u].e){const nv=gu+rnCost(net,d,wi,mode,rv);if(!isFinite(nv))continue;if(nv<g[v]){g[v]=nv;pr[v]=u;pw[v]=wi;push([nv+h(v),v])}}}
@@ -8720,7 +8724,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.22-0022';
+const APP_VER='2026.11.22-0100';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

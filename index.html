@@ -1614,6 +1614,7 @@ tr.spsame td{background:color-mix(in srgb,var(--gold) 8%,transparent)}tr.spbad t
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--cr-bg:linear-gradient(100deg,#06161f 0%,#0a2633 55%,#0c3340 100%);--cr-bd:rgb(56 189 248/.16);--cr-ink:#e6eef3;--cr-mk:#f1f5f9;--cr-ac:#38bdf8;--cr-n1:#38bdf8;--cr-n2:#2dd4bf;--cr-ph:#f8fafc;--cr-sh:0 8px 24px rgb(0 0 0/.35)}}
 :root[data-theme="dark"]{--cr-bg:linear-gradient(100deg,#06161f 0%,#0a2633 55%,#0c3340 100%);--cr-bd:rgb(56 189 248/.16);--cr-ink:#e6eef3;--cr-mk:#f1f5f9;--cr-ac:#38bdf8;--cr-n1:#38bdf8;--cr-n2:#2dd4bf;--cr-ph:#f8fafc;--cr-sh:0 8px 24px rgb(0 0 0/.35)}
 .crb{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;background:var(--cr-bg);border:1px solid var(--cr-bd);border-radius:16px;padding:12px 20px;box-shadow:var(--cr-sh);color:var(--cr-ink);text-align:start;isolation:isolate}
+.crb:not(.sm){justify-content:center}.crb:not(.sm) .crp{margin:0 0 0 18px}
 .crb::after{content:"";position:absolute;inset:auto 0 0 0;height:16px;z-index:-1;opacity:.5;background:radial-gradient(60% 18px at 20% 100%,color-mix(in srgb,var(--cr-ac) 22%,transparent),transparent),radial-gradient(50% 14px at 75% 100%,color-mix(in srgb,var(--cr-n2) 18%,transparent),transparent)}
 .crm{width:34px;height:34px;flex:none;color:var(--cr-mk)}
 .crt{font-family:var(--f-display,"Cairo");font-weight:800;font-size:15px;white-space:nowrap}
@@ -1626,7 +1627,7 @@ tr.spsame td{background:color-mix(in srgb,var(--gold) 8%,transparent)}tr.spbad t
 .side-foot,.lsig{border-top:0!important;padding-top:6px!important}
 .side-foot .crb,.lsig .crb.dk{--cr-bg:linear-gradient(100deg,#06161f 0%,#0a2633 55%,#0c3340 100%);--cr-bd:rgb(56 189 248/.16);--cr-ink:#e6eef3;--cr-mk:#f1f5f9;--cr-ac:#38bdf8;--cr-n1:#38bdf8;--cr-n2:#2dd4bf;--cr-ph:#f8fafc;box-shadow:none}
 @media (max-width:760px){.crb:not(.sm){flex-wrap:wrap;gap:4px 10px;padding:10px 14px}.crb:not(.sm) .crt{font-size:12.5px}.crb:not(.sm) .crn{font-size:21px}.crb:not(.sm) .crp{font-size:14.5px}}
-@media (max-width:460px){.crb:not(.sm) .crp{flex-basis:100%;justify-content:flex-end}}
+@media (max-width:760px){.crb:not(.sm){justify-content:center;text-align:center;gap:6px 10px;padding:14px 16px 16px}.crb:not(.sm) .crn{flex-basis:100%;text-align:center;line-height:1.35}.crb:not(.sm) .crp{flex-basis:100%;justify-content:center;margin:0!important}.crb:not(.sm) .crp::before,.crb:not(.sm) .crp::after{content:"";flex:0 0 26px;height:1px;background:linear-gradient(90deg,transparent,var(--cr-ac));opacity:.55;margin:0 4px}.crb:not(.sm) .crp::after{background:linear-gradient(90deg,var(--cr-ac),transparent)}.crb.sm .crp{justify-content:center}}
 @media print{.foot{display:none}}
 #imap{isolation:isolate}.imwtg a{width:34px!important;height:34px!important;display:grid!important;place-content:center;color:#64748b!important;position:relative}.imwtg a i{position:absolute;inset:6px;pointer-events:none;background:linear-gradient(135deg,transparent 46%,#b91c1c 46%,#b91c1c 54%,transparent 54%)}.imwtg a.on{background:#0369a1!important;color:#fff!important}.imwtg a.on i{display:none}.imhst a{font-size:17px;line-height:30px!important;width:34px!important;height:34px!important;display:grid!important;place-content:center;text-decoration:none}.imhst a.on{background:#0e7490!important;color:#fff!important}
 .hstp{position:absolute;z-index:1000;left:10px;right:10px;bottom:22px;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border:1px solid #bae6fd;border-radius:14px;box-shadow:0 8px 28px rgba(8,47,73,.28);padding:8px 12px 6px;font-family:inherit;color:#082f49}
@@ -8686,7 +8687,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.21-2023';
+const APP_VER='2026.11.21-2032';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

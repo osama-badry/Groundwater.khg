@@ -3859,7 +3859,7 @@ async function clPull(quiet){if(!clActive()||!navigator.onLine||CL.busy)return;C
   const rq=await clPage('requests',c.r,'id,data,updated_at');rq.forEach(mergeReq);if(rq.length){c.r=rq[rq.length-1].updated_at;n+=rq.length}
   const wl=await clPage('wells',c.w,'i,data,updated_at');wl.forEach(mergeWell);if(wl.length){c.w=wl[wl.length-1].updated_at;n+=wl.length;if(typeof WC==='function'&&WC._c)WC._c=null}
   if(me().r===0||ra().lsec!=='none'){try{const dl=await clPage('declarations',c.d,'code,data,updated_at');dl.forEach(row=>{if(pendingKey('dr:'+row.code))return;const L=decls();const i=L.findIndex(x=>x.code===row.code);if(i>=0)L[i]=row.data;else L.unshift(row.data)});if(dl.length){c.d=dl[dl.length-1].updated_at;n+=dl.length;decls().sort((a,b)=>b.at.localeCompare(a.at))}}catch(_){}}
-  if(vrAccess()){try{const vl=await clPage('variations',c.v,'rid,data,updated_at');vl.forEach(row=>{if(pendingKey('v:'+row.rid))return;vrs()[row.rid]=row.data});if(vl.length){c.v=vl[vl.length-1].updated_at;n+=vl.length}}catch(_){}}else{try{const f=await clRpc('vr_feed');if(f){if(JSON.stringify(f)!==JSON.stringify(S.vfeed))n++;S.vfeed=f}}catch(_){}}
+  if(vrAccess()){try{const vl=await clPage('variations',c.v,'rid,data,updated_at');vl.forEach(row=>{if(pendingKey('v:'+row.rid)||VR_BUSY.has(+row.rid))return;const L=vrs()[row.rid];if(L&&L.sat&&row.data&&!row.data.sat&&(L.sat.at||'')>(row.updated_at||''))row.data.sat=L.sat;vrs()[row.rid]=row.data});if(vl.length){c.v=vl[vl.length-1].updated_at;n+=vl.length}}catch(_){}}else{try{const f=await clRpc('vr_feed');if(f){if(JSON.stringify(f)!==JSON.stringify(S.vfeed))n++;S.vfeed=f}}catch(_){}}
   if(me().r===0||ra().lsec!=='none'||ra().db!=='none'){try{const wl2=await clPage('well_contacts',c.wc,'i,data,updated_at');wl2.forEach(row=>{if(pendingKey('wc:'+row.i))return;wcs()[row.i]=row.data});if(wl2.length){c.wc=wl2[wl2.length-1].updated_at;n+=wl2.length}}catch(_){}}
   try{n+=await lgPull()}catch(_){}
   try{n+=await dvPull()}catch(_){}
@@ -5775,7 +5775,9 @@ function clmReadyBox(v){const k=clmReady(v);const S=v.sat;
  <button type="button" class="btn pri" data-clsat="${v.rid}|${k.run===2?'ls':'all'}" style="margin-top:8px">${k.run===2?'🛰 التأكيد بقمر Landsat':'📡 تشغيل التحليل المختوم + التأكيد بقمر Landsat'}</button><div class="satbox" hidden></div></div>`}
 
 /* ---------- التحليل المختوم (Sentinel-2) + التأكيد المستقل (Landsat) ---------- */
-async function clmSatRun(rid,mode){const v=vrs()[rid];if(!v||!canAnalyze())return;const poly=satPoly(rid);const host=$('#clsat');const box=host&&host.querySelector('.satbox');if(!box)return;box.hidden=false;
+const VR_BUSY=new Set();
+async function clmSatRun(rid,mode){VR_BUSY.add(+rid);try{return await clmSatRun0(rid,mode)}finally{VR_BUSY.delete(+rid)}}
+async function clmSatRun0(rid,mode){const v=vrs()[rid];if(!v||!canAnalyze())return;const poly=satPoly(rid);const host=$('#clsat');const box=host&&host.querySelector('.satbox');if(!box)return;box.hidden=false;
  if(!poly)return satNeedFile(rid,box);if(!window.__satFetch&&!clActive()){box.innerHTML='<div class="note warn" style="margin:0">التحليل المختوم يحتاج اتصالاً بالسحابة</div>';return}
  const btn=host.querySelector('[data-clsat]');if(btn)btn.disabled=true;const prog=t=>{box.innerHTML='<div class="satld"><i></i>'+t+'</div>'};const A=polyM2(poly),land=satFed(A);
  try{let S=v.sat;const to=v.snap.date||v.to;v.to=to;
@@ -5795,9 +5797,11 @@ async function clmSatRun(rid,mode){const v=vrs()[rid];if(!v||!canAnalyze())retur
    try{const x=await satCall({poly,from:CL[k][0],to:CL[k][1],reg:SAT_REG,v:5,mode:'auto',sensor:'ls',seal:SEAL_ON(),rid:+rid});LM.push(...satMapM(x.months,A));if(x.seal)LSE.push(x.seal);lthr.push(x.thr)}catch(e){lerr=String(e.message||e);break}}
   S.ls=lerr&&!LM.length?{err:lerr,at:new Date().toISOString()}:{months:LM,seals:LSE.map(s=>s.id),thr:lthr.length?+(lthr.reduce((a,b)=>a+b,0)/lthr.length).toFixed(2):null,at:new Date().toISOString(),err:lerr||undefined};
   if(S.ls.seals)S.seals=[...(S.seals||[]),...S.ls.seals];
-  v.sat=S;v.from=v.st==='claim'?clmFrom(v):null;v.area=S.avg;delete SATR[rid];
-  const F=satFair(S,rid);vrLog(v,`تحليل مختوم بالقمر الصناعي Sentinel-2${S.ls.err?' (تعذر التأكيد بـ Landsat)':' مع التأكيد المستقل بقمر Landsat'} · ${fD(S.from)} ← ${fD(S.to)} · متوسط ${S.avg} فدان · ${(S.seals||[]).length} ختم${F.n.ls_low?' · '+F.n.ls_low+' شهر عُدل لصالح المواطن بتأكيد Landsat':''}`);
-  vrSave(v,'تحليل مختوم');toast('✓ تم التحليل المختوم'+(S.ls.err?' · Landsat غير متاح حالياً':' والتأكيد بقمرين')+' · التقرير الاحترافي جاهز',5000);if($('#vr-nt')){vrReview(rid);setTimeout(()=>{const e=document.querySelector('#modal .satdone');if(e)e.scrollIntoView({block:'center',behavior:'smooth'})},80)}else vrClaimModal(rid)}
+  /* أثناء التحليل ممكن المزامنة تستبدل كائن الطلب بنسخة السحابة · نكتب النتيجة على النسخة الحالية عشان ماتضيعش */
+  const W=vrs()[rid]||v;if(W!==v){if(!W.bd&&v.bd)W.bd=v.bd;if(!W.basis&&v.basis)W.basis=v.basis;if(v.log&&(!W.log||W.log.length<v.log.length))W.log=v.log}
+  W.sat=S;W.from=W.st==='claim'?clmFrom(W):null;W.area=S.avg;delete SATR[rid];
+  const F=satFair(S,rid);vrLog(W,`تحليل مختوم بالقمر الصناعي Sentinel-2${S.ls.err?' (تعذر التأكيد بـ Landsat)':' مع التأكيد المستقل بقمر Landsat'} · ${fD(S.from)} ← ${fD(S.to)} · متوسط ${S.avg} فدان · ${(S.seals||[]).length} ختم${F.n.ls_low?' · '+F.n.ls_low+' شهر عُدل لصالح المواطن بتأكيد Landsat':''}`);
+  vrSave(W,'تحليل مختوم');toast('✓ تم التحليل المختوم'+(S.ls.err?' · Landsat غير متاح حالياً':' والتأكيد بقمرين')+' · التقرير الاحترافي جاهز',5000);if($('#vr-nt')){vrReview(rid);setTimeout(()=>{const e=document.querySelector('#modal .satdone');if(e)e.scrollIntoView({block:'center',behavior:'smooth'})},80)}else vrClaimModal(rid)}
  catch(e){const k=String(e.message||e);if(btn)btn.disabled=false;box.innerHTML=`<div class="note bad" style="margin:0">تعذر التحليل: ${esc(/^seal_fail/.test(k)?'تعذر ختم النتيجة على السيرفر · تأكد من تشغيل تحديث SQL رقم 17 ونشر دالة sat-ndvi الجديدة':satErr(k))}</div>`}}
 
 /* ---------- الإصدار مع التسجيل في السجل الثابت ---------- */
@@ -8777,7 +8781,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.22-1359';
+const APP_VER='2026.11.22-1414';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

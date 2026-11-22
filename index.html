@@ -4119,8 +4119,9 @@ function vrHead(v){const s=v.snap;return `<div class="vrhd"><div><b>${esc(s.name
 function vrReview(rid){const v=vrs()[rid];if(!v||!canVar())return;const s=v.snap;
  vrModal('مراجعة المتغيرات المكانية',`${vrHead(v)}
   ${v.back?`<div class="vlk" style="margin-bottom:10px"><span class="vlki">↩</span><div><b>معاد من المطالبة المالية لإعادة الاحتساب</b><small>${esc(v.back.rs)} · ${esc(v.back.by)} · ${fD(v.back.at.slice(0,10))}${v.back.amt?' · المطالبة الملغاة '+vrMoney(v.back.amt):''}</small></div></div>`:''}<div class="form vrform">
-   <div class="fld span2"><div class="vrbasis"><div><span>بداية الفترة</span><b>${s.lend?'يحددها مهندس المنظومة عند الإصدار: تاريخ انتهاء الترخيص ('+fD(s.lend)+') أو بدء الزراعات تلقائياً':'تلقائياً من أول صورة قمر صناعي تُظهر زراعات'}</b></div><div><span>نهاية الفترة</span><b>تاريخ تقديم الطلب ${fD(s.date)}</b></div><div><span>المساحة</span><b>من التحليل المختوم · لا تُكتب باليد</b></div></div></div>
+   <div class="fld span2"><div class="vrbasis"><div><span>بداية الفترة</span><b>${v.basis?esc(BAS_T[v.basis])+(basisDate(v).d?' · '+fD(basisDate(v).d):' · اكتب التاريخ تحت'):'اختارها تحت (تلقائي من أول صورة تُظهر زراعات لو ماتحددتش)'}</b></div><div><span>نهاية الفترة</span><b>تاريخ تقديم الطلب ${fD(s.date)}</b></div><div><span>المساحة</span><b>من التحليل المختوم · لا تُكتب باليد</b></div></div></div>
    <div class="fld span2"><label for="vr-nt">ملاحظات وأساس الاحتساب <span class="req">*</span></label><textarea class="inp" id="vr-nt" rows="2" placeholder="مثال: زراعات نخيل وزيتون">${esc(v.nt||'بناءً على تحليل القمر الصناعي المختوم حتى تاريخ تقديم الطلب على المنظومة')}</textarea><div class="qr ntqr">${['من تاريخ بدء الزراعات','من تاريخ انتهاء الترخيص','من تاريخ أول صورة قمر صناعي تُظهر زراعات','حتى تاريخ تقديم الطلب على المنظومة','حتى تاريخ المعاينة','بناءً على المعاينة الميدانية','بناءً على تحليل القمر الصناعي'].map(t=>`<button type="button" data-ntq="vr-nt">${t}</button>`).join('')}</div><small class="muted">إلزامية · تظهر في تقرير الأقمار الصناعية وفي سجل المطالبة المالية</small></div>
+   <div class="fld span2">${basisBox(v,1)}</div>
    <div class="fld span2">${clmReadyBox(Object.assign({},v,{to:s.date,from:null}))}</div>${v.sat?`<div class="fld span2">${satHTML(v.sat,v.rid)}</div>`:''}
   </div>
   <div class="filters" style="margin-top:14px"><button class="btn" data-mclose>إلغاء</button><button class="btn ghost" data-vrnone="${rid}">إنهاء بدون متغيرات</button><button class="btn pri" data-vrsend="${rid}" style="margin-inline-start:auto">تحويل لقسم التراخيص للمطالبة المالية</button></div>`);
@@ -4129,6 +4130,7 @@ function vrSend(rid,none){const v=vrs()[rid];if(!v||!canVar())return;const g=id=
  if(none){if(!nt){$('#vr-nt').focus();return toast('اكتب سبب الإنهاء بدون متغيرات في الملاحظات')}v.st='none';v.nt=nt;v.vby=me().n;v.vat=new Date().toISOString();vrLog(v,'إنهاء المراجعة: لا توجد متغيرات · '+nt);vrSave(v,'إنهاء متغيرات');vrClose();toast('✓ تم إنهاء المراجعة بدون متغيرات');rerender();if(drawerOpen())renderDrawer();return}
  if(!nt){$('#vr-nt').focus();return toast('ملاحظات وأساس الاحتساب إلزامية (مثال: من تاريخ انتهاء الترخيص)')}
  
+ if(v.basis&&v.basis!=='crop'&&!basisDate(v).d){const e=$('#bs-d');if(e)e.focus();return toast('اكتب تاريخ '+(v.basis==='lend'?'انتهاء الترخيص':'نهاية آخر مطالبة مسددة')+' والمستند ثم اضغط «حفظ التاريخ»')}
  const b=v.snap.date;if(!b)return toast('تاريخ تقديم الطلب غير مسجل');const rk=clmReady(Object.assign({},v,{to:b,from:null}));if(!rk.ok)return toast('شغّل التحليل المختوم أولاً: '+rk.t);
  Object.assign(v,{st:'claim',from:null,to:b,area:v.sat.avg,nt,vby:me().n,vat:new Date().toISOString()});vrLog(v,`مراجعة المتغيرات: تحليل مختوم ${fD(v.sat.from)} ← ${fD(v.sat.to)} بمتوسط ${vrFed(v.sat.avg)} · التحويل لإصدار المطالبة المالية`);vrSave(v,'تحويل متغيرات للمطالبة');vrClose();toast('✓ تم التحويل لقسم التراخيص لإعداد المطالبة المالية');rerender();if(drawerOpen())renderDrawer()}
 function vrClaimModal(rid){const v=vrs()[rid];if(!v)return;if(!canIssue())return toast('إصدار المطالبة لمهندس المنظومة والأدمن فقط');if(v.st==='pay'||v.st==='paid')return toast('المطالبة صادرة · لا يمكن تعديلها · للأدمن: سحب وإعادة إصدار بنسخة جديدة');v.to=v.snap.date||v.to;v.from=clmFrom(v);const du=v.from?vrDur(v.from,v.to):null;const RD=clmReady(v,'issue');
@@ -5754,16 +5756,17 @@ function clmReady(v,ctx){const S=v&&v.sat;if(!v||!v.to)return {ok:0,t:'تاري�
  if(SEAL_ON()&&!(S.seals&&S.seals.length))return {ok:0,t:'التحليل الحالي غير مختوم رقمياً (أُجري قبل نظام الختم)',run:1};
  if(!S.ls)return {ok:0,t:'لم يتم التأكيد بقمر Landsat المستقل بعد',run:2};
  if(ctx==='issue'){if(!v.basis)return {ok:0,t:'حدد أساس بداية الفترة',basis:1};const bd=basisDate(v);if(!bd.d)return {ok:0,t:'اكتب التاريخ والمستند ثم احفظ',basis:1};if(bd.d>v.to)return {ok:0,t:'تاريخ البداية بعد تاريخ تقديم الطلب',basis:1};if(clmFrom(v)>v.to)return {ok:0,t:'لا توجد زراعات بالقمر الصناعي بعد تاريخ البداية',basis:1}}return {ok:1}}
-function basisBox(v){const S=v.sat;if(!S||!S.auto)return '';const L=v.snap.lend,pp=paidPrev(v);const ed=canIssue()&&v.st==='claim';const BM=(v.bd||{})[v.basis]||{};
+const basEd=v=>(canIssue()&&v.st==='claim')||(canVar()&&!['claim','pay','paid','none'].includes(v.st));
+function basisBox(v,rev){const S=v.sat&&v.sat.auto?v.sat:null;if(!S&&!rev)return '';const L=v.snap.lend,pp=paidPrev(v);const ed=basEd(v);const BM=(v.bd||{})[v.basis]||{};
  const o=(k,t)=>`<button type="button" class="basopt ${v.basis===k?'on':''}" data-basis="${v.rid}|${k}" ${ed?'':'disabled'}><i></i><span>${t}</span></button>`;
  const man=(lbl,ph)=>`<div class="basman"><div class="fld"><label for="bs-d">${lbl} <span class="req">*</span></label><input class="inp" type="date" id="bs-d" value="${esc(BM.d||'')}" min="2015-07-01" max="${esc(v.to||todayISO())}" ${ed?'':'disabled'}></div><div class="fld"><label for="bs-ref">المستند / المرجع <span class="req">*</span></label><input class="inp" id="bs-ref" value="${esc(BM.ref||'')}" placeholder="${ph}" ${ed?'':'disabled'}></div>${ed?`<button type="button" class="btn sm pri" data-bsave="${v.rid}">حفظ التاريخ</button>`:''}${BM.d?`<small class="muted">مسجل بواسطة ${esc(BM.by||'')} · ${fD((BM.at||'').slice(0,10))}</small>`:''}</div>`;
  let extra='';if(v.basis==='lend'&&!L)extra=man('تاريخ انتهاء الترخيص','رقم الترخيص وتاريخه');if(v.basis==='paid'&&!pp)extra=man('نهاية فترة آخر مطالبة مسددة','رقم المطالبة / الإيصال');
  const d=clmFrom(v);
- return `<div class="card basisc"><h3>بداية الفترة <small>يحددها مهندس المنظومة · وفي كل الحالات لا يُحسب قبل أول زراعات ظهرت بالقمر الصناعي (${fD(S.from)})</small></h3><div class="basg">
- ${o('crop',`${BAS_T.crop} <b>${fD(S.from)}</b>`)}
+ return `<div class="card basisc"><h3>بداية الفترة <small>${rev?'حددها هنا وهتوصل لمهندس المنظومة مع التحويل':'يحددها مهندس المنظومة'} · وفي كل الحالات لا يُحسب قبل أول زراعات ظهرت بالقمر الصناعي${S?' ('+fD(S.from)+')':''}</small></h3><div class="basg">
+ ${o('crop',`${BAS_T.crop} ${S?`<b>${fD(S.from)}</b>`:'<small>يتحدد بعد التحليل</small>'}`)}
  ${o('lend',`${BAS_T.lend} ${L?`<b>${fD(L)}</b> <small>من سجل الطلب</small>`:'<small>غير مسجل بالطلب · يُكتب مع المستند</small>'}`)}
  ${o('paid',`${BAS_T.paid} ${pp?`<b>${fD(pp.next)}</b> <small>اليوم التالي لنهاية المطالبة ${esc(pp.cno||'')} المسددة</small>`:'<small>لا توجد مطالبة مسددة بالمنظومة · يُكتب مع المرجع</small>'}`)}</div>${extra}
- ${v.basis&&d?`<div class="basres">بداية الفترة المعتمدة: <b>${fD(d)}</b>${basisDate(v).d&&basisDate(v).d<S.from&&v.basis!=='crop'?' <small>(أول زراعات بعد التاريخ المحدد)</small>':''}</div>`:''}</div>`}
+ ${v.basis&&(d||basisDate(v).d)?`<div class="basres">بداية الفترة المعتمدة: <b>${fD(d||basisDate(v).d)}</b>${S&&basisDate(v).d&&basisDate(v).d<S.from&&v.basis!=='crop'?' <small>(أول زراعات بعد التاريخ المحدد)</small>':''}</div>`:''}</div>`}
 function clmReadyBox(v){const k=clmReady(v);const S=v.sat;
  if(k.ok){const L=S.ls||{};const nL=(L.months||[]).filter(x=>x.f!=null).length;return `<div class="sealok"><b>${S.seals&&S.seals.length?'🔒 تحليل مختوم رقمياً':'تحليل محلي (وضع الاختبار بدون سحابة)'}</b><span>${S.seals&&S.seals.length?S.seals.length+' ختم · ':''}Sentinel-2 (10 م)${L.err?' · <span style="color:var(--warn)">تعذر التأكيد بـ Landsat: '+esc(satErr(L.err))+'</span>':' + Landsat (30 م) · '+nL+' شهر للتأكيد'} · حُسب ${fD((S.at||'').slice(0,10))} بواسطة ${esc(S.by||'')}</span></div>`}
  return `<div class="card clsatc" id="clsat"><h3>📡 التحليل المختوم مطلوب قبل الإصدار</h3><p class="muted" style="margin:0 0 8px">${esc(k.t)} · المطالبة لا تصدر إلا من تحليل قمر صناعي يُحفظ على السيرفر كما هو ويُختم رقمياً، ثم يتأكد تلقائياً بقمر Landsat المستقل · لا توجد أي خانة تُكتب باليد.</p>
@@ -5849,8 +5852,8 @@ function mapLayers(X,Y){let g='';const k111=111320*Math.cos(25.4*Math.PI/180);
  return g}
 function f17Click(t){let el;
  if(el=t.closest('[data-clsat]')){const [rid,m]=el.dataset.clsat.split('|');clmSatRun(+rid,m);return true}
- if(el=t.closest('[data-basis]')){const [rid,k]=el.dataset.basis.split('|');const v=vrs()[+rid];if(v&&canIssue()&&v.st==='claim'){v.basis=k;v.from=clmFrom(v);vrLog(v,'تحديد أساس بداية الفترة: '+BAS_T[k]+(v.from?' · '+fD(v.from):''));vrSave(v,'بداية الفترة');vrClaimModal(+rid)}return true}
- if(el=t.closest('[data-bsave]')){const v=vrs()[+el.dataset.bsave];if(!v||!canIssue()||v.st!=='claim')return true;const d=$('#bs-d').value,rf=($('#bs-ref').value||'').trim();if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return toast('اكتب التاريخ'),true;if(d>v.to||d>todayISO())return toast('التاريخ بعد تاريخ تقديم الطلب'),true;if(rf.length<3)return toast('المستند / المرجع إلزامي'),true;(v.bd=v.bd||{})[v.basis]={d,ref:rf,by:me().n,at:new Date().toISOString()};v.from=clmFrom(v);vrLog(v,'تسجيل تاريخ بداية الفترة يدوياً ('+BAS_T[v.basis]+'): '+fD(d)+' · المستند: '+rf);vrSave(v,'تاريخ البداية');vrClaimModal(+v.rid);return true}
+ if(el=t.closest('[data-basis]')){const [rid,k]=el.dataset.basis.split('|');const v=vrs()[+rid];if(v&&basEd(v)){const rv=!!$('#vr-nt');if(rv)v.nt=$('#vr-nt').value;v.basis=k;v.from=clmFrom(v);vrLog(v,'تحديد أساس بداية الفترة: '+BAS_T[k]+(v.from?' · '+fD(v.from):''));vrSave(v,'بداية الفترة');rv?vrReview(+rid):vrClaimModal(+rid);if(k!=='crop'&&!basisDate(v).d)setTimeout(()=>{const e=$('#bs-d');if(e){e.focus();e.scrollIntoView({block:'center'})}},60)}return true}
+ if(el=t.closest('[data-bsave]')){const v=vrs()[+el.dataset.bsave];if(!v||!basEd(v))return true;const rv=!!$('#vr-nt');if(rv)v.nt=$('#vr-nt').value;const d=$('#bs-d').value,rf=($('#bs-ref').value||'').trim();if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return toast('اكتب التاريخ'),true;if(d>v.to||d>todayISO())return toast('التاريخ بعد تاريخ تقديم الطلب'),true;if(rf.length<3)return toast('المستند / المرجع إلزامي'),true;(v.bd=v.bd||{})[v.basis]={d,ref:rf,by:me().n,at:new Date().toISOString()};v.from=clmFrom(v);vrLog(v,'تسجيل تاريخ بداية الفترة يدوياً ('+BAS_T[v.basis]+'): '+fD(d)+' · المستند: '+rf);vrSave(v,'تاريخ البداية');rv?vrReview(+v.rid):vrClaimModal(+v.rid);toast('✓ تم حفظ تاريخ بداية الفترة');return true}
  if(el=t.closest('[data-imprep]')){impactReport(+el.dataset.imprep);return true}
  if(el=t.closest('[data-mlay]')){const k=el.dataset.mlay;MF[k]=!MF[k];rerender();return true}
  if(t.closest('[data-vrauto]')){const f=$('#vr-from');if(f){f.value='';f.dispatchEvent(new Event('input'))}const n=$('#vr-nt');if(n&&!n.value.includes(SAT_AUTO)){n.value=(n.value.trim()?n.value.trim()+' · ':'')+SAT_AUTO}toast('✓ تاريخ البدء يُحدد تلقائياً من التحليل المختوم');return true}
@@ -8748,7 +8751,7 @@ function vrClick(t){let el;
  if(el=t.closest('[data-uvsave]')){uvisSave(+el.dataset.uvsave);return true}
  if(t.closest('[data-uvall]')){document.querySelectorAll('[data-uvp],[data-uvf]').forEach(c=>c.checked=true);return true}
  if(t.closest('[data-waapi]')){if(!(isDev()||isAdm()))return true;S.org=Object.assign({},S.org||{},{waApi:!(S.org&&S.org.waApi)});enqueue('p:org','واتساب تلقائي','إعدادات');save();syncPulse();toast(S.org.waApi?'✓ تم تفعيل الإرسال التلقائي عبر WhatsApp Business API':'تم إيقاف الإرسال التلقائي · سيُفتح واتساب للموظف');rerender();return true}
- if(el=t.closest('[data-ntq]')){const ta=$('#'+el.dataset.ntq);if(ta){const L=ta.value.split(/\s*·\s*/).map(x=>x.trim()).filter(Boolean);if(!L.includes(el.textContent))L.push(el.textContent);ta.value=L.join(' · ');ta.focus();satAutoUI()}return true}
+ if(el=t.closest('[data-ntq]')){const ta=$('#'+el.dataset.ntq);if(ta){const L=ta.value.split(/\s*·\s*/).map(x=>x.trim()).filter(Boolean);if(!L.includes(el.textContent))L.push(el.textContent);ta.value=L.join(' · ');ta.focus();satAutoUI();const bk=el.textContent==='من تاريخ انتهاء الترخيص'?'lend':/^من تاريخ (بدء الزراعات|أول صورة)/.test(el.textContent)?'crop':'';const bb=bk&&document.querySelector(`[data-basis$="|${bk}"]:not([disabled])`);if(bb&&!bb.classList.contains('on'))bb.click()}return true}
  if(el=t.closest('[data-vrback]')){vrBackModal(el.dataset.vrback);return true}
  if(el=t.closest('[data-vrbackok]')){vrBackOk(el.dataset.vrbackok);return true}
  if(satClick(t))return true;
@@ -8772,7 +8775,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.22-1147';
+const APP_VER='2026.11.22-1337';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

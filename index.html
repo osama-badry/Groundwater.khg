@@ -5770,7 +5770,7 @@ function basisBox(v,rev){const S=v.sat&&v.sat.auto?v.sat:null;if(!S&&!rev)return
 function clmReadyBox(v){const k=clmReady(v);const S=v.sat;
  if(k.ok){const L=S.ls||{};const nL=(L.months||[]).filter(x=>x.f!=null).length;return `<div class="sealok"><b>${S.seals&&S.seals.length?'🔒 تحليل مختوم رقمياً':'تحليل محلي (وضع الاختبار بدون سحابة)'}</b><span>${S.seals&&S.seals.length?S.seals.length+' ختم · ':''}Sentinel-2 (10 م)${L.err?' · <span style="color:var(--warn)">تعذر التأكيد بـ Landsat: '+esc(satErr(L.err))+'</span>':' + Landsat (30 م) · '+nL+' شهر للتأكيد'} · حُسب ${fD((S.at||'').slice(0,10))} بواسطة ${esc(S.by||'')}</span></div>`}
  return `<div class="card clsatc" id="clsat"><h3>📡 التحليل المختوم مطلوب قبل الإصدار</h3><p class="muted" style="margin:0 0 8px">${esc(k.t)} · المطالبة لا تصدر إلا من تحليل قمر صناعي يُحفظ على السيرفر كما هو ويُختم رقمياً، ثم يتأكد تلقائياً بقمر Landsat المستقل · لا توجد أي خانة تُكتب باليد.</p>
- <div class="kv"><div><span>الفترة</span><b>من أول صورة قمر صناعي تُظهر زراعات ← ${fD(v.to)} (تاريخ تقديم الطلب)</b></div></div>
+ <div class="kv"><div><span>الفترة</span><b>${(()=>{const o=vrs()[v.rid]||v;const d=o.basis&&o.basis!=='crop'?basisDate(o).d:null;return d?esc(BAS_T[o.basis])+' '+fD(d):'من أول صورة قمر صناعي تُظهر زراعات'})()} ← ${fD(v.to)} (تاريخ تقديم الطلب)</b></div></div>
  <button type="button" class="btn pri" data-clsat="${v.rid}|${k.run===2?'ls':'all'}" style="margin-top:8px">${k.run===2?'🛰 التأكيد بقمر Landsat':'📡 تشغيل التحليل المختوم + التأكيد بقمر Landsat'}</button><div class="satbox" hidden></div></div>`}
 
 /* ---------- التحليل المختوم (Sentinel-2) + التأكيد المستقل (Landsat) ---------- */
@@ -5778,13 +5778,13 @@ async function clmSatRun(rid,mode){const v=vrs()[rid];if(!v||!canAnalyze())retur
  if(!poly)return satNeedFile(rid,box);if(!window.__satFetch&&!clActive()){box.innerHTML='<div class="note warn" style="margin:0">التحليل المختوم يحتاج اتصالاً بالسحابة</div>';return}
  const btn=host.querySelector('[data-clsat]');if(btn)btn.disabled=true;const prog=t=>{box.innerHTML='<div class="satld"><i></i>'+t+'</div>'};const A=polyM2(poly),land=satFed(A);
  try{let S=v.sat;const to=v.snap.date||v.to;v.to=to;
-  if(mode!=='ls'){const auto=true;let from=SAT_AUTO_FROM;const CH=yrChunks(from,to);const M0=[],SE=[],TH=[],BS=[];let md='trees',meth='v3';
-   for(let k=0;k<CH.length;k++){prog(`Sentinel-2 · سنة ${CH[k][0].slice(0,4)} (${k+1} من ${CH.length})${auto?' · بحثاً عن أول صورة تُظهر زراعات':''}…`);
+  if(mode!=='ls'){const auto=true;const bdv=v.basis&&v.basis!=='crop'?basisDate(v).d:null;let from=bdv&&bdv>SAT_AUTO_FROM?bdv:SAT_AUTO_FROM;const from0=from;const CH=yrChunks(from,to);const M0=[],SE=[],TH=[],BS=[];let md='trees',meth='v3';
+   for(let k=0;k<CH.length;k++){prog(`Sentinel-2 · سنة ${CH[k][0].slice(0,4)} (${k+1} من ${CH.length})${bdv?' · من '+esc(BAS_T[v.basis])+' '+fD(bdv):auto?' · بحثاً عن أول صورة تُظهر زراعات':''}…`);
     const x=await satCall({poly,from:CH[k][0],to:CH[k][1],reg:SAT_REG,v:5,mode:'auto',fair:!!fairCfg().on,seal:SEAL_ON(),rid:+rid});if(SEAL_ON()&&!x.seal)throw new Error('seal_fail:'+(x.seal_err||''));
     M0.push(...x.months);if(x.seal)SE.push(x.seal);TH.push(x.thr);if(x.base!=null)BS.push(x.base);md=x.mode||md;if(x.method==='v2')meth='v2'}
    const M=satMapM(M0,A);let autoInfo=null;
    if(auto){const min=Math.max(0.1,land*0.03);const hit=x=>x&&x.f!=null&&x.f>=min;let k=-1;for(let q=0;q<M.length;q++){if(!hit(M[q]))continue;const nx=M.slice(q+1).find(y=>y.f!=null);if(M[q].n!=null&&M[q].n<2&&nx&&nx.f<min)continue;if(!nx||nx.f>=min){k=q;break}}
-    if(k<0)throw new Error('no_crop_found');M.splice(0,k);from=M[0].a||M[0].m+'-01';autoInfo={m:M[0].m,from,min:+min.toFixed(2)}}
+    if(k<0)throw new Error(bdv?'no_crop_after_basis':'no_crop_found');M.splice(0,k);from=M[0].a||M[0].m+'-01';if(from<from0)from=from0;autoInfo={m:M[0].m,from,min:+min.toFixed(2),basis:bdv?v.basis:undefined,bd:bdv||undefined}}
    const ok=M.filter(x=>x.f!=null);const avg=L=>L.length?+(L.reduce((a,b)=>a+b,0)/L.length).toFixed(L===BS?3:2):null;
    S={from,to,at:new Date().toISOString(),by:me().n,land:+land.toFixed(2),avg:+(satW(M)||0).toFixed(2),max:+ok.reduce((a,x)=>Math.max(a,x.f),0).toFixed(2),n:ok.length,thr:avg(TH),mode:md,meth,base:avg(BS),months:M,auto:autoInfo,seals:SE.map(s=>s.id),sealH:SE.map(s=>s.h.slice(0,16)),sealed:SEAL_ON()?1:0};
    {const T=M.filter(x=>x.t!=null);if(T.length){const w=k=>{const d=T.reduce((a,x)=>a+satDays(x),0);return +(T.reduce((a,x)=>a+x[k]*satDays(x),0)/d).toFixed(2)};S.avgT=w('t');S.avgS=w('s')}}}
@@ -8775,7 +8775,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.22-1337';
+const APP_VER='2026.11.22-1343';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */
@@ -9303,7 +9303,7 @@ function vrWaDocs(r){const n=waNum(r.phone||r.ph);if(!n||!r.cm)return '';const t
 /* ===== 📡 المساحة المزروعة شهرياً من القمر الصناعي Sentinel-2 (دقة 10 م) ===== */
 const SATR={},SATP={},SATN={};const SAT_AUTO='من تاريخ أول صورة قمر صناعي تُظهر زراعات',SAT_AUTO_FROM='2016-01-01';
 const polyM2=P=>{if(!P||P.length<3)return 0;const la0=P.reduce((a,p)=>a+ +p[0],0)/P.length*Math.PI/180,kx=111320*Math.cos(la0),ky=110540;let s=0;for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length];s+=(+a[1]*kx)*(+b[0]*ky)-(+b[1]*kx)*(+a[0]*ky)}return Math.abs(s/2)};
-const SAT_ERR={no_cdse_secret:'لم يتم ضبط مفاتيح Copernicus على السيرفر بعد',forbidden:'غير مصرح لحسابك باستخدام الأقمار الصناعية',bad_poly:'حدود الأرض غير صالحة',bad_dates:'التواريخ غير صحيحة',too_old:'بيانات Sentinel-2 المتاحة من يوليو 2015 فقط',range_too_long:'أقصى فترة 12 سنة في الطلب الواحد',no_crop_found:'لم تُرصد زراعات داخل حدود الأرض في صور القمر الصناعي منذ يناير 2016 حتى تاريخ النهاية · حدد تاريخ البدء يدوياً'};const satErr=k=>SAT_ERR[k]||(/^stats_(503|502|504|429)/.test(k)||/^http_5/.test(k)?'خدمة الأقمار الصناعية الأوروبية (Copernicus) مشغولة أو متوقفة مؤقتاً · أعد المحاولة بعد دقائق':/^stats_40[13]/.test(k)?'مفاتيح Copernicus غير صالحة أو انتهت · راجع إعدادات Supabase':/^stats_400/.test(k)?'تعذر تحليل حدود هذه الأرض · راجع ملف الإحداثيات':/abort|timeout|Failed to fetch|net/i.test(k)?'انقطع الاتصال أثناء الحساب (الإنترنت أو انتهاء مهلة السيرفر) · أعد المحاولة':'تعذر الاتصال بخدمة الأقمار الصناعية ('+String(k).slice(0,60)+') · أعد المحاولة');
+const SAT_ERR={no_cdse_secret:'لم يتم ضبط مفاتيح Copernicus على السيرفر بعد',forbidden:'غير مصرح لحسابك باستخدام الأقمار الصناعية',bad_poly:'حدود الأرض غير صالحة',bad_dates:'التواريخ غير صحيحة',too_old:'بيانات Sentinel-2 المتاحة من يوليو 2015 فقط',range_too_long:'أقصى فترة 12 سنة في الطلب الواحد',no_crop_after_basis:'لم تُرصد زراعات داخل حدود الأرض بعد تاريخ بداية الفترة المحدد حتى تاريخ تقديم الطلب',no_crop_found:'لم تُرصد زراعات داخل حدود الأرض في صور القمر الصناعي منذ يناير 2016 حتى تاريخ النهاية · حدد تاريخ البدء يدوياً'};const satErr=k=>SAT_ERR[k]||(/^stats_(503|502|504|429)/.test(k)||/^http_5/.test(k)?'خدمة الأقمار الصناعية الأوروبية (Copernicus) مشغولة أو متوقفة مؤقتاً · أعد المحاولة بعد دقائق':/^stats_40[13]/.test(k)?'مفاتيح Copernicus غير صالحة أو انتهت · راجع إعدادات Supabase':/^stats_400/.test(k)?'تعذر تحليل حدود هذه الأرض · راجع ملف الإحداثيات':/abort|timeout|Failed to fetch|net/i.test(k)?'انقطع الاتصال أثناء الحساب (الإنترنت أو انتهاء مهلة السيرفر) · أعد المحاولة':'تعذر الاتصال بخدمة الأقمار الصناعية ('+String(k).slice(0,60)+') · أعد المحاولة');
 const satFed=m2=>m2/4200.83;
 const SATMN=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 /* بدء العمل باللائحة التنفيذية لقانون الموارد المائية والري 147/2021

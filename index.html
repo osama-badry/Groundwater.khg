@@ -415,6 +415,8 @@ nav.menu a .cnt.alertc{background:#C2413A;color:#fff}
 @media (max-width:760px){.alerts{grid-template-columns:minmax(0,1fr)}}
 .toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(20px);background:var(--side);color:var(--side-ink);padding:10px 16px;border-radius:12px;font-size:13.5px;box-shadow:var(--shadow);z-index:90;opacity:0;transition:.25s;display:flex;gap:8px;align-items:center;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;transform:translateX(-50%)}
+/* الرسالة المخفية مابقتش تغطي الأزرار اللي تحتها (كانت شفافة بس لسه بتمسك اللمس فوق «معاينة المطالبة») */
+.toast:not(.on){pointer-events:none;visibility:hidden;transition:opacity .25s,transform .25s,visibility 0s linear .25s}.toast.on:not(:has(button,a,[data-go])){pointer-events:none}
 
 @media (max-width:1180px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.phase{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:980px){
@@ -1718,7 +1720,6 @@ tr.spsame td{background:color-mix(in srgb,var(--gold) 8%,transparent)}tr.spbad t
  .tw:has(> table.mct),.tw:has(table.mct){overflow:visible!important;border:0!important;background:transparent!important;box-shadow:none!important;padding:0!important}
  table.mct tfoot{display:block}table.mct tfoot tr{display:block}
  /* نوافذ الحوار ملء الشاشة تقريباً */
- .modal,.mdl,.dlg{max-width:calc(100vw - 16px)!important}
 }
 /* أهداف لمس مريحة (44px) على أي جهاز لمس */
 @media (pointer:coarse){
@@ -9100,7 +9101,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.24-2343';
+const APP_VER='2026.11.23-2348';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

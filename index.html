@@ -5935,7 +5935,7 @@ async function clmSatRun0(rid,mode){const v=vrs()[rid];if(!v||!canAnalyze())retu
   const W=vrs()[rid]||v;if(W!==v){if(!W.bd&&v.bd)W.bd=v.bd;if(!W.basis&&v.basis)W.basis=v.basis;if(v.log&&(!W.log||W.log.length<v.log.length))W.log=v.log}
   W.sat=S;W.from=W.st==='claim'?clmFrom(W):null;W.area=S.avg;delete SATR[rid];
   const F=satFair(S,rid);vrLog(W,`تحليل مختوم بالقمر الصناعي Sentinel-2${S.ls.err?' (تعذر التأكيد بـ Landsat)':' مع التأكيد المستقل بقمر Landsat'} · ${fD(S.from)} ← ${fD(S.to)} · متوسط ${S.avg} فدان · ${(S.seals||[]).length} ختم${F.n.ls_low?' · '+F.n.ls_low+' شهر عُدل لصالح المواطن بتأكيد Landsat':''}`);
-  vrSave(W,'تحليل مختوم');toast('✓ تم التحليل المختوم'+(S.ls.err?' · Landsat غير متاح حالياً':' والتأكيد بقمرين')+' · التقرير الاحترافي جاهز',5000);if($('#vr-nt')){vrReview(rid);setTimeout(()=>{const e=document.querySelector('#modal .satdone');if(e)e.scrollIntoView({block:'center',behavior:'smooth'})},80)}else vrClaimModal(rid)}
+  vrSave(W,'تحليل مختوم');try{setTimeout(()=>vxPaint(rid),60)}catch(_){};toast('✓ تم التحليل المختوم'+(S.ls.err?' · Landsat غير متاح حالياً':' والتأكيد بقمرين')+' · التقرير الاحترافي جاهز',5000);if($('#vr-nt')){vrReview(rid);setTimeout(()=>{const e=document.querySelector('#modal .satdone');if(e)e.scrollIntoView({block:'center',behavior:'smooth'})},80)}else vrClaimModal(rid)}
  catch(e){const k=String(e.message||e);if(btn)btn.disabled=false;box.innerHTML=`<div class="note bad" style="margin:0">تعذر التحليل: ${esc(/^seal_fail/.test(k)?'تعذر ختم النتيجة على السيرفر · تأكد من تشغيل تحديث SQL رقم 17 ونشر دالة sat-ndvi الجديدة':satErr(k))}</div>`}}
 
 /* ---------- الإصدار مع التسجيل في السجل الثابت ---------- */
@@ -8944,8 +8944,8 @@ function vxTHView(v){if(!v.th)return '';const C=vxTHCalc(v);const pc=C.obs?Math.
 /* ---------- اللوحة داخل المراجعة والمطالبة ---------- */
 function vxPanel(v){if(!v)return '';const P=vxPoly(v);const {fr,to}=vxPer(v);return `<div class="fld span2"><div class="vxp" id="vx-${v.rid}">${vxBody(v,P,fr,to)}</div></div>`}
 function vxBody(v,P,fr,to,msg){P=P===undefined?vxPoly(v):P;if(fr===undefined){const q=vxPer(v);fr=q.fr;to=q.to}const ed=canAnalyze();const R=VX.run[v.rid];const any=v.ba||v.wu||v.th;
- const card=(k,ic,t,sub,has,view,fn)=>`<details class="vxk" ${has?'open':''}><summary><span class="vxi">${ic}</span><b>${t}</b><small>${has?'✓ '+fD((has.at||'').slice(0,10))+' · '+esc(has.by||''):sub}</small>${ed&&P&&fr?`<button type="button" class="btn sm ${has?'':'pri'}" data-vx="${k}" data-rid="${v.rid}" ${R?'disabled':''}>${R===k?'⏳ جارٍ…':has?'↻ إعادة':'▶ تشغيل'}</button>`:''}</summary>${has?`<div class="vxbd">${view}</div>`:''}</details>`;
- return `<div class="vxhd"><b>🛰 أدلة الأقمار الصناعية الإضافية</b><small>${fr?`الفترة ${fD(fr)} ← ${fD(to)}`:'حدد بداية الفترة أولاً'}${P?'':' · لا توجد حدود أرض للطلب'}</small>${any?`<button type="button" class="btn sm" data-vxrep="${v.rid}">📄 تقرير الأدلة</button>`:''}</div>${msg||R?`<div class="satld"><i></i>${esc(msg||'جارٍ التنفيذ…')}</div>`:''}
+ const card=(k,ic,t,sub,has,view,fn)=>`<details class="vxk" ${has?'open':''}><summary><span class="vxi">${ic}</span><b>${t}</b><small>${has?'✓ '+fD((has.at||'').slice(0,10))+' · '+esc(has.by||''):sub}</small>${ed&&P?`<button type="button" class="btn sm ${has?'':'pri'}" data-vx="${k}" data-rid="${v.rid}" ${R?'disabled':''} ${fr?'':'title="شغّل التحليل المختوم الأول عشان يحدد بداية الفترة"'}>${R===k?'⏳ جارٍ…':has?'↻ إعادة':'▶ تشغيل'}</button>`:''}</summary>${has?`<div class="vxbd">${view}</div>`:''}</details>`;
+ return `<div class="vxhd"><b>🛰 أدلة الأقمار الصناعية الإضافية</b><small>${fr?`الفترة ${fD(fr)} ← ${fD(to)}`:'بداية الفترة لسه ماتحددتش · شغّل «التحليل المختوم» الأول وبعدها الأدلة تشتغل على نفس الفترة'}${P?'':' · لا توجد حدود أرض للطلب'}</small>${!fr&&document.querySelector('#vrsat')?'<button type="button" class="btn sm" data-satjump>↓ التحليل المختوم</button>':''}${any?`<button type="button" class="btn sm" data-vxrep="${v.rid}">📄 تقرير الأدلة</button>`:''}</div>${msg||R?`<div class="satld"><i></i>${esc(msg||'جارٍ التنفيذ…')}</div>`:''}
  ${card('ba','🔀','مقارنة قبل / بعد','صورتين بأقصى وضوح لبداية ونهاية الفترة مع حدود الأرض',v.ba,v.ba?vxBAView(v):'')}
  ${card('wu','💧','الاستهلاك الفعلي للمياه','التبخر-نتح الشهري ومقارنته بالمقنن الرسمي',v.wu,v.wu?vxWUView(v):'')}
  ${card('th','🌡','كشف تشغيل البئر حرارياً','هل كانت الأرض تُروى فعلاً؟ شهر بشهر',v.th,v.th?vxTHView(v):'')}`}
@@ -8966,7 +8966,7 @@ function vxReport(rid){const v=vrs()[rid];if(!v)return;const parts=['ba','wu','t
 const _clmPrintVx=clmPrint;clmPrint=function(rid,C){const r=_clmPrintVx.apply(this,arguments);try{const v=vrs()[rid];const w=document.querySelector('#print .prwrap');if(v&&v.ba&&w&&!w.querySelector('.vxrep')){w.insertAdjacentHTML('beforeend',vxPage(v,['ba']))}}catch(e){console.warn('vx',e)}return r};
 
 document.addEventListener('click',ev=>{const t=ev.target;if(!t.closest)return;let el;
- if(el=t.closest('[data-vx]')){ev.preventDefault();ev.stopPropagation();const k=el.dataset.vx,rid=+el.dataset.rid;if(!window.__satFetch&&!clActive())return toast('يحتاج اتصال بالسحابة');(k==='ba'?vxBA:k==='wu'?vxWU:vxTH)(rid);return}
+ if(el=t.closest('[data-vx]')){ev.preventDefault();ev.stopPropagation();const k=el.dataset.vx,rid=+el.dataset.rid;if(!window.__satFetch&&!clActive())return toast('يحتاج اتصال بالسحابة');{const v0=vrs()[rid];if(v0&&!vxPer(v0).fr){toast('شغّل «التحليل المختوم» الأول · هو اللي بيحدد أول صورة فيها زراعات = بداية الفترة',4200);const e=document.querySelector('#vrsat');if(e)e.scrollIntoView({block:'start',behavior:'smooth'});return}}(k==='ba'?vxBA:k==='wu'?vxWU:vxTH)(rid);return}
  if(el=t.closest('[data-vxrep]')){ev.preventDefault();vxReport(+el.dataset.vxrep)}},true);
 document.addEventListener('input',ev=>{const t=ev.target;if(t.classList&&t.classList.contains('vxr')){const b=t.closest('.vxba');if(b)b.style.setProperty('--p',t.value+'%')}});
 
@@ -9007,7 +9007,7 @@ function mrdView(){if(!gAdm())return '';if(MRD.T===null&&!MRD.load&&!MRD.err)set
  return `<div class="card mrhd"><div class="mrtop"><div><h3 style="margin:0">🗓 الرادار الشهري التلقائي</h3><small class="muted">كل شهر السيرفر بيحسب المساحة المنزرعة داخل نطاق كل بئر وطلب ويقارنها بالشهور اللي قبلها وبالمساحة المرخصة · من غير ما حد يدوس حاجة</small></div>
   <div class="filters" style="margin:0"><button class="btn sm pri" data-mrsync ${MRD.sync?'disabled':''}>${MRD.sync?'⏳ جارٍ…':'🔄 مزامنة الأهداف'}</button><button class="btn sm" data-mrload ${MRD.load?'disabled':''}>${MRD.load?'⏳':'⟳'} تحديث</button></div></div>
   ${MRD.err?`<div class="note bad">${esc(MRD.err)}</div>`:''}
-  <div class="vxkv" style="margin-top:8px"><div><span>الأهداف المراقبة</span><b class="num">${(MRD.T||[]).length}</b><small>آبار وطلبات بإحداثيات</small></div><div><span>آخر شهر محسوب</span><b>${last?vxMl(last):'—'}</b><small>${S_.done&&last?S_.done[last]+' / '+S_.targets+' هدف':''}</small></div><div><span>جارٍ الحساب</span><b class="num">${S_.pending??'—'}</b><small>${S_.pending?'بيكمل تلقائياً كل 5 دقايق':'مكتمل'}</small></div><div><span>تنبيهات</span><b class="num" style="color:#b9362f">${(C.new||0)+(C.over||0)}</b><small>${C.new||0} توسع جديد · ${C.over||0} تجاوز</small></div></div>
+  <div class="vxkv" style="margin-top:8px"><div><span>الأهداف المراقبة</span><b class="num">${(MRD.T||[]).length}</b><small>آبار وطلبات بإحداثيات</small></div><div><span>آخر شهر محسوب</span><b>${last?vxMl(last):'—'}</b><small>${S_.done&&last?S_.done[last]+' / '+S_.targets+' هدف':''}</small></div><div><span>جارٍ الحساب</span><b class="num">${S_.pending??'—'}</b><small>${S_.pending?'بيكمل تلقائياً بالليل (12–6 صباحاً) عشان مايبطّأش التحليل المختوم':'مكتمل'}</small></div><div><span>تنبيهات</span><b class="num" style="color:#b9362f">${(C.new||0)+(C.over||0)}</b><small>${C.new||0} توسع جديد · ${C.over||0} تجاوز</small></div></div>
   ${!(MRD.T||[]).length&&!MRD.load?`<div class="note warn" style="margin-top:8px">لسه مفيش أهداف على السيرفر · اضغط «مزامنة الأهداف» مرة واحدة (بيرفع الإحداثيات والمساحات بس) وبعدها الرادار يشتغل لوحده</div>`:''}</div>
  <div class="gctabs mrf">${[['alert','🚨 التنبيهات',(C.new||0)+(C.over||0)],['new',M6S.new[0]+' '+M6S.new[1],C.new||0],['over',M6S.over[0]+' '+M6S.over[1],C.over||0],['down',M6S.down[0]+' '+M6S.down[1],C.down||0],['ok',M6S.ok[0]+' '+M6S.ok[1],C.ok||0],['na',M6S.na[0]+' '+M6S.na[1],C.na||0],['all','الكل',E.length]].map(([k,t,n])=>`<button class="${MRD.f===k?'on':''}" data-mrf="${k}">${t} <b>${n}</b></button>`).join('')}</div>
  <div class="filters"><input class="inp" id="mr-q" placeholder="بحث بالاسم أو رقم الطلب أو المنطقة" value="${esc(MRD.q)}" style="max-width:320px"></div>
@@ -9096,7 +9096,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.23-1345';
+const APP_VER='2026.11.23-1403';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

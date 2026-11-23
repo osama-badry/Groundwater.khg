@@ -4268,7 +4268,7 @@ function clmArea(v,a,b){const S=v.sat;if(S&&S.months&&S.months.length&&S.from<=a
   if(sw)return {ar:FM&&FC.floor?Math.floor(sf/sw*1000+1e-9)/1000:+(sf/sw).toFixed(3),src:'sat',n,adj}}return {ar:+(+v.area||0).toFixed(3),src:'avg'}}
 function clmPeriods(from,to){const P=[];const y0=+from.slice(0,4),y1=+to.slice(0,4);const pre=clISO(clD(SAT_REG)-864e5);
  for(let y=y0;y<=y1;y++){const a=y===y0?from:y+'-01-01',b=y===y1?to:y+'-12-31';if(a>b)continue;if(a<SAT_REG&&b>=SAT_REG){P.push([a,pre]);P.push([SAT_REG,b])}else P.push([a,b])}return P}
-function clmCalc(v,r,o){o=o||{};const q=CLM.q;const old=v.clm&&v.clm.from===v.from&&v.clm.to===v.to?v.clm.rows:null;
+function clmCalc(v,r,o){o=o||{};if(v&&!v.from){try{const f=clmFrom(v);if(f)v.from=f}catch(_){}}const q=CLM.q;const old=v.clm&&v.clm.from===v.from&&v.clm.to===v.to?v.clm.rows:null;
  const rows=clmPeriods(v.from,v.to).map(([a,b],i)=>{const post=a>=SAT_REG;let A=clmArea(v,a,b);const man=null;if(man!=null&&man!==''&&!isNaN(+man)&&+(+man).toFixed(3)!==A.ar)A={ar:+(+man).toFixed(3),src:'man',auto:A.ar};
   const d=clDays(a,b),rate=post?CLM.post:CLM.pre;return {a,b,post,part:!(a.slice(5)==='01-01'&&b.slice(5)==='12-31'),ar:A.ar,src:A.src,auto:A.auto,d,m3:clR2(q*A.ar*d),rate,amt:clR2(q*A.ar*d*rate)}});
  const pre=clR2(rows.filter(x=>!x.post).reduce((s,x)=>s+x.amt,0)),post=clR2(rows.filter(x=>x.post).reduce((s,x)=>s+x.amt,0)),base=clR2(pre+post);
@@ -4325,7 +4325,7 @@ function clmPrev(id){if(clmPrev._t&&Date.now()-clmPrev._t<700)return;clmPrev._t=
  setTimeout(()=>{try{const v=vrs()[id];if(!v)return toast('تعذر العثور على المطالبة');const C=clmRead(v,findReq(id)||{id});const keep=v.clm;v.clm=null;try{clmPrint(id,C)}finally{v.clm=keep}
   const p=$('#print');if(!p||p.hidden)toast('تعذر فتح المعاينة · أعد المحاولة')}catch(e){console.error(e);toast('تعذر فتح المعاينة: '+(e&&e.message||e))}},30)}
 window.clmPrev=clmPrev;
-function clmPrint(rid,C){const v=vrs()[rid];if(!v)return toast('تعذر العثور على المطالبة');if(!v.from||!v.to)return toast('حدد فترة المخالفة (من / إلى) أولاً');const r=findReq(+rid)||{id:+rid};try{C=C||v.clm||clmCalc(v,r);let p=$('#print');if(!p){p=document.createElement('div');p.id='print';document.body.appendChild(p)}
+function clmPrint(rid,C){const v=vrs()[rid];if(!v)return toast('تعذر العثور على المطالبة');if(!v.from){try{const f=clmFrom(v);if(f)v.from=f}catch(_){}}if(!v.from||!v.to)return toast('حدد فترة المخالفة (من / إلى) أولاً');const r=findReq(+rid)||{id:+rid};try{C=C||v.clm||clmCalc(v,r);let p=$('#print');if(!p){p=document.createElement('div');p.id='print';document.body.appendChild(p)}
  p.innerHTML=`<div class="prbar"><b>المطالبة المالية · ${esc(v.snap.name)}</b>${v.clm?'':'<span class="tag" style="background:var(--warn);color:#fff">معاينة قبل الإصدار</span>'}<span style="flex:1"></span><button class="btn pri" data-drprint>طباعة / حفظ PDF</button><button class="btn" data-drclose>إغلاق</button></div><div class="prwrap">${clmPage(v,r,C).replace(/ · /g,'<span class="csep"></span>')}</div>`;
  clmArab(p.querySelector('.clmpg'));
 
@@ -5475,7 +5475,7 @@ function clmRawCalc(v,r){CLM_RAW=true;try{return clmCalc(v,r)}finally{CLM_RAW=fa
 function fairSum(v,r){if(!v.sat||!fairCfg().on)return null;const F=satFair(v.sat,v.rid);const raw=clmRawCalc(v,r),fx=clmCalc(v,r);
  return {n:F.n,raw:raw.grand,fair:fx.grand,save:clR2(Math.max(0,raw.grand-fx.grand)),at:new Date().toISOString()}}
 /* تداخل المطالبات: نفس الأرض أو نفس الرقم القومي بفترات متداخلة = تحصيل مزدوج */
-function clmDups(v){const r=findReq(v.rid);const P=r&&satPoly(v.rid);const out=[];if(!v.from||!v.to)return out;
+function clmDups(v){const r=findReq(v.rid);const P=r&&satPoly(v.rid);const out=[];if(!v.from){try{const f=clmFrom(v);if(f)v.from=f}catch(_){}}if(!v.from||!v.to)return out;
  Object.values(vrs()).forEach(o=>{if(!o||o.rid===v.rid||!['claim','pay','paid'].includes(o.st)||!o.from||!o.to)return;if(o.from>v.to||o.to<v.from)return;
   const sameN=v.snap&&o.snap&&v.snap.nid&&String(o.snap.nid)===String(v.snap.nid);let ov=0;const P2=satPoly(o.rid);if(P&&P2)ov=polyOverlap(P,P2);
   if(sameN&&(!P||!P2)||ov>0.1)out.push({o,ov,sameN})});return out}
@@ -5936,7 +5936,7 @@ async function clmSatRun0(rid,mode){const v=vrs()[rid];if(!v||!canAnalyze())retu
   const W=vrs()[rid]||v;if(W!==v){if(!W.bd&&v.bd)W.bd=v.bd;if(!W.basis&&v.basis)W.basis=v.basis;if(v.log&&(!W.log||W.log.length<v.log.length))W.log=v.log}
   W.sat=S;W.from=W.st==='claim'?clmFrom(W):null;W.area=S.avg;delete SATR[rid];
   const F=satFair(S,rid);vrLog(W,`تحليل مختوم بالقمر الصناعي Sentinel-2${S.ls.err?' (تعذر التأكيد بـ Landsat)':' مع التأكيد المستقل بقمر Landsat'} · ${fD(S.from)} ← ${fD(S.to)} · متوسط ${S.avg} فدان · ${(S.seals||[]).length} ختم${F.n.ls_low?' · '+F.n.ls_low+' شهر عُدل لصالح المواطن بتأكيد Landsat':''}`);
-  vrSave(W,'تحليل مختوم');try{setTimeout(()=>vxPaint(rid),60)}catch(_){};toast('✓ تم التحليل المختوم'+(S.ls.err?' · Landsat غير متاح حالياً':' والتأكيد بقمرين')+' · التقرير الاحترافي جاهز',5000);if($('#vr-nt')){vrReview(rid);setTimeout(()=>{const e=document.querySelector('#modal .satdone');if(e)e.scrollIntoView({block:'center',behavior:'smooth'})},80)}else vrClaimModal(rid)}
+  try{const f_=clmFrom(W);if(f_&&(!W.from||W.basis==='crop'))W.from=f_}catch(_){}vrSave(W,'تحليل مختوم');try{setTimeout(()=>vxPaint(rid),60)}catch(_){};toast('✓ تم التحليل المختوم'+(S.ls.err?' · Landsat غير متاح حالياً':' والتأكيد بقمرين')+' · التقرير الاحترافي جاهز',5000);if($('#vr-nt')){vrReview(rid);setTimeout(()=>{const e=document.querySelector('#modal .satdone');if(e)e.scrollIntoView({block:'center',behavior:'smooth'})},80)}else vrClaimModal(rid)}
  catch(e){const k=String(e.message||e);if(btn)btn.disabled=false;box.innerHTML=`<div class="note bad" style="margin:0">تعذر التحليل: ${esc(/^seal_fail/.test(k)?'تعذر ختم النتيجة على السيرفر · تأكد من تشغيل تحديث SQL رقم 17 ونشر دالة sat-ndvi الجديدة':satErr(k))}</div>`}}
 
 /* ---------- الإصدار مع التسجيل في السجل الثابت ---------- */
@@ -9100,7 +9100,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.23-1550';
+const APP_VER='2026.11.24-2343';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

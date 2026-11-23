@@ -9096,7 +9096,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.23-0214';
+const APP_VER='2026.11.23-1345';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */
@@ -9568,14 +9568,15 @@ function vrAsk(r,ap){const v=vrs()[r.id],s=vrSnap(r);const done=v&&v.st!=='var';
   if(ch==='keep')d={has:'keep'};
   else if(ch==='no')d={has:'no',nt:g('vq-nnt')};
   else if(ch==='yes'){const a=g('vq-from'),b=g('vq-to'),ar=parseFloat(g('vq-area').replace(/[٠-٩]/g,x=>'٠١٢٣٤٥٦٧٨٩'.indexOf(x)).replace(',','.'));
-   if(!a){$('#vq-from').focus();return toast('تاريخ بدء الزراعات / انتهاء الترخيص إلزامي')}if(!b){$('#vq-to').focus();return toast('تاريخ تقديم الطلب إلزامي')}if(b<a){$('#vq-to').focus();return toast('تاريخ النهاية يجب أن يكون بعد تاريخ البداية')}
-   if(!(ar>0)){$('#vq-area').focus();return toast('متوسط مساحة المتغيرات إلزامي (رقم أكبر من صفر)')}if(!g('vq-nt')){$('#vq-nt').focus();return toast('ملاحظات وأساس الاحتساب إلزامية (مثال: من تاريخ بدء الزراعات)')}d={has:'yes',from:a,to:b,area:+ar.toFixed(2),nt:g('vq-nt')}}
+   const au=g('vq-nt').includes(SAT_AUTO);if(!a&&!au){$('#vq-from').focus();return toast('تاريخ بدء الزراعات / انتهاء الترخيص إلزامي')}if(!b){$('#vq-to').focus();return toast('تاريخ تقديم الطلب إلزامي')}if(a&&b<a){$('#vq-to').focus();return toast('تاريخ النهاية يجب أن يكون بعد تاريخ البداية')}
+   if(!(ar>0)&&!au){$('#vq-area').focus();return toast('متوسط مساحة المتغيرات إلزامي (رقم أكبر من صفر)')}if(!g('vq-nt')){$('#vq-nt').focus();return toast('ملاحظات وأساس الاحتساب إلزامية (مثال: من تاريخ بدء الزراعات)')}d={has:'yes',from:a||null,to:b,area:ar>0?+ar.toFixed(2):null,nt:g('vq-nt'),auto:au&&!a?1:0}}
   else return;
   vrClose();ap._vrd=d;act('match_ok',r,ap)}}
 /* تطبيق القرار بعد اعتماد المطابقة */
+const vqPerT=d=>d.from?`من ${fD(d.from)} حتى ${fD(d.to)} (${vrDurT(vrDur(d.from,d.to))})${d.area!=null?' بمتوسط '+vrFed(d.area):' · المساحة من التحليل المختوم'}`:`من تاريخ أول صورة قمر صناعي تُظهر زراعات (يُحدد بالتحليل المختوم في قسم المتغيرات) حتى ${fD(d.to)}${d.area!=null?' بمتوسط '+vrFed(d.area):' · المساحة من التحليل المختوم'}`;
 function vrApplyMatch(r,d,log){if(!d||d.has==='keep')return;const U=me().n;let v=vrs()[r.id];
- if(d.has==='yes'){if(!v)v=vrCreate(r,0);if(v&&v.st==='var'){if(SATR[r.id]){v.sat=SATR[r.id];vrLog(v,`تحليل القمر الصناعي: متوسط ${SATR[r.id].avg} فدان · أقصى ${SATR[r.id].max} فدان (${SATR[r.id].n} شهر)`)}Object.assign(v,{from:d.from,to:d.to,area:d.area,nt:d.nt||v.nt||'',mby:U,mat:new Date().toISOString()});vrLog(v,`بيانات المتغيرات من المطابقة: من ${fD(d.from)} حتى ${fD(d.to)} (${vrDurT(vrDur(d.from,d.to))}) بمتوسط ${vrFed(d.area)}${d.nt?' · '+d.nt:''} · بانتظار مراجعة قسم المتغيرات`);vrSave(v,'بيانات متغيرات من المطابقة')}
-  r.vrq='yes';log(`توجد متغيرات مكانية: من ${fD(d.from)} حتى ${fD(d.to)} (${vrDurT(vrDur(d.from,d.to))}) بمتوسط ${vrFed(d.area)} · أُرسلت نسخة لقسم المتغيرات`)}
+ if(d.has==='yes'){if(!v)v=vrCreate(r,0);if(v&&v.st==='var'){if(SATR[r.id]){v.sat=SATR[r.id];vrLog(v,`تحليل القمر الصناعي: متوسط ${SATR[r.id].avg} فدان · أقصى ${SATR[r.id].max} فدان (${SATR[r.id].n} شهر)`)}Object.assign(v,{from:d.from,to:d.to,area:d.area,nt:d.nt||v.nt||'',mby:U,mat:new Date().toISOString()});vrLog(v,`بيانات المتغيرات من المطابقة: ${vqPerT(d)}${d.nt?' · '+d.nt:''} · بانتظار مراجعة قسم المتغيرات`);vrSave(v,'بيانات متغيرات من المطابقة')}
+  r.vrq='yes';log(`توجد متغيرات مكانية: ${vqPerT(d)} · أُرسلت نسخة لقسم المتغيرات`)}
  else if(d.has==='no'){if(v&&v.st==='var'){v.st='none';v.nt='لا توجد متغيرات مكانية · تم التحديد عند اعتماد المطابقة'+(d.nt?' · '+d.nt:'');v.vby=U;v.vat=new Date().toISOString();vrLog(v,v.nt);vrSave(v,'لا توجد متغيرات')}
   r.vrq='no';log('لا توجد متغيرات مكانية'+(d.nt?' · '+d.nt:''))}}
 
@@ -9688,7 +9689,7 @@ async function satImg(rid,i,btn){const Sx=satGet(rid),x=Sx&&Sx.months[+i];const 
 const satBtn=(rid,fromId,toId)=>`<div class="fld span2"><button type="button" class="btn sat-go" data-satgo="${rid}|${fromId}|${toId}">📡 احسب المساحة المزروعة شهرياً من القمر الصناعي</button>${me().r===0?`<button type="button" class="btn sm ghost" data-satcmp="${rid}" style="margin-top:6px">🧪 مقارنة مصدري الصور L2A / L1C لسنتي 2016 و 2017 (للمطوّر)</button>`:''}<div class="satbox" hidden></div></div>`;
 /* اختيار «من تاريخ أول صورة قمر صناعي تُظهر زراعات»: تاريخ البدء يُحدد تلقائياً */
 function satAutoUI(){const ta=$('#vr-nt')||$('#vq-nt');const fe=$('#vr-from')||$('#vq-from');if(!ta||!fe)return;const on=ta.value.includes(SAT_AUTO);fe.readOnly=on;fe.classList.toggle('satauto',on);let h=fe.parentNode.querySelector('.satah');
- if(on&&!h){h=document.createElement('small');h.className='satah';fe.parentNode.appendChild(h)}if(h)h.hidden=!on;if(on&&h)h.innerHTML='📡 يُحدد تلقائياً من أول صورة قمر صناعي تُظهر زراعات داخل حدود الأرض · اضغط «احسب المساحة المزروعة من القمر الصناعي»';if(!on)fe.readOnly=false}
+ if(on&&!h){h=document.createElement('small');h.className='satah';fe.parentNode.appendChild(h)}if(h)h.hidden=!on;if(on&&h)h.innerHTML=fe.id==='vq-from'?'📡 يُحدد تلقائياً من أول صورة قمر صناعي تُظهر زراعات · ممكن تضغط «احسب المساحة المزروعة» دلوقتي، أو تعتمد وقسم المتغيرات يحدده بالتحليل المختوم':'📡 يُحدد تلقائياً من أول صورة قمر صناعي تُظهر زراعات داخل حدود الأرض · اضغط «احسب المساحة المزروعة من القمر الصناعي»';if(!on)fe.readOnly=false}
 document.addEventListener('input',e=>{if(e.target&&(e.target.id==='vr-nt'||e.target.id==='vq-nt'))satAutoUI()});
 /* ===== 🧪 أداة المطوّر: مقارنة مصدري الصور L2A و L1C لسنتي 2016 و 2017 ===== */
 async function satCmp(rid,box){const poly=satPoly(rid);if(!poly)return satNeedFile(rid,box);box.hidden=false;const SF=window.__satFetch||clFetch;if(!window.__satFetch&&!clActive()){box.innerHTML='<div class="note warn" style="margin:0">تحتاج اتصالاً بالسحابة</div>';return}

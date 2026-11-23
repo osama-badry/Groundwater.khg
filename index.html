@@ -5868,7 +5868,7 @@ const ledErr=e=>{const m=String(e&&e.message||e).split(':')[0];return LEDGER_ERR
 /* ---------- استدعاء دالة الأقمار الصناعية ---------- */
 async function satCall(body,timeout){const SF=window.__satFetch||clFetch;let last='';
  for(let t=0;t<3;t++){try{if(t)await new Promise(z=>setTimeout(z,2500*t));const res=await SF('/functions/v1/sat-ndvi',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),timeout:timeout||140000});const x=await res.json().catch(()=>({}));
-  if(res.ok&&x.ok)return x;last=x.error||('http_'+res.status);if(SAT_ERR[last]||/^stats_40/.test(last))break}catch(e){last=String(e&&e.message||e)}}throw new Error(last||'net')}
+  if(res.ok&&x.ok)return x;last=x.error||('http_'+res.status);if(/No server is available/i.test(x.detail||'')){last='cdse_down';break}if(SAT_ERR[last]||/^stats_40/.test(last))break}catch(e){last=String(e&&e.message||e)}}throw new Error(last||'net')}
 function satMapM(months,A){return months.map(x=>{const o={m:x.m,f:x.frac!=null&&x.valid>0.5?+satFed(x.frac*A).toFixed(2):null,v:+(x.valid||0).toFixed(2)};if(x.ndvi!=null)o.i=+(+x.ndvi).toFixed(2);if(x.tree!=null&&o.f!=null){o.t=+satFed(x.tree*A).toFixed(2);o.s=+Math.max(0,o.f-o.t).toFixed(2)}if(x.a){o.a=x.a;o.b=x.b}if(x.part)o.p=x.part;if(x.nsc!=null)o.n=+x.nsc;return o})}
 function yrChunks(from,to){const CH=[];for(let y=+from.slice(0,4);y<=+to.slice(0,4);y++){const a=y===+from.slice(0,4)?from:y+'-01-01',b=y===+to.slice(0,4)?to:y+'-12-31';if(a<=b)CH.push([a,b])}return CH}
 const mKey=x=>(x.a||x.m+'-01')+'|'+(x.p||'');
@@ -8874,7 +8874,7 @@ const vxDim=m=>new Date(Date.UTC(+m.slice(0,4),+m.slice(5,7),0)).getUTCDate();
 async function vxCall(body,img){const SF=window.__satFetch||clFetch;const r=await SF('/functions/v1/vr-sat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),timeout:150000});
  if(img){if(!r.ok){let e='';try{e=(await r.json()).error}catch(_){}throw new Error(e||('HTTP '+r.status))}return r}
  let j={};try{j=await r.json()}catch(_){}if(!r.ok||j.error)throw new Error(j.error||('HTTP '+r.status));return j}
-const vxErr=e=>{const m=String(e&&e.message||e||'');return m==='forbidden'?'الخاصية للأدمن ومهندس المنظومة ومهندس المتغيرات':/abort/i.test(m)?'انتهت مهلة الاتصال · حاول تاني':/no_scenes|range/.test(m)?'لا توجد مشاهد كافية للفترة':m.slice(0,90)}
+const vxErr=e=>{const m=String(e&&e.message||e||'');return m==='forbidden'?'الخاصية للأدمن ومهندس المنظومة ومهندس المتغيرات':/stats_50[234]|img_50[234]|cdse/.test(m)?'خدمة الأقمار الصناعية الأوروبية (Copernicus) واقفة أو مشغولة من عندهم · جرّب بعد شوية':/abort/i.test(m)?'انتهت مهلة الاتصال · حاول تاني':/no_scenes|range/.test(m)?'لا توجد مشاهد كافية للفترة':m.slice(0,90)}
 
 /* ---------- ① قبل/بعد ---------- */
 const vxMerc=(lo,la)=>[lo*Math.PI/180,Math.log(Math.tan(Math.PI/4+la*Math.PI/360))];
@@ -9096,7 +9096,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.23-1403';
+const APP_VER='2026.11.23-1417';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */
@@ -9625,7 +9625,7 @@ function vrWaDocs(r){const n=waNum(r.phone||r.ph);if(!n||!r.cm)return '';const t
 /* ===== 📡 المساحة المزروعة شهرياً من القمر الصناعي Sentinel-2 (دقة 10 م) ===== */
 const SATR={},SATP={},SATN={};const SAT_AUTO='من تاريخ أول صورة قمر صناعي تُظهر زراعات',SAT_AUTO_FROM='2016-01-01';
 const polyM2=P=>{if(!P||P.length<3)return 0;const la0=P.reduce((a,p)=>a+ +p[0],0)/P.length*Math.PI/180,kx=111320*Math.cos(la0),ky=110540;let s=0;for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length];s+=(+a[1]*kx)*(+b[0]*ky)-(+b[1]*kx)*(+a[0]*ky)}return Math.abs(s/2)};
-const SAT_ERR={no_cdse_secret:'لم يتم ضبط مفاتيح Copernicus على السيرفر بعد',forbidden:'غير مصرح لحسابك باستخدام الأقمار الصناعية',bad_poly:'حدود الأرض غير صالحة',bad_dates:'التواريخ غير صحيحة',too_old:'بيانات Sentinel-2 المتاحة من يوليو 2015 فقط',range_too_long:'أقصى فترة 12 سنة في الطلب الواحد',no_crop_after_basis:'لم تُرصد زراعات داخل حدود الأرض بعد تاريخ بداية الفترة المحدد حتى تاريخ تقديم الطلب',no_crop_found:'لم تُرصد زراعات داخل حدود الأرض في صور القمر الصناعي منذ يناير 2016 حتى تاريخ النهاية · حدد تاريخ البدء يدوياً'};const satErr=k=>SAT_ERR[k]||(/^stats_(503|502|504|429)/.test(k)||/^http_5/.test(k)?'خدمة الأقمار الصناعية الأوروبية (Copernicus) مشغولة أو متوقفة مؤقتاً · أعد المحاولة بعد دقائق':/^stats_40[13]/.test(k)?'مفاتيح Copernicus غير صالحة أو انتهت · راجع إعدادات Supabase':/^stats_400/.test(k)?'تعذر تحليل حدود هذه الأرض · راجع ملف الإحداثيات':/abort|timeout|Failed to fetch|net/i.test(k)?'انقطع الاتصال أثناء الحساب (الإنترنت أو انتهاء مهلة السيرفر) · أعد المحاولة':'تعذر الاتصال بخدمة الأقمار الصناعية ('+String(k).slice(0,60)+') · أعد المحاولة');
+const SAT_ERR={cdse_down:'خدمة الأقمار الصناعية الأوروبية (Copernicus) واقفة حالياً من عندهم («No server is available») · مش مشكلة في المنظومة ولا في الطلب · جرّب تاني بعد شوية',no_cdse_secret:'لم يتم ضبط مفاتيح Copernicus على السيرفر بعد',forbidden:'غير مصرح لحسابك باستخدام الأقمار الصناعية',bad_poly:'حدود الأرض غير صالحة',bad_dates:'التواريخ غير صحيحة',too_old:'بيانات Sentinel-2 المتاحة من يوليو 2015 فقط',range_too_long:'أقصى فترة 12 سنة في الطلب الواحد',no_crop_after_basis:'لم تُرصد زراعات داخل حدود الأرض بعد تاريخ بداية الفترة المحدد حتى تاريخ تقديم الطلب',no_crop_found:'لم تُرصد زراعات داخل حدود الأرض في صور القمر الصناعي منذ يناير 2016 حتى تاريخ النهاية · حدد تاريخ البدء يدوياً'};const satErr=k=>SAT_ERR[k]||(/^stats_(503|502|504|429)/.test(k)||/^http_5/.test(k)?'خدمة الأقمار الصناعية الأوروبية (Copernicus) مشغولة أو متوقفة مؤقتاً · أعد المحاولة بعد دقائق':/^stats_40[13]/.test(k)?'مفاتيح Copernicus غير صالحة أو انتهت · راجع إعدادات Supabase':/^stats_400/.test(k)?'تعذر تحليل حدود هذه الأرض · راجع ملف الإحداثيات':/abort|timeout|Failed to fetch|net/i.test(k)?'انقطع الاتصال أثناء الحساب (الإنترنت أو انتهاء مهلة السيرفر) · أعد المحاولة':'تعذر الاتصال بخدمة الأقمار الصناعية ('+String(k).slice(0,60)+') · أعد المحاولة');
 const satFed=m2=>m2/4200.83;
 const SATMN=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 /* بدء العمل باللائحة التنفيذية لقانون الموارد المائية والري 147/2021

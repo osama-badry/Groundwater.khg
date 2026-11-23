@@ -5445,8 +5445,8 @@ const n0=x=>Math.round(+x||0).toLocaleString('en-US');
 /* =====================================================================
    (أ) عدالة المتغيرات: لا يُحمَّل المواطن إلا ما ثبت بالقمر الصناعي يقيناً
    ===================================================================== */
-const FR_T={ls_fill:'قراءة Landsat لشهر بلا صور Sentinel-2',ls_low:'Landsat أقل بوضوح ← الأقل لصالح المواطن',spike:'قراءة شاذة لشهر منفرد',conf:'صورة واحدة صالحة فقط في الشهر',fill:'شهر بدون صور صالحة',edge:'خصم هامش حواف الأرض',cap:'لا تتجاوز مساحة الأرض'};
-const FR_D={ls_fill:'لا توجد صور Sentinel-2 صالحة في هذا الشهر · أُخذت القراءة الفعلية من القمر المستقل Landsat 8/9 بدلاً من التقدير',ls_low:'القمر المستقل Landsat أظهر مساحة أقل بوضوح من Sentinel-2 · عند اختلاف القمرين يُعتمد الأقل لصالح المواطن',spike:'أعلى من الشهرين المجاورين بأكثر من الضعف، والزراعة لا تظهر وتختفي في شهر واحد ← خُفضت لأعلى قيمة في الشهرين المجاورين',
+const FR_T={ls_fill:'قراءة Landsat لشهر بلا صور Sentinel-2',ls_low:'Landsat أقل بوضوح ← الأقل (قاعدة ملغاة · مطالبة مصدرة قبل 23/11/2026)',spike:'قراءة شاذة لشهر منفرد',conf:'صورة واحدة صالحة فقط في الشهر',fill:'شهر بدون صور صالحة',edge:'خصم هامش حواف الأرض',cap:'لا تتجاوز مساحة الأرض'};
+const FR_D={ls_fill:'لا توجد صور Sentinel-2 صالحة في هذا الشهر · أُخذت القراءة الفعلية من القمر المستقل Landsat 8/9 بدلاً من التقدير',ls_low:'مطالبة مصدرة قبل 23/11/2026 بالقاعدة القديمة: عند اختلاف القمرين كان يُعتمد الأقل · القاعدة اتلغت لأن بكسل Landsat (30 م) بيقلل المساحة في الأراضي الصغيرة',spike:'أعلى من الشهرين المجاورين بأكثر من الضعف، والزراعة لا تظهر وتختفي في شهر واحد ← خُفضت لأعلى قيمة في الشهرين المجاورين',
  conf:'الشهر فيه صورة قمر صناعي واحدة صالحة ← لا يُحمَّل أكثر من الشهرين المجاورين',
  fill:'لا توجد صورة صالحة (سحب/عطل) ← تُحسب بالقيمة الأقل من الشهرين المجاورين بدلاً من تجاهل الشهر',
  edge:'خصم شريط حواف الأرض بعرض ثابت لاحتمال تداخل بكسلات الأرض المجاورة',cap:'المساحة المنزرعة لا تزيد عن مساحة حدود الأرض'};
@@ -5459,7 +5459,10 @@ function satFair(S,rid){const c=fairCfg();const M=(S&&S.months)||[];const land=+
   if(c.conf&&x.n!=null&&x.n<2&&x.f>nb){out[i].fx=nb;out[i].r.push('conf')}});
  const LM={};((S.ls&&S.ls.months)||[]).forEach(x=>{if(x.f!=null)LM[mKey(x)]=x});
  M.forEach((x,i)=>{const L=LM[mKey(x)];if(!L)return;const o=out[i];if(x.f==null){let v=L.f;const p=pv(i),q=nv(i);if(p>=0&&q>=0){const nb=Math.max(M[p].f,M[q].f);if(v>2*nb&&v-nb>Math.max(0.1,land*0.05))v=nb}o.fx=v;o.r.push('ls_fill');return}
-  const tol=Math.max(0.15,land*0.1);if(L.f<o.fx*0.6&&o.fx-L.f>tol){o.fx=L.f;o.r.push('ls_low')}else o.ok2=1});
+  /* قاعدة «Landsat أقل ← الأقل» اتلغت (23 نوفمبر 2026) لأن بكسل Landsat (30 م) بيقلل المساحة غلط في الأراضي الصغيرة والزراعة الجزئية
+     Sentinel-2 (10 م) هو الأساس، وLandsat يسد الشهور اللي مفيهاش صور بس · المطالبات المصدرة قبل الإلغاء تفضل بحسابها الأصلي */
+  const V_=rid!=null&&typeof vrs==='function'?vrs()[rid]:null;const legacy=V_&&(V_.st==='pay'||V_.st==='paid')&&V_.fairv!==2;
+  const tol=Math.max(0.15,land*0.1);if(legacy&&L.f<o.fx*0.6&&o.fx-L.f>tol){o.fx=L.f;o.r.push('ls_low')}else o.ok2=1});
  if(c.fill)M.forEach((x,i)=>{if(x.f!=null||out[i].r.includes('ls_fill'))return;const p=pv(i),q=nv(i);if(p<0&&q<0)return;out[i].fx=p<0?out[q].fx:q<0?out[p].fx:Math.min(out[p].fx,out[q].fx);out[i].r.push('fill')});
  const P=rid!=null&&typeof satPoly==='function'?satPoly(rid):null;
  if(+c.edge>0&&P){const per=polyPer(P),A=polyM2(P);if(per&&A)out.forEach(o=>{if(!(o.fx>0))return;const ded=(o.fx*FED/A)*per*(+c.edge)/FED;if(ded>0.0005){o.fx=Math.max(0,o.fx-ded);o.r.push('edge')}})}
@@ -5480,7 +5483,7 @@ function fairDupOK(v){const D=clmDups(v);if(!D.length)return true;const c=$('#fa
 function fairPanel(v,r){const c=fairCfg();const D=clmDups(v);let h='';
  if(v.sat&&c.on){const F=satFair(v.sat,v.rid);const L=v.sat.months.map((x,i)=>({x,o:F.M[i]})).filter(z=>z.o.r.length&&z.o.fx!==z.x.f);const S_=fairSum(v,r);
   h+=`<div class="frk"><div><span>قبل ضمانات العدالة</span><b>${clMoney(S_.raw)}</b></div><div><span>بعد ضمانات العدالة</span><b>${clMoney(S_.fair)}</b></div><div class="ok"><span>خُفض لصالح المواطن</span><b>${clMoney(S_.save)} ج</b></div></div>
-  ${v.sat.ls?(v.sat.ls.err&&!(v.sat.ls.months||[]).length?`<div class="frls warn">🛰 تعذر التأكيد بقمر Landsat وقت التحليل (${esc(satErr(v.sat.ls.err))}) · طُبقت باقي الضمانات</div>`:`<div class="frls">🛰 <b>التأكيد بقمرين مستقلين:</b> ${F.n.ls_ok||0} شهر متفق · ${F.n.ls_low||0} شهر خُفض لصالح المواطن · ${F.n.ls_fill||0} شهر بلا صور Sentinel-2 أُخذ من Landsat</div>`):''}
+  ${v.sat.ls?(v.sat.ls.err&&!(v.sat.ls.months||[]).length?`<div class="frls warn">🛰 تعذر التأكيد بقمر Landsat وقت التحليل (${esc(satErr(v.sat.ls.err))}) · طُبقت باقي الضمانات</div>`:`<div class="frls">🛰 <b>التأكيد بقمرين مستقلين:</b> ${F.n.ls_ok||0} شهر اتراجع بالقمرين · ${F.n.ls_low?F.n.ls_low+' شهر خُفض (قاعدة ملغاة · مطالبة مصدرة سابقاً) · ':''}${F.n.ls_fill||0} شهر بلا صور Sentinel-2 أُخذ من Landsat</div>`):''}
   ${L.length?`<div class="tw"><table class="frt"><thead><tr><th>الفترة</th><th>قراءة القمر الصناعي</th><th>المعتمد في المطالبة</th><th>السبب</th></tr></thead><tbody>${L.map(({x,o})=>`<tr><td>${satMn(x)}</td><td class="num">${x.f==null?'لا توجد صورة':x.f+' ف'}</td><td class="num"><b>${o.fx==null?'—':o.fx+' ف'}</b></td><td>${o.r.map(k=>`<span class="frb" title="${esc(FR_D[k])}">${FR_T[k]}</span>`).join(' ')}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted" style="margin:4px 0">كل شهور التحليل سليمة · لم يلزم أي تصحيح</p>'}`}
  else if(!v.sat)h+='<p class="muted" style="margin:4px 0">لا يوجد تحليل قمر صناعي لهذه المطالبة · المساحة من متوسط قسم المتغيرات</p>';
  const P=satPoly(v.rid),cf=fedOf(r);if(P&&cf){const pf=satFed(polyM2(P));const d=Math.abs(pf-cf)/Math.min(pf,cf);if(d>0.05)h+=`<div class="note warn" style="margin:8px 0 0">مساحة حدود الأرض المرفوعة (${pf.toFixed(2)} ف) تختلف عن مساحة الطلب (${cf.toFixed(2)} ف) بنسبة ${Math.round(d*100)}% · راجع ملف الإحداثيات قبل الإصدار</div>`}
@@ -5943,7 +5946,7 @@ async function vrClaimOk(rid){const v=vrs()[rid];if(!v||!canIssue())return toast
  let led=null;if(SEAL_ON()){try{const x=await clRpc('claim_issue',{p_rid:+rid,p_cno:cno,p_ver:ver,p_amt:amt,p_vc:C.vc,p_seals:v.sat.seals,p_calc:{q:C.q,from:C.from,to:C.to,basis:v.basis,bsrc:basisDate(v).src,bdate:basisDate(v).src==='man'?basisDate(v).d:null,bref:basisDate(v).ref||null,rows:C.rows.map(o=>({a:o.a,b:o.b,ar:o.ar,d:o.d,rate:o.rate,amt:o.amt}))}});led={id:x.id,h:x.h,at:x.at,ver}}
   catch(e){if(b){b.disabled=false;b.textContent='إنهاء المطالبة وإرسال إشعار واتساب'}return toast('⛔ لم تصدر المطالبة: '+ledErr(e))}}
  C.led=led;C.seals=(v.sat.seals||[]).slice();C.ver=ver;v.snap.ph=ph;
- Object.assign(v,{st:'pay',amt:+amt.toFixed(2),clm:C,cnt:($('#vr-cnt').value||'').trim(),cno,ver,led,cby:me().n,cat_at:new Date().toISOString()});
+ Object.assign(v,{st:'pay',fairv:2,amt:+amt.toFixed(2),clm:C,cnt:($('#vr-cnt').value||'').trim(),cno,ver,led,cby:me().n,cat_at:new Date().toISOString()});
  vrLog(v,`إصدار المطالبة المالية ${cno}${ver>1?' (النسخة '+ver+')':''} بقيمة ${vrMoney(v.amt)} · ${led?'مسجلة في السجل الثابت ببصمة '+led.h.slice(0,12):'وضع محلي بدون سجل ثابت'} · في انتظار السداد`);
  vrNotify(v,'claim');vrSave(v,'مطالبة مالية');vrClose();toast('✓ صدرت المطالبة '+cno+(led?' · مختومة في السجل الثابت':'')+' وأُرسل إشعار واتساب');CLT='pay';rerender()}
 async function ledPaid(v,note){if(!SEAL_ON()||!v.led)return;try{const x=await clRpc('claim_mark_paid',{p_rid:+v.rid,p_cno:v.cno,p_ver:v.ver||1,p_amt:v.amt,p_note:note||''});if(x&&x.match===false)vrLog(v,'⚠ المبلغ المسدد لا يطابق المسجل في السجل الثابت')}catch(e){vrLog(v,'تعذر تسجيل السداد في السجل الثابت: '+ledErr(e));vrSave(v,'سجل')}}
@@ -9093,7 +9096,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.23-0147';
+const APP_VER='2026.11.23-0214';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

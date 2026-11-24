@@ -8880,21 +8880,30 @@ const vxErr=e=>{const m=String(e&&e.message||e||'');return m==='forbidden'?'ال
 
 /* ---------- ① قبل/بعد ---------- */
 const vxMerc=(lo,la)=>[lo*Math.PI/180,Math.log(Math.tan(Math.PI/4+la*Math.PI/360))];
-async function vxImg(P,m){let last;for(let k=0;k<3;k++){const mm=k?vxMonths(addDays(m+'-01',-31*k).slice(0,7),m)[0]:m;if(mm<'2015-07')break;try{const r=await vxCall({poly:P,img:mm,w:1400},1);const bl=await r.blob();const H=n=>r.headers.get(n)||'';const bb=H('x-img-bbox').split(',').map(Number);
+async function vxImg(P,m,thr){let last;for(let k=0;k<3;k++){const mm=k?vxMonths(addDays(m+'-01',-31*k).slice(0,7),m)[0]:m;if(mm<'2015-07')break;try{const r=await vxCall({poly:P,img:mm,w:1400},1);const bl=await r.blob();const H=n=>r.headers.get(n)||'';const bb=H('x-img-bbox').split(',').map(Number);
   const u=URL.createObjectURL(bl);try{const im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=u});const W=1040,Hh=780,c=document.createElement('canvas');c.width=W;c.height=Hh;const x=c.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(im,0,0,W,Hh);
    if(bb.length===4&&bb.every(isFinite)){const [x0,y0]=vxMerc(bb[0],bb[1]),[x1,y1]=vxMerc(bb[2],bb[3]);const pt=q=>{const [X,Y]=vxMerc(q[1],q[0]);return [(X-x0)/(x1-x0)*W,(y1-Y)/(y1-y0)*Hh]};const path=()=>{x.beginPath();P.forEach((q,i)=>{const [a,b]=pt(q);i?x.lineTo(a,b):x.moveTo(a,b)});x.closePath()};
+    /* تهشير أخضر على الزراعات داخل حدود الأرض (قناع NDVI لنفس المشهد بدقة 10 م) */
+    try{const mr=await vxCall({poly:P,img:mm,mask:1,thr:thr||0.2},1);const mb=await mr.blob();const mu=URL.createObjectURL(mb);try{const mi=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=mu});
+      const L=document.createElement('canvas');L.width=W;L.height=Hh;const xl=L.getContext('2d');xl.imageSmoothingEnabled=false;xl.drawImage(mi,0,0,W,Hh);
+      {const id=xl.getImageData(0,0,W,Hh),D=id.data;for(let i=0;i<D.length;i+=4){D[i+3]=D[i]>127?255:0}xl.putImageData(id,0,0)}
+      const pc=document.createElement('canvas');pc.width=pc.height=12;const pg=pc.getContext('2d');pg.fillStyle='rgba(34,170,76,.30)';pg.fillRect(0,0,12,12);pg.strokeStyle='#19a64a';pg.lineWidth=2.4;pg.beginPath();pg.moveTo(-3,3);pg.lineTo(3,-3);pg.moveTo(0,12);pg.lineTo(12,0);pg.moveTo(9,15);pg.lineTo(15,9);pg.stroke();
+      xl.globalCompositeOperation='source-in';xl.fillStyle=xl.createPattern(pc,'repeat');xl.fillRect(0,0,W,Hh);
+      x.save();path();x.clip();x.drawImage(L,0,0);x.restore();
+      x.font='700 17px Cairo,sans-serif';x.textBaseline='middle';const lg='زراعة داخل حدود الأرض';const lw=x.measureText(lg).width;x.fillStyle='rgba(255,255,255,.88)';x.fillRect(W-lw-62,12,lw+50,32);x.fillStyle=x.createPattern(pc,'repeat');x.fillRect(W-38,18,20,20);x.strokeStyle='#19a64a';x.lineWidth=1.5;x.strokeRect(W-38,18,20,20);x.fillStyle='#0f3d22';x.textAlign='right';x.fillText(lg,W-46,28);x.textAlign='start';
+     }finally{URL.revokeObjectURL(mu)}}catch(_e){console.warn('vx mask',_e)}
     x.lineJoin='round';path();x.strokeStyle='rgba(0,0,0,.6)';x.lineWidth=6;x.stroke();path();x.strokeStyle='#ffd54a';x.lineWidth=2.6;x.setLineDash([12,6]);x.stroke();x.setLineDash([])}
    const d=H('x-img-date')||mm,cc=H('x-img-cloud');const lab=`Sentinel-2 ${H('x-img-coll')||''} · ${d}${cc!==''?' · cloud '+cc+'%':''}`;x.font='600 19px "IBM Plex Mono",monospace';const tw=x.measureText(lab).width;x.fillStyle='rgba(0,0,0,.62)';x.fillRect(10,Hh-40,tw+20,30);x.fillStyle='#fff';x.textBaseline='middle';x.fillText(lab,20,Hh-25);
-   return {m:mm,d,cc,u:c.toDataURL('image/jpeg',0.8)}}finally{URL.revokeObjectURL(u)}}catch(e){last=e;if(/forbidden|bad_poly|poly_too_big/.test(String(e.message)))break}}throw last||new Error('no_img')}
+   return {m:mm,d,cc,h:1,u:c.toDataURL('image/jpeg',0.82)}}finally{URL.revokeObjectURL(u)}}catch(e){last=e;if(/forbidden|bad_poly|poly_too_big/.test(String(e.message)))break}}throw last||new Error('no_img')}
 function vxArea(v,m){const M=(v.sat&&v.sat.months)||[];const x=M.find(q=>(q.m||q.d||'').slice(0,7)===m);return x&&x.f!=null?x.f:null}
 async function vxBA(rid){const v=vrs()[rid];if(!v)return;const P=vxPoly(v);if(!P)return toast('لا توجد حدود أرض أو إحداثيات للطلب');const {fr,to}=vxPer(v);if(!fr)return toast('حدد بداية الفترة أولاً (أو شغّل التحليل المختوم)');
  if(VX.run[rid])return;VX.run[rid]='ba';VR_BUSY.add(+rid);vxPaint(rid,'جارٍ تحميل صورتي قبل وبعد بأقصى وضوح…');
- try{const [a,b]=await Promise.all([vxImg(P,fr.slice(0,7)),vxImg(P,to.slice(0,7))]);const V=vrs()[rid]||v;V.ba={fr,to,a,b,at:new Date().toISOString(),by:me().n};vrLog&&vrLog(V,`مقارنة قبل/بعد بالقمر الصناعي: ${a.d} ← ${b.d}`);vrSave(V,'مقارنة قبل/بعد');toast('✓ تمت مقارنة قبل/بعد')}
+ try{const th_=Math.max(0.15,(v.sat&&v.sat.thr)||0.2);const [a,b]=await Promise.all([vxImg(P,fr.slice(0,7),th_),vxImg(P,to.slice(0,7),th_)]);const V=vrs()[rid]||v;V.ba={fr,to,a,b,at:new Date().toISOString(),by:me().n};vrLog&&vrLog(V,`مقارنة قبل/بعد بالقمر الصناعي: ${a.d} ← ${b.d}`);vrSave(V,'مقارنة قبل/بعد');toast('✓ تمت مقارنة قبل/بعد')}
  catch(e){toast('تعذر تحميل الصور · '+vxErr(e))}finally{delete VX.run[rid];VR_BUSY.delete(+rid);vxPaint(rid)}}
 function vxBAView(v,pr){const B=v.ba;if(!B)return '';const fa=vxArea(v,B.a.m),fb=vxArea(v,B.b.m);
  if(pr)return `<div class="vxpair"><figure><img src="${B.a.u}" alt=""><figcaption><b>قبل · ${fD(B.a.d)}</b>${fa!=null?' · منزرع '+vrFed(fa):''}</figcaption></figure><figure><img src="${B.b.u}" alt=""><figcaption><b>بعد · ${fD(B.b.d)}</b>${fb!=null?' · منزرع '+vrFed(fb):''}</figcaption></figure></div>`;
  return `<div class="vxba" style="--p:50%"><img src="${B.b.u}" alt="بعد ${esc(B.b.d)}"><div class="vxa"><img src="${B.a.u}" alt="قبل ${esc(B.a.d)}"></div><i class="vxh"></i><span class="vxl vxla">قبل · ${fD(B.a.d)}</span><span class="vxl vxlb">بعد · ${fD(B.b.d)}</span><input type="range" min="0" max="100" value="50" dir="ltr" class="vxr" aria-label="اسحب للمقارنة بين قبل وبعد"></div>
- <div class="vxcap">${fa!=null||fb!=null?`المساحة المنزرعة من التحليل المختوم: قبل <b>${fa!=null?vrFed(fa):'—'}</b> · بعد <b>${fb!=null?vrFed(fb):'—'}</b> · `:''}الخط الأصفر المتقطع = حدود الأرض · اسحب الشريط للمقارنة</div>`}
+ <div class="vxcap">${fa!=null||fb!=null?`المساحة المنزرعة من التحليل المختوم: قبل <b>${fa!=null?vrFed(fa):'—'}</b> · بعد <b>${fb!=null?vrFed(fb):'—'}</b> · `:''}الخط الأصفر المتقطع = حدود الأرض${B.a.h?' · التهشير الأخضر = الزراعة':''} · اسحب الشريط للمقارنة${!B.a.h?' · <b style="color:#b56e12">اضغط «↻ إعادة» لإضافة التهشير الأخضر على الزراعات</b>':''}</div>`}
 
 /* ---------- ② الاستهلاك الفعلي للمياه ---------- */
 async function vxWU(rid){const v=vrs()[rid];if(!v)return;const P=vxPoly(v);if(!P)return toast('لا توجد حدود أرض للطلب');const {fr,to}=vxPer(v);if(!fr)return toast('حدد بداية الفترة أولاً');if(fr<'2013-05-01')return;
@@ -8959,7 +8968,7 @@ function vxPage1(v,parts,pn,pt,all){const {fr,to}=vxPer(v);const s=v.snap;
  return `<div class="a4 dcrep vxrep" dir="rtl"><div class="dcband"></div><div class="dch"><div class="dco"><b>وزارة الموارد المائية والري</b><span>قطاع المياه الجوفية</span><span>الإدارة العامة للمياه الجوفية بالخارجة ودرب الأربعين</span></div><div class="dclogo"><img src="${LOGO}" alt=""></div></div>
  <div class="dct"><h1>${all.length===1&&all[0]==='ba'?'مرفق المطالبة · صور القمر الصناعي قبل وبعد':'تقرير أدلة الأقمار الصناعية الإضافية'}</h1></div>
  <div class="dcg"><div class="dci"><span>صاحب الشأن</span><b>${esc(s.name)}</b></div><div class="dci"><span>رقم الطلب · الملف</span><b class="num">م ${v.rid}${s.file?' · '+esc(s.file):''}</b></div><div class="dci"><span>المنطقة</span><b>${esc(s.city||'')}</b></div><div class="dci"><span>مساحة الأرض بالطلب</span><b class="num">${vrFed(s.fed)}</b></div>${pn===1?`<div class="dci"><span>بداية الفترة</span><b>${fr?fD(fr):'—'}</b></div><div class="dci"><span>نهاية الفترة</span><b>${fD(to)}</b></div><div class="dci"><span>متوسط المنزرع (مختوم)</span><b class="num">${v.sat&&v.sat.avg!=null?vrFed(v.sat.avg):'—'}</b></div><div class="dci"><span>تاريخ التقرير</span><b>${fD(todayISO())}</b></div>`:''}</div>
- ${parts.includes('ba')&&v.ba?`<div class="dcsec"><h3>مقارنة قبل / بعد <small>Sentinel-2 · الخط الأصفر = حدود الأرض</small></h3>${vxBAView(v,1)}</div>`:''}
+ ${parts.includes('ba')&&v.ba?`<div class="dcsec"><h3>مقارنة قبل / بعد <small>Sentinel-2 · الخط الأصفر = حدود الأرض${v.ba&&v.ba.a.h?' · التهشير الأخضر = الزراعة':''}</small></h3>${vxBAView(v,1)}</div>`:''}
  ${parts.includes('wu')&&v.wu?`<div class="dcsec"><h3>الاستهلاك الفعلي للمياه <small>${fD(v.wu.fr)} ← ${fD(v.wu.to)}</small></h3>${vxWUView(v,1)}</div>`:''}
  ${parts.includes('th')&&v.th?`<div class="dcsec"><h3>كشف تشغيل البئر حرارياً <small>${fD(v.th.fr)} ← ${fD(v.th.to)}</small></h3>${vxTHView(v)}</div>`:''}
  <div class="dcft" style="margin-top:auto"><span>أدلة الأقمار الصناعية · م ${v.rid}${pt>1?' · صفحة '+pn+' / '+pt:''}</span><span>جميع الحقوق محفوظة للمصمم والمطور - م/ أسامه حسن بدري - 01145060007</span></div></div>`}
@@ -9101,7 +9110,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.23-2348';
+const APP_VER='2026.11.24-0800';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

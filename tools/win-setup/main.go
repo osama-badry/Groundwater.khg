@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
+	"time"
 	"unicode/utf16"
 	"unsafe"
 )
@@ -21,7 +22,7 @@ import (
 const (
 	appName = "منظومة تراخيص الآبار بالخارجة"
 	appURL  = "https://osama-badry.github.io/Groundwater.khg/"
-	appVer  = "1.2.0"
+	appVer  = "1.3.0"
 	regKey  = `HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\WellsKharga`
 	sig     = "جميع الحقوق محفوظة للمصمم والمطور - م/ أسامه حسن بدري - 01145060007"
 	exeName = "WellsKharga.exe"
@@ -245,7 +246,12 @@ func urlFile(path, target, ico string) error {
 
 // بيجرّب 3 طرق بالترتيب؛ بيرجع true لو اتعمل
 func makeOne(path, target, dir, ico string) bool {
+	if comLnk(path, target, dir, ico, "") == nil && exists(path) {
+		logf("shortcut com ok " + path)
+		return true
+	}
 	if writeLnk(path, target, dir, ico) == nil {
+		logf("shortcut raw " + path)
 		return true
 	}
 	os.Remove(path + ".tmp")
@@ -343,6 +349,7 @@ func install() {
 	regSet("NoModify", "REG_DWORD", "1")
 	regSet("NoRepair", "REG_DWORD", "1")
 	desk, start := makeShortcuts(true)
+	os.WriteFile(filepath.Join(dir, "sc-ver"), []byte(appVer), 0644)
 	if desk || start {
 		where := "• أيقونة على سطح المكتب وفي قائمة ابدأ"
 		if !desk {
@@ -382,6 +389,15 @@ func findBrowser() string {
 	return ""
 }
 
+func logf(s string) {
+	f, err := os.OpenFile(filepath.Join(installDir(), "launcher.log"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+	f.WriteString(time.Now().Format("2006-01-02 15:04:05") + " " + s + "\r\n")
+}
+
 func launch() {
 	dir := installDir()
 	br := findBrowser()
@@ -394,7 +410,9 @@ func launch() {
 	os.MkdirAll(prof, 0755)
 	c := exec.Command(br, "--app="+appURL, "--user-data-dir="+prof, "--no-first-run", "--no-default-browser-check",
 		"--disable-features=Translate", "--lang=ar", "--start-maximized")
+	logf("launch " + br)
 	if err := c.Start(); err != nil {
+		logf("launch error " + err.Error())
 		msg("تعذر تشغيل المنظومة:\n"+err.Error(), 0x10)
 	}
 }
@@ -416,15 +434,33 @@ func main() {
 		}
 	}
 	self, _ := os.Executable()
+	if r, err := filepath.EvalSymlinks(self); err == nil {
+		self = r
+	}
 	dst := filepath.Join(installDir(), exeName)
-	if !strings.EqualFold(filepath.Clean(self), filepath.Clean(dst)) {
+	logf("start " + self + " " + strings.Join(os.Args[1:], " "))
+	same := strings.EqualFold(filepath.Clean(self), filepath.Clean(dst))
+	if !same {
+		if a, e1 := os.Stat(self); e1 == nil {
+			if b, e2 := os.Stat(dst); e2 == nil {
+				same = os.SameFile(a, b)
+			}
+		}
+	}
+	if !same {
 		install()
 	} else {
 		os.Remove(dst + ".old")
 		if !exists(filepath.Join(installDir(), "app.ico")) {
 			os.WriteFile(filepath.Join(installDir(), "app.ico"), icoData, 0644)
 		}
-		makeShortcuts(false) // تصليح ذاتي: لو الاختصار اتمسح أو ماتعملش وقت التثبيت
+		mk := filepath.Join(installDir(), "sc-ver")
+		if b, _ := os.ReadFile(mk); string(b) != appVer {
+			makeShortcuts(true) // نسخة جديدة: إعادة بناء الاختصارات بالطريقة الرسمية
+			os.WriteFile(mk, []byte(appVer), 0644)
+		} else {
+			makeShortcuts(false) // تصليح ذاتي: لو الاختصار اتمسح أو ماتعملش وقت التثبيت
+		}
 	}
 	launch()
 }

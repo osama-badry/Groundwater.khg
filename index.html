@@ -6604,11 +6604,15 @@ function gwRegs(){const c={};WB.forEach(o=>{if(o.la!=null&&o.reg)c[o.reg]=(c[o.r
 function gwBox(){const P=WB.filter(o=>o.la!=null&&inNV(o.la,o.lo)&&(GW.reg==='all'||o.reg===GW.reg));if(!P.length)return null;const la=P.map(o=>o.la).sort((a,b)=>a-b),lo=P.map(o=>o.lo).sort((a,b)=>a-b);const q=Math.floor(P.length*.01);let b={la0:la[q],la1:la[la.length-1-q],lo0:lo[q],lo1:lo[lo.length-1-q]};const m=Math.max(.03,(b.la1-b.la0)*.08);b.la0-=m;b.la1+=m;b.lo0-=m;b.lo1+=m;return b}
 function gwGrid(){const key=GW.k+'|'+GW.reg+'|'+WB.length;if(GW.cache[key])return GW.cache[key];const D=GW_L[GW.k];const B=gwBox();if(!B)return null;const pts=D.get().filter(p=>p.la>=B.la0-.15&&p.la<=B.la1+.15&&p.lo>=B.lo0-.15&&p.lo<=B.lo1+.15);if(pts.length<(D.dens?5:4))return null;
  const kx=Math.cos((B.la0+B.la1)/2*Math.PI/180);const W=150,H=Math.max(40,Math.min(220,Math.round(W*(B.la1-B.la0)/((B.lo1-B.lo0)*kx))));const z=new Float32Array(W*H);const KM=111.32;
- const mask=D.dens?3:7,rad=D.dens?2:12;for(let j=0;j<H;j++){const la=B.la1-(j+.5)*(B.la1-B.la0)/H;for(let i=0;i<W;i++){const lo=B.lo0+(i+.5)*(B.lo1-B.lo0)/W;let sw=0,sv=0,dn=1e9,cnt=0;
-  for(const p of pts){const dy=(p.la-la)*KM,dx=(p.lo-lo)*KM*kx;const d2=dx*dx+dy*dy;if(d2<dn)dn=d2;if(d2>rad*rad)continue;if(D.dens){cnt++;continue}const w=1/(d2+0.4);sw+=w;sv+=w*p.v}
+ const mask=D.dens?3:7,rad=D.dens?2:12;
+ /* فهرس مكاني بمربعات (بدل حساب المسافة لكل بئر عند كل خلية: كان 145 مليون عملية ≈ ثانيتين على الموبايل) */
+ const cs=Math.max(rad,mask),BK=new Map();const PX=new Float64Array(pts.length),PY=new Float64Array(pts.length);pts.forEach((p,q)=>{const x=(p.lo-B.lo0)*KM*kx,y=(B.la1-p.la)*KM;PX[q]=x;PY[q]=y;const k=Math.floor(x/cs)+','+Math.floor(y/cs);let L=BK.get(k);if(!L)BK.set(k,L=[]);L.push(q)});
+ const dW=(B.lo1-B.lo0)*KM*kx/W,dH=(B.la1-B.la0)*KM/H;
+ for(let j=0;j<H;j++){const y=(j+.5)*dH,iy=Math.floor(y/cs);for(let i=0;i<W;i++){const x=(i+.5)*dW,ix=Math.floor(x/cs);let sw=0,sv=0,dn=1e9,cnt=0;
+  for(let a2=ix-1;a2<=ix+1;a2++)for(let b2=iy-1;b2<=iy+1;b2++){const L=BK.get(a2+','+b2);if(!L)continue;for(const q of L){const dx=PX[q]-x,dy=PY[q]-y;const d2=dx*dx+dy*dy;if(d2<dn)dn=d2;if(d2>rad*rad)continue;if(D.dens){cnt++;continue}const w=1/(d2+0.4);sw+=w;sv+=w*pts[q].v}}
   z[j*W+i]=Math.sqrt(dn)>mask?NaN:D.dens?cnt/(Math.PI*rad*rad):(sw?sv/sw:NaN)}}
  const V=[...z].filter(isFinite).sort((a,b)=>a-b);if(!V.length)return null;const lo_=V[Math.floor(V.length*.02)],hi_=V[Math.floor(V.length*.98)];const G={B,W,H,z,pts,min:V[0],max:V[V.length-1],lo:lo_,hi:hi_===lo_?lo_+1:hi_,med:V[Math.floor(V.length/2)],p75:V[Math.floor(V.length*.75)],kx};
- const raw=(G.hi-G.lo)/7,mg=Math.pow(10,Math.floor(Math.log10(raw)));const st=[1,2,2.5,5,10].map(x=>x*mg).find(x=>x>=raw)||raw;G.step=st;G.levels=[];for(let v=Math.ceil(G.lo/st)*st;v<=G.hi;v+=st)G.levels.push(+v.toFixed(6));GW.cache={[key]:G};return G}
+ const raw=(G.hi-G.lo)/7,mg=Math.pow(10,Math.floor(Math.log10(raw)));const st=[1,2,2.5,5,10].map(x=>x*mg).find(x=>x>=raw)||raw;G.step=st;G.levels=[];for(let v=Math.ceil(G.lo/st)*st;v<=G.hi;v+=st)G.levels.push(+v.toFixed(6));GW.cache[key]=G;{const ks=Object.keys(GW.cache);if(ks.length>12)delete GW.cache[ks[0]]}return G}
 function gwContours(G){const out=[];const at=(i,j)=>G.z[j*G.W+i];const X=i=>G.B.lo0+(i+.5)*(G.B.lo1-G.B.lo0)/G.W,Y=j=>G.B.la1-(j+.5)*(G.B.la1-G.B.la0)/G.H;
  G.levels.forEach(v=>{const L=[];for(let j=0;j<G.H-1;j++)for(let i=0;i<G.W-1;i++){const a=at(i,j),b=at(i+1,j),c=at(i+1,j+1),d=at(i,j+1);if(!isFinite(a)||!isFinite(b)||!isFinite(c)||!isFinite(d))continue;const idx=(a>v?8:0)|(b>v?4:0)|(c>v?2:0)|(d>v?1:0);if(idx===0||idx===15)continue;
   const lp=(p,q,x1,y1,x2,y2)=>{const t=(v-p)/(q-p);return [Y(y1)+(Y(y2)-Y(y1))*t,X(x1)+(X(x2)-X(x1))*t]};const T=lp(a,b,i,j,i+1,j),Rr=lp(b,c,i+1,j,i+1,j+1),Bt=lp(d,c,i,j+1,i+1,j+1),Lf=lp(a,d,i,j,i,j+1);
@@ -9663,7 +9667,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.27-0151';
+const APP_VER='2026.11.27-0152';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */

@@ -1998,7 +1998,7 @@ const ORG='الإدارة العامة للمياه الجوفية بالخار�
 const KEY='wells-proto-v1';
 let S={mods:{},added:[],tpl:null,users:null,outbox:[],perm:null};
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S=Object.assign(S,s)}catch(e){}
-function save(){save._n=(save._n||0)+1;if(typeof enqueue==='function'&&BOOTED&&!save._q)enqueue('p:'+cur,PLBL[cur]||'إعدادات المنظومة','إعدادات');save._q=0;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){stFull()}clearTimeout(save._t);if(typeof autoBackup==='function')save._t=setTimeout(()=>autoBackup(false),4000)}
+function save(){save._n=(save._n||0)+1;if(typeof enqueue==='function'&&BOOTED&&!save._q)enqueue('p:'+cur,PLBL[cur]||'إعدادات المنظومة','إعدادات');save._q=0;saveRaw();clearTimeout(save._t);if(typeof autoBackup==='function')save._t=setTimeout(()=>autoBackup(false),4000)}
 const TPL=()=>{const t=S.tpl||(S.tpl=JSON.parse(JSON.stringify(TPL_DEFAULT)));for(const k in TPL_DEFAULT)if(!t[k])t[k]=JSON.parse(JSON.stringify(TPL_DEFAULT[k]));return t};
 const ROLES=['المطوّر','الأدمن','مهندس منظومة','قسم الدراسات','قسم التراخيص','مهندس التفتيش','الإدارة','مهندس المتغيرات','وكيل الإدارة'];
 const PERMS=['إضافة طلب','قبول/رفض المستندات','تسجيل نتيجة المطابقة','الإرسال للمعاينة','تسجيل تقرير المعاينة','إنهاء الطلب والتسليم','إرسال واتساب','التقارير','إدارة المستخدمين والأجهزة','تعديل بيانات الطلبات','عرض البيانات الشخصية (الرقم القومي والهاتف)'];
@@ -3487,7 +3487,11 @@ const DEVP=(async()=>{if(location.protocol==='file:'&&window.__DEVFIX)return DEV
 const DEVT=()=>/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)||innerWidth<700?'mobile':'pc';
 let SIMOFF=false,SCO=false,PAIR=null;
 const isOnline=()=>navigator.onLine!==false&&!SIMOFF;
-function saveRaw(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(_){stFull()}}
+/* حفظ الجهاز مجمّع: الكتابة الكاملة للتخزين المحلي كانت بتحصل مع كل ضغطة وكل مزامنة (~1.5MB كل مرة) → تقل
+   دلوقتي بتتجمع في كتابة واحدة بعد 700ms من آخر تغيير، وبتتكتب فوراً عند قفل/إخفاء التطبيق أو التحديث */
+function saveRaw(){saveRaw._p=1;if(saveRaw._t)return;saveRaw._t=setTimeout(saveRawNow,700)}
+function saveRawNow(){clearTimeout(saveRaw._t);saveRaw._t=0;if(!saveRaw._p)return;saveRaw._p=0;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(_){stFull()}}
+window.addEventListener('pagehide',()=>{try{saveRawNow()}catch(_){}});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')try{saveRawNow()}catch(_){}});window.addEventListener('beforeunload',()=>{try{saveRawNow()}catch(_){}});
 function stFull(){if(stFull._d)return;stFull._d=1;try{const a=snaps();if(a.length)localStorage.removeItem(BKEY)}catch(_){}try{(S.hist||[]).splice(15);localStorage.setItem(KEY,JSON.stringify(S));stFull._d=0;return}catch(_){}setTimeout(()=>toast('⚠ مساحة المتصفح على هذا الجهاز ممتلئة · التعديلات تُرسل للسحابة مباشرة، اتصل بالإنترنت ولا تمسح البيانات قبل المزامنة'),800)}
 function devs(){if(!S.devs){S.devs=[{id:'PC-LIC',n:'كمبيوتر مكتب التراخيص',t:'pc',u:'مهندس منظومة',last:Date.now()-36e5*2,ex:1},{id:'PC-STD',n:'كمبيوتر قسم الدراسات',t:'pc',u:'قسم الدراسات',last:Date.now()-864e5,ex:1},{id:'MB-FLD',n:'هاتف مهندس المعاينة',t:'mobile',u:'مهندس منظومة',last:Date.now()-36e5*5,ex:1}]}
  let me_=S.devs.find(d=>d.id===DEVID);if(!me_){me_={id:DEVID,n:DEVT()==='pc'?'هذا الكمبيوتر':'هذا الهاتف',t:DEVT(),u:'',last:0};S.devs.unshift(me_)}me_.u=me().n;me_.self=1;return S.devs}
@@ -4008,7 +4012,7 @@ async function clPull(quiet){if(!clActive()||!navigator.onLine||CL.busy)return;C
   const sf=await clJson('/rest/v1/staff?select=*');let pws=[];if(me().r===0){try{pws=await clJson('/rest/v1/staff_pw?select=id,p,at,self')}catch(_){try{pws=await clJson('/rest/v1/staff_pw?select=id,p')}catch(_){}}try{S.pwlog=await clJson('/rest/v1/staff_pw_log?select=uid,at,kind,ok,info&order=at.desc&limit=200')}catch(_){}}mergeStaff(sf||[],pws);
   if(me().r===5){try{const stt=await clRpc('req_states');const mp={};(stt||[]).forEach(x=>mp[x.id]=x);const before=R.length;R=R.filter(r=>{const x=mp[r.id];return !x||(x.stage===4&&x.status==='pending')||pendingKey('r'+r.id)});if(R.length!==before)n+=before-R.length}catch(_){}try{secApply()}catch(_){}}
   const mine=(sf||[]).find(s=>s.id===CL.uid);if(mine&&(!mine.active||(mine.role!==0&&mine.exp&&mine.exp<todayISO()))){toast('تم إيقاف حسابك أو انتهت صلاحيته من المطوّر');setTimeout(()=>$('#logoutBtn').click(),1800)}
-  CL.err='';CL.pullAt=Date.now();S.lastSync=Date.now();saveRaw();setTimeout(()=>{try{slaDaily()}catch(_){}},5000);if(n&&!quiet){toast('☁ تم استلام '+n+' تحديث من السحابة')}if(n||!quiet){if(quiet){bgDrawer();bgRender()}else{if(drawerOpen()&&openId)renderDrawer();rerender()}}}
+  CL.err='';CL.pullAt=Date.now();S.lastSync=Date.now();if(n)saveRaw();setTimeout(()=>{try{slaDaily()}catch(_){}},5000);if(n&&!quiet){toast('☁ تم استلام '+n+' تحديث من السحابة')}if(n||!quiet){if(quiet){bgDrawer();bgRender()}else{if(drawerOpen()&&openId)renderDrawer();rerender()}}}
  catch(e){CL.err=e.message||'تعذر الاتصال بالسحابة';if(e.status===401){CL.on=false}}finally{CL.busy=false;pill()}}
 /* ---------- push local → remote (called from flush) ---------- */
 const RHOLD={};
@@ -4615,7 +4619,7 @@ async function bkCloudStatus(){const el=$('#bkcl');if(!el)return;if(!clActive())
 /* ---------- الأمان: قفل تلقائي عند الخمول · حماية تسجيل الدخول · سياسة كلمات المرور ---------- */
 const IDLE_DEF=30;const idleMin=()=>{const v=S.org&&S.org.idle;return v==null?IDLE_DEF:+v};let IDLE_T=Date.now();
 ['pointerdown','keydown','touchstart','scroll'].forEach(ev=>document.addEventListener(ev,()=>{IDLE_T=Date.now()},{passive:true,capture:true}));
-setInterval(()=>{try{if(!BOOTED||!me()||($('#login')&&!$('#login').hidden))return;const m=idleMin();if(!m)return;if(Date.now()-IDLE_T>m*6e4){try{sessionStorage.removeItem('wl-k');sessionStorage.removeItem('wl-u');sessionStorage.setItem('wl-idle','1')}catch(_){}saveRaw();location.reload()}}catch(_){}},30000);
+setInterval(()=>{try{if(!BOOTED||!me()||($('#login')&&!$('#login').hidden))return;const m=idleMin();if(!m)return;if(Date.now()-IDLE_T>m*6e4){try{sessionStorage.removeItem('wl-k');sessionStorage.removeItem('wl-u');sessionStorage.setItem('wl-idle','1')}catch(_){}saveRaw();saveRawNow();location.reload()}}catch(_){}},30000);
 const LF_KEY='wl-lf';const lfGet=()=>{try{return JSON.parse(localStorage.getItem(LF_KEY)||'{}')}catch(_){return {}}};const lfSet=o=>{try{localStorage.setItem(LF_KEY,JSON.stringify(o))}catch(_){}};
 function lfLocked(){const o=lfGet();return o.until&&o.until>Date.now()?Math.ceil((o.until-Date.now())/6e4):0}
 function lfFail(){const o=lfGet();o.n=(o.n||0)+1;if(o.n>=5){o.k=(o.k||0)+1;o.until=Date.now()+Math.min(60,5*Math.pow(2,o.k-1))*6e4;o.n=0}lfSet(o)}
@@ -6941,6 +6945,8 @@ function fraudScan(){const A=R.filter(r=>r.status!=='rejected');const byN={};A.f
  return {dupN,same,frag}}
 let FR_C=null;const fraud=()=>FR_C&&FR_C.n===R.length?FR_C.v:(FR_C={n:R.length,v:fraudScan()}).v;
 const p75=k=>{const s=GW.k,g=GW.reg;GW.k=k;GW.reg='all';const x=gwGrid();GW.k=s;GW.reg=g;return x?x.p75:null};
+/* تجهيز شبكات المياه الجوفية في وقت فراغ الجهاز (بدل ما أول فتح لملف طلب يتأخر) · كل طبقة لوحدها */
+(()=>{const ric=window.requestIdleCallback||(f=>setTimeout(f,200));const keys=['swl','tds','dens'];let i=0;const step=()=>{if(i>=keys.length)return;if(!BOOTED||!WB||!WB.length){setTimeout(step,5000);return}ric(()=>{try{p75(keys[i])}catch(_){}i++;setTimeout(step,1500)},{timeout:20000})};setTimeout(step,12000)})();
 let MT_C=null;const mtAll=()=>MT_C||(MT_C=MON.filter(m=>m.lat).map(m=>({m,k:mkTest(m.v||[])})).filter(x=>x.k));
 function riskOf(r){const p=reqPt(r);const F=[];let s=0;const add=(v,t)=>{s+=v;F.push([v,t])};if(!p)return {s:0,F:[['0','لا توجد إحداثيات']],lv:null};
  if(reqZone(r)==='in')add(25,'داخل منطقة الحظر المائي');
@@ -9084,7 +9090,7 @@ function mcTables(root){if(!MCQ.matches)return;(root||document).querySelectorAll
  const H=[...th.cells];if(H.length<3||H.length>12||t.tHead.rows.length>1||t.querySelector('td[rowspan],th[rowspan]')){t.dataset.mcx=1;return}
  const L=H.map(c=>(c.textContent||'').replace(/\s+/g,' ').trim());t.classList.add('mct');
  [...t.tBodies].forEach(b=>[...b.rows].forEach(r=>{let k=0;[...r.cells].forEach(c=>{const sp=c.colSpan||1;if(sp>1||r.cells.length===1)c.classList.add('mcfull');else c.setAttribute('data-l',L[k]||'');k+=sp})}))})}
-(()=>{let q=0;const run=()=>{q=0;try{mcTables()}catch(e){console.warn('mct',e)}};const mo=new MutationObserver(()=>{if(!q&&MCQ.matches)q=requestAnimationFrame(run)});
+(()=>{let q=0;const run=()=>{q=0;try{mcTables()}catch(e){console.warn('mct',e)}};const mo=new MutationObserver(ms=>{if(q||!MCQ.matches)return;for(const m of ms){if(m.target&&m.target.closest&&m.target.closest('.leaflet-container'))continue;for(const n of m.addedNodes){if(n.nodeType===1&&(n.tagName==='TABLE'||(n.firstElementChild&&n.querySelector('table')))){q=requestAnimationFrame(run);return}}}});
  const start=()=>{mo.observe(document.body,{childList:true,subtree:true});run()};document.readyState==='loading'?document.addEventListener('DOMContentLoaded',start):start();
  MCQ.addEventListener&&MCQ.addEventListener('change',()=>{if(MCQ.matches)run();else document.querySelectorAll('table.mct').forEach(t=>t.classList.remove('mct'))})})();
 document.addEventListener('click',ev=>{const p=ev.target.closest&&ev.target.closest('.ph p');if(p&&MCQ.matches&&!ev.target.closest('a,button'))p.classList.toggle('open')});
@@ -9564,6 +9570,23 @@ function ifEsCard(o){const H=IFH[o.id]||{};const me_=String(me().u||'').toLowerC
  return `<div class="card"><h3>✍ التوقيعات الإلكترونية</h3>${rows.join('')}<small class="muted">التوقيع مربوط بمحتوى المستند: أي تعديل بعد التوقيع بيلغيه تلقائياً · ربط المدير العام والشئون القانونية بحساباتهم من الإعدادات ← بيانات الاعتماد والتوقيعات</small></div>`}
 document.addEventListener('click',e=>{const el=e.target&&e.target.closest&&e.target.closest('[data-ifes]');if(!el)return;const [id,pos,rq]=el.dataset.ifes.split('|');el.disabled=true;el.textContent='⏳ جارٍ التوقيع…';ifEsign(id,pos,rq==='1')});
 
+/* =====================================================================
+   📈 مراقب الأداء الصامت: بيقيس التقل الحقيقي على أجهزة المستخدمين (أبطأ العمليات + المهام الطويلة)
+   وبيبعت ملخص صغير للسيرفر كل 3 دقايق (جدول perf_log) عشان التشخيص يبقى من غير ما المستخدم يبعت حاجة
+   جميع الحقوق محفوظة للمصمم والمطور - م/ أسامه حسن بدري - 01145060007
+   ===================================================================== */
+(()=>{const P={f:{},lt:{n:0,ms:0,max:0,by:{}},cur:[],t0:Date.now()};window.__perf=P;
+ const wrap=n=>{const f=window[n];if(typeof f!=='function'||f.__pw)return;const w=function(){P.cur.push(n);const a=performance.now();let r;try{r=f.apply(this,arguments)}finally{const d=performance.now()-a;P.cur.pop();const x=P.f[n]||(P.f[n]={n:0,ms:0,max:0});x.n++;x.ms+=d;if(d>x.max)x.max=d}
+   if(r&&typeof r.then==='function'){const a2=performance.now();r.then(()=>{const d=performance.now()-a2;const x=P.f[n+'~']||(P.f[n+'~']={n:0,ms:0,max:0});x.n++;x.ms+=d;if(d>x.max)x.max=d},()=>{})}return r};w.__pw=1;try{window[n]=w}catch(_){}};
+ const start=()=>{['rerender','renderDrawer','go','openDetail','renderWell','saveRawNow','clPull','mcTables','prShow','ifShow','docCheck','flush','vrReview','clmPrint','admbRefresh','ifIdx','gwGrid','imLayers'].forEach(wrap);
+  try{new PerformanceObserver(l=>l.getEntries().forEach(e=>{P.lt.n++;P.lt.ms+=e.duration;if(e.duration>P.lt.max)P.lt.max=e.duration;const k=P.cur[P.cur.length-1]||(typeof cur!=='undefined'?'page:'+cur:'?');P.lt.by[k]=(P.lt.by[k]||0)+Math.round(e.duration)})).observe({entryTypes:['longtask']})}catch(_){}};
+ setTimeout(start,3000);
+ const send=()=>{try{if(!BOOTED||!clActive()||!navigator.onLine)return;const top=Object.entries(P.f).filter(([k,x])=>x.ms>30||x.max>80).sort((a,b)=>b[1].ms-a[1].ms).slice(0,14).map(([k,x])=>[k,x.n,Math.round(x.ms),Math.round(x.max)]);
+  if(!top.length&&P.lt.n<3){return}let ls=0;try{ls=(localStorage.getItem(KEY)||'').length}catch(_){}
+  const d={min:Math.round((Date.now()-P.t0)/6e4),lt:[P.lt.n,Math.round(P.lt.ms),Math.round(P.lt.max)],ltBy:Object.entries(P.lt.by).sort((a,b)=>b[1]-a[1]).slice(0,8),top,ls,R:R.length,WB:WB.length,page:typeof cur!=='undefined'?cur:'',mem:performance.memory?Math.round(performance.memory.usedJSHeapSize/1e6):null,cores:navigator.hardwareConcurrency||null,dm:navigator.deviceMemory||null};
+  clRpc('perf_put',{p_ver:APP_VER,p_dev:(typeof uaShort==='function'?uaShort():navigator.userAgent).slice(0,80),p_data:d}).catch(()=>{});P.f={};P.lt={n:0,ms:0,max:0,by:{}};P.t0=Date.now()}catch(_){}};
+ setInterval(send,180000);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')send()})})();
+
 /* بطاقة داخل ملف الطلب */
 function vrCard(r){const v=vrs()[r.id];if(v)return `<div class="card vrcard"><h3>المتغيرات المكانية والمطالبة المالية ${vrStPill(v)}<button class="btn sm ghost" data-vrinfo="${r.id}" style="margin-inline-start:auto">السجل</button></h3>${vrSteps(v)}${v.from?`<div class="kv"><div><span>فترة المتغيرات</span><b>${fD(v.from)} ← ${fD(v.to)}</b></div><div><span>متوسط المساحة</span><b class="num">${vrFed(v.area)}</b></div>${v.amt?`<div><span>المطالبة <bdi dir="ltr">${esc(v.cno||'')}</bdi></span><b class="num">${vrMoney(v.amt)}</b></div>`:''}</div>`:''}${v.clm?`<div style="margin-top:8px"><button class="btn sm ghost" data-clmpr="${r.id}">🖨 المطالبة المالية</button></div>`:''}${v.rcpt?`<div style="margin-top:8px">${rcBtns(v)}</div>`:''}${canVrBack(v)?`<div style="margin-top:8px"><button class="btn sm ghost" data-vrback="${r.id}">↩ إعادة لقسم المتغيرات لإعادة الاحتساب</button></div>`:''}<div class="muted" style="font-size:12px;margin-top:6px">مسار موازٍ لا يوقف إجراءات الطلب في منظومة التراخيص · يلزم السداد قبل عرض الملف على اللجنة العليا.</div></div>`;
  if(r.stage>=2&&r.status!=='rejected'&&canSendVar())return `<div class="card vrcard"><h3>المتغيرات المكانية</h3><div class="filters"><span class="muted" style="font-size:13px">لم تُرسل نسخة من هذا الطلب لقسم المتغيرات.</span><button class="btn sm pri" data-vrnew="${r.id}" style="margin-inline-start:auto">إرسال نسخة لقسم المتغيرات</button></div></div>`;return ''}
@@ -9623,7 +9646,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.27-0043';
+const APP_VER='2026.11.27-0056';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */
@@ -9656,7 +9679,7 @@ const updBusy=()=>{const m=$('#modal'),p=$('#print');return busyIn('#page')||bus
 function updBar(){if(!UPD_READY&&updBusy()){if(!updBar._w){updBar._w=1;toast('⟳ يوجد تحديث جديد للمنظومة · سيُطبق تلقائياً بعد حفظ ما تكتبه')}clearTimeout(updBar._t);updBar._t=setTimeout(updBar,5000);return}if(UPD_READY)return;UPD_READY=true;try{saveRaw()}catch(_){}let b=$('#updbar');if(!b){b=document.createElement('div');b.id='updbar';b.className='updforce';document.body.appendChild(b)}
  let n=8;const draw=()=>{b.innerHTML=`<div class="updbox"><img src="${LOGO_S}" alt=""><h3>تحديث إلزامي للمنظومة</h3><p>صدر تحديث جديد مهم. سيتم تطبيقه الآن تلقائياً، وكل بياناتك وتعديلاتك غير المتزامنة محفوظة ولن تُفقد.</p><div class="updbar2"><i style="width:${(8-n)/8*100}%"></i></div><button class="btn pri" data-appupd>تحديث الآن${n>0?' ('+n+')':''}</button></div>`};draw();b.hidden=false;
  const t=setInterval(()=>{if(updBusy()){b.hidden=true;n=8;draw();return}b.hidden=false;n--;if(n<=0){clearInterval(t);applyUpdate()}else draw()},1000)}
-function applyUpdate(){try{saveRaw();localStorage.setItem('wl-upd',APP_VER)}catch(_){}location.reload()}
+function applyUpdate(){try{saveRawNow();localStorage.setItem('wl-upd',APP_VER)}catch(_){}location.reload()}
 async function checkUpdate(manual){if(!SWREG){if(manual)toast(CAN_SW()?'جارٍ تجهيز التحديث التلقائي…':'التحديث التلقائي يعمل في نسخة التطبيق المثبتة');return}
  try{await SWREG.update()}catch(_){}setTimeout(()=>{if(manual&&!UPD_READY)toast('✓ لديك أحدث نسخة من المنظومة ('+APP_VER+')')},2500)}
 const verTxt=()=>`الإصدار ${APP_VER}${UPD_READY?' · <b style="color:var(--gold)">تحديث جاهز</b>':''}`;

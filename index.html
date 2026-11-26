@@ -9143,18 +9143,24 @@ function ifLegacy(){const up=new Set(Object.values(infrs()).filter(o=>o.leg!=nul
  (WB||[]).forEach(w=>{if(!w||!(w.vn||w.vt||w.vd))return;if(!w.vn&&!w.vd)return;if(up.has(String(w.i)))return;const p=ifParseNo(w.vn);
   out.push({id:'DB'+w.i,db:1,wi:w.i,no:p?p.no:null,yr:p?p.yr:(w.vd?+String(w.vd).slice(0,4):null),noTxt:w.vn?String(w.vn):'',dt:w.vd||'',pt:{t:/شرك|استثمار/.test(w.own||'')?'c':'p',n:w.n||'',nid:w.nid?String(w.nf||w.nid):'',cr:w.cr||''},reg:w.reg||'',la:w.la,lo:w.lo,tpx:w.vt||'',tp:[],
    st:/تصالح/.test(w.vs||'')?'stl':w.rm?'rem':/حكم/.test(w.vs||'')?'jdg':/حفظ|انته|منته/.test(w.vs||'')?'cls':'open',vv:w.vv,vpaid:w.vpaid,rmx:w.rm?{no:w.rm,dd:w.rmd}:null,act:w.act||'',vs:w.vs||'',by:{n:'قاعدة بيانات الإدارة'},org:''})});return out}
-const ifAll=()=>Object.values(infrs()).concat(ifLegacy());
+/* فهرس مخزّن مؤقتاً (كان كل استدعاء بيلف على كل آبار قاعدة البيانات → تقل) */
+let IFC={k:null,t:0};
+function ifIdx(){const L=infrs();let mu=0,n=0;for(const id in L){n++;const u=L[id].u||0;if(u>mu)mu=u}const k=(WB?WB.length:0)+'|'+n+'|'+mu;const now=Date.now();if(IFC.k===k&&now-IFC.t<120000)return IFC;
+ const all=Object.values(L).concat(ifLegacy());const byK={},byN={},byW={},byId={};
+ all.forEach(o=>{byId[o.id]=o;if(o.st==='void')return;const kk=ifKey(o.pt);if(kk)(byK[kk]=byK[kk]||[]).push(o);const nm=norm(o.pt&&o.pt.n||'');if(nm)(byN[nm]=byN[nm]||[]).push(o);if(o.wi!=null)(byW[String(o.wi)]=byW[String(o.wi)]||[]).push(o)});
+ IFC={k,t:now,all,byK,byN,byW,byId};return IFC}
+const ifAll=()=>ifIdx().all;
 function ifNext(yr){let m=0;ifAll().forEach(o=>{if(o.st!=='void'&&+o.yr===+yr&&o.no>m)m=+o.no});return m+1}
 function ifDup(no,yr,id){return ifAll().find(o=>o.id!==id&&o.st!=='void'&&+o.no===+no&&+o.yr===+yr)}
 const ifTpTxt=o=>(o.tp||[]).map(ifTp).concat(o.tpx?[o.tpx]:[]).join('، ')||'—';
 /* مفتاح المخالف: الرقم القومي ← السجل التجاري ← الاسم */
 const ifNid=v=>{const d=String(v||'').replace(/[٠-٩]/g,x=>'٠١٢٣٤٥٦٧٨٩'.indexOf(x)).replace(/\D/g,'');return d.length===14?d:''};
 function ifKey(p){p=p||{};const n=ifNid(p.nid);if(n)return 'n'+n;const c=String(p.cr||'').replace(/\D/g,'');if(c.length>=3&&!/تعذر/.test(p.cr||''))return 'c'+c;const nm=norm(p.n||'').replace(/\s+/g,' ');return nm?'m'+nm:''}
-function ifOf(p,exceptId){const k=ifKey(p);const nm=norm((p||{}).n||'');if(!k&&!nm)return [];return ifAll().filter(o=>o.id!==exceptId&&o.st!=='void'&&(ifKey(o.pt)===k||(nm&&norm(o.pt&&o.pt.n||'')===nm)))}
-const ifOfWell=w=>w?ifAll().filter(o=>o.st!=='void'&&(o.wi!=null&&String(o.wi)===String(w.i)||o.id==='DB'+w.i)):[];
+function ifOf(p,exceptId){const k=ifKey(p);const nm=norm((p||{}).n||'');if(!k&&!nm)return [];const X=ifIdx();const S2=new Set([...(k&&X.byK[k]||[]),...(nm&&X.byN[nm]||[])]);return [...S2].filter(o=>o.id!==exceptId)}
+const ifOfWell=w=>w?(ifIdx().byW[String(w.i)]||[]).slice():[];
 const ifOpenN=L=>L.filter(o=>['open','ntf','ref'].includes(o.st)).length;
 /* آخر محضر للبئر · يُستخدم في تصدير قاعدة البيانات بنفس أعمدة الملف الأصلي */
-function ifLatestW(w){const L=Object.values(infrs()).filter(o=>o.st!=='void'&&o.wi!=null&&String(o.wi)===String(w.i)).sort((a,b)=>(b.dt||'').localeCompare(a.dt||''));const o=L[0];
+function ifLatestW(w){if(!S.infr||!Object.keys(S.infr).length)return {vn:w.vn,vd:w.vd,vt:w.vt,vs:w.vs,vpaid:w.vpaid,vv:w.vv};const L=(ifIdx().byW[String(w.i)]||[]).filter(o=>!o.db).sort((a,b)=>(b.dt||'').localeCompare(a.dt||''));const o=L[0];
  if(!o||(w.vd&&o.dt<w.vd))return {vn:w.vn,vd:w.vd,vt:w.vt,vs:w.vs,vpaid:w.vpaid,vv:w.vv};return {vn:o.no+'-'+o.yr,vd:o.dt,vt:ifTpTxt(o),vs:ifS(o.st)[1],vpaid:o.stl&&o.stl.amt!=null&&o.stl.rno?o.stl.amt:w.vpaid,vv:o.stl&&o.stl.amt!=null?o.stl.amt:w.vv}}
 
 const IFF={st:'',q:'',yr:'',tp:'',src:'',tab:'list'};
@@ -9347,7 +9353,7 @@ function ifSave(id){if(!canInf())return;const o=ifRead();
  if(!o.id){o.id='IF'+Date.now().toString(36).toUpperCase();o.at=now;o.by={n:u.n,u:u.u,r:u.r};o.st=o.st||'open';o.steps=[{st:'open',d:o.dt,by:u.n,nt:o.leg!=null?'استكمال بيانات محضر مسجل بقاعدة البيانات':'تحرير المحضر'}];if(o.leg!=null&&o.st!=='open')o.steps.push({st:o.st,d:todayISO(),by:u.n,nt:'منقول من قاعدة البيانات'+(o.vs?' · '+o.vs:'')})}
  else{(o.steps=o.steps||[]).push({st:o.st,d:todayISO(),by:u.n,nt:'تعديل بيانات المحضر',ed:1})}
  o.eby=u.n;o.eat=now;try{if(o.zb)localStorage.setItem('if-zb-'+u.u,o.zb)}catch(_){}ifPut(o);vrClose();toast('✓ تم حفظ المحضر '+ifNoTxt(o));if(cur==='infr')rerender();else if(drawerOpen()&&o.wi!=null){const w=WB.find(x=>String(x.i)===String(o.wi));if(w)renderWell(w)}setTimeout(()=>ifShow(o.id),50)}
-const ifGet=id=>infrs()[id]||ifLegacy().find(o=>o.id===id);
+const ifGet=id=>infrs()[id]||ifIdx().byId[id];
 
 /* ---------- عرض المحضر ومساره ---------- */
 function ifShow(id){const o=ifGet(id);if(!o)return;const s=ifS(o.st);const L=ifOf(o.pt,o.id);const ed=canInf()&&!o.db&&o.st!=='void';const mine=o.by&&o.by.u===me().u&&(o.at||'').slice(0,10)===todayISO();
@@ -9572,7 +9578,7 @@ function vrClick(t){let el;
  return false}
 
 /* ---------- installable app (PWA / APK / Windows) + in-app updates ---------- */
-const APP_VER='2026.11.27-0008';
+const APP_VER='2026.11.27-0037';
 const IS_APP=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true||document.referrer.startsWith('android-app://')}catch(_){return false}};
 
 /* ===== حفظ التقارير PDF على الموبايل وتطبيق الهاتف (الطباعة غير مدعومة داخل التطبيق) ===== */
